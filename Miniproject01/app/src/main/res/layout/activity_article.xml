@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".ArticleActivity">
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="320dp"
+            android:src="@drawable/img2"
+            android:scaleType="fitXY"
+            android:id="@+id/header_image"
+            />
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            >
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/article_title"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:textSize="30dp"
+                    android:text="Du lịch Phú Quốc: Cẩm nang từ A đến Z"
+                    android:textColor="@color/white"
+                    android:layout_marginTop="83dp"
+                    android:layout_marginBottom="43dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    />
+                <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+                    xmlns:tools="http://schemas.android.com/tools"
+                    android:layout_width="450dp"
+                    android:layout_height="310dp"
+                    android:layout_marginRight="14dp"
+                    android:layout_marginLeft="14dp"
+                    android:id="@+id/map"
+                    tools:context=".MapActivity"
+                    android:name="com.google.android.gms.maps.SupportMapFragment" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="14dp"
+                    android:layout_marginLeft="14dp"
+                    android:layout_marginTop="28dp"
+                    android:text="hoang sơ và đặc trưng nhất. Từ đây có thể nhìn thấy được hải giới của Campuchia. Gành dầu có bãi tắm hình cánh cung trải dài 500m. Đây cũng là nơi thưởng thức hải sản tuyệt vời cho du khách.
+Mũi đất nhô ra biển Tây Bắc đảo thu hút du khách bởi vẻ đẹp thiên nhiên hoang sơ và đặc trưng nhất. Từ đây có thể nhìn thấy được hải giới của Campuchia. Gành dầu có bãi tắm hình cánh cung trải dài 500m. Đây cũng là nơi thưởng thức hải sản tuyệt vời cho du khách.
+Đây cũng là nơi thưởng thức hải sản tuyệt vời cho du khách.
+hoang sơ và đặc trưng nhất. Từ đây có thể nhìn thấy được hải giới của Campuchia. Gành dầu có bãi tắm hình cánh cung trải dài 500m. Đây cũng là nơi thưởng thức hải sản tuyệt vời cho du khách.
+Mũi đất nhô ra biển Tây Bắc đảo thu hút du khách bởi vẻ đẹp thiên nhiên hoang sơ và đặc trưng nhất. Từ đây có thể nhìn thấy được hải giới của Campuchia. Gành dầu có bãi tắm hình cánh cung trải dài 500m. Đây cũng là nơi thưởng thức hải sản tuyệt vời cho du khách.
+Đây cũng là nơi thưởng thức hải sản tuyệt vời cho du khách."
+                    android:fontFamily="@font/notoserif_regular"
+                    android:textSize="20dp"
+                    android:lineSpacingExtra="9dp"
+                    android:textColor="@color/black"
+                    />
+            </LinearLayout>
+
+        </ScrollView>
+
+    </FrameLayout>
+
+</android.support.constraint.ConstraintLayout>
