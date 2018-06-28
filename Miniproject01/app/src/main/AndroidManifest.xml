@@ -1,11 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="searchlocation.miniproject01">
-    
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE"/>
+    xmlns:tools="http://schemas.android.com/tools"
+    package="searchlocation.miniproject01"
+    tools:ignore="MissingLeanbackLauncher">
+
+    <uses-feature
+        android:name="android.software.leanback"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.touchscreen"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.location.gps"
+        android:required="false" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
@@ -19,23 +31,25 @@
             android:value="@integer/google_play_services_version" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyDBET_Zj5EIr41MzYdo4Oki_uTPu39AsSE"/>
+            android:value="AIzaSyDBET_Zj5EIr41MzYdo4Oki_uTPu39AsSE" />
 
-        <activity android:name=".OnGoingActivity"
-                  android:theme="@style/AppTheme">
+        <activity
+            android:name=".OnGoingActivity"
+            android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MapActivity"
-                  android:theme="@style/AppTheme"
-            android:windowSoftInputMode="adjustPan">
-        </activity>
-        <activity android:name=".Test"></activity>
-        <activity android:name=".SharePlanActivity"></activity>
-        <activity android:name=".FavoriteActivity"></activity>
-        <activity android:name=".ArticleActivity"></activity>
+        <activity
+            android:name=".MapActivity"
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="adjustPan"/>
+        <activity android:name=".MapsActivity"/>
+        <activity android:name=".SharePlanActivity" />
+        <activity android:name=".FavoriteActivity" />
+        <activity android:name=".ArticleActivity" />
     </application>
 
 </manifest>

@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".OnGoingActivity"
-    android:background="@color/white"
-    >
+    android:background="@color/white">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -20,7 +18,7 @@
             <!--Top illustration-->
             <ImageView
                 android:layout_width="373dp"
-                android:layout_height="333dp"
+                android:layout_height="200dp"
                 android:layout_gravity="center"
                 android:layout_marginTop="90dp"
                 android:src="@drawable/ill_character" />
@@ -62,8 +60,7 @@
                     android:text="Add Activity Now"
                     android:fontFamily="@font/montserrat_bold"
                     android:textColor="@color/blue"
-                    android:textSize="14dp"
-                    />
+                    android:textSize="14dp"/>
             </LinearLayout>
         </LinearLayout>
         <!--Bottom navigation bar-->

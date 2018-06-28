@@ -3,6 +3,7 @@ package searchlocation.miniproject01;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -15,6 +16,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.Menu;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -30,10 +32,13 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import searchlocation.miniproject01.Utilis.BottomNavigationViewHelper;
 
 public class MapActivity extends AppCompatActivity {
 
@@ -55,6 +60,15 @@ public class MapActivity extends AppCompatActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_map);
+		setupBottomNavigationView();
+
+	}
+
+	public void setupBottomNavigationView(){
+		BottomNavigationViewEx bottomNavigationViewEx = (BottomNavigationViewEx) findViewById(R.id.bottomNavigation);
+		BottomNavigationViewHelper.setupBottomNavigationView(bottomNavigationViewEx);
+		BottomNavigationViewHelper.enableBottomNavigation(MapActivity.this,bottomNavigationViewEx);
+		Menu menu = bottomNavigationViewEx.getMenu();
 	}
 }
 

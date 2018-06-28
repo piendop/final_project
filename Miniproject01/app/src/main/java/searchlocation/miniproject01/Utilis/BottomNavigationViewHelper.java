@@ -10,6 +10,8 @@ import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
 import searchlocation.miniproject01.ArticleActivity;
 import searchlocation.miniproject01.FavoriteActivity;
+import searchlocation.miniproject01.MapActivity;
+import searchlocation.miniproject01.MapsActivity;
 import searchlocation.miniproject01.OnGoingActivity;
 import searchlocation.miniproject01.R;
 import searchlocation.miniproject01.SharePlanActivity;
@@ -28,7 +30,7 @@ public class BottomNavigationViewHelper {
 				public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 					switch (item.getItemId()) {
 						case R.id.ic_maps:
-							Intent intentmap = new Intent(context, Test.class); //ACTIVITY_NUMBER 1
+							Intent intentmap = new Intent(context, MapsActivity.class); //ACTIVITY_NUMBER 1
 							item.setIcon(R.drawable.ic_maps_onclick);
 							context.startActivity(intentmap);
 							break;
