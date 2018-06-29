@@ -21,13 +21,18 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
@@ -57,7 +62,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     ArrayList<String> addresses = new ArrayList<>();
     ArrayList<String> names = new ArrayList<>();
     ArrayList<LatLng> locations = new ArrayList<>();
-
+    ArrayList<String> icons = new ArrayList<>();
+    static Boolean isSearchActive=false;
+    //ArrayList<Bitmap> iconBitmap =new ArrayList<>();
 
 
 
@@ -87,14 +94,30 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         setupBottomNavigationView();
-        sharedPreferences = this.getSharedPreferences("searchlocation.miniproject01",Context.MODE_PRIVATE);
+        sharedPreferences = this.getSharedPreferences("searchlocation.miniproject01", Context.MODE_PRIVATE);
         //get text search of user
-        inputSearch=findViewById(R.id.input_search);
+        inputSearch = findViewById(R.id.input_search);
+        initBackgroundAndSearchBar();
         getTextSearch();
+
+    }
+
+    private void initBackgroundAndSearchBar() {
+        RelativeLayout relativeLayout = findViewById(R.id.relLayout1);
+        relativeLayout.setVisibility(View.VISIBLE);
+        addresses.clear();
+        locations.clear();
+        names.clear();
+        icons.clear();
+        textSearch="";
+        sharedPreferences.edit().clear().apply();
+        if(sharedPreferences.edit().clear().commit()){
+            isSearchActive=false;
+        }
     }
 
 
-    private void getTextSearch() {
+    public void getTextSearch() {
 
         //close virtual keyboard when click on map
         LinearLayout linearLayout = findViewById(R.id.linearLayout);
@@ -146,6 +169,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 //to zoom in location range 1-20 1: zoom out 20: zoom in
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation,16f));
 
+                if(isSearchActive){
+                    getAddresses();
+                    getIcons();
+                    getLocations();
+                    getNames();
+                    showOnMap();
+                }
+
             }
 
             @Override
@@ -172,6 +203,54 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }else{//already have a permission request location
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,0,locationListener);
         }
+
+    }
+
+    public void showOnMap() {
+        //markers to add marker
+        ArrayList<Marker> markers = new ArrayList<>();
+        //remove update to not center user location
+        locationManager.removeUpdates(locationListener);
+        //clear user marker
+        mMap.clear();
+
+        //add marker of user location
+        /*Location userLocation = getUserLocation();
+        markers.add(mMap.addMarker(new MarkerOptions().position(new LatLng(userLocation.getLatitude(),userLocation.getLongitude())).title("Your location").
+                icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN))));*/
+
+        for (int i=0;i<locations.size();++i){
+            /*markers.add(mMap.addMarker(new MarkerOptions().
+                    position(locations.get(i)).
+                    title(names.get(i)).
+                    icon(BitmapDescriptorFactory.fromBitmap(iconBitmap.get(i)))));*/
+            DownloadIcon downloadIcon = new DownloadIcon();
+            try {
+                Bitmap icon = downloadIcon.execute(icons.get(i)).get();
+                markers.add(mMap.addMarker(new MarkerOptions().
+                        position(locations.get(i)).
+                        title(names.get(i)).
+                        icon(BitmapDescriptorFactory.fromBitmap(icon))));
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                markers.add(mMap.addMarker(new MarkerOptions().position(locations.get(i)).title(names.get(i))));
+
+            }
+        }
+
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+
+        for(Marker marker:markers){
+            builder.include(marker.getPosition());
+        }
+        LatLngBounds bounds=builder.build();
+
+        int padding = 200;//offset from edges of the map in pixel
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds,padding);
+
+        mMap.animateCamera(cameraUpdate);
+
     }
 
     @Override
@@ -186,7 +265,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-    private void getPlacesFromTextSearch() {
+    public void getPlacesFromTextSearch() {
+
+        RelativeLayout relativeLayout = findViewById(R.id.relLayout1);
+
+        relativeLayout.setVisibility(View.INVISIBLE);
+
         //get text search
         //use google api
         String apiJson = "https://maps.googleapis.com/maps/api/place/textsearch/json?query=";
@@ -213,8 +297,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //now get web content in json
         DownloadWebContent webContent =new DownloadWebContent(this);
         webContent.execute(apiJson);
-        getAddresses();
+
     }
+
 
     public Location getUserLocation() {
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -228,6 +313,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     public void getAddresses(){
 
+        addresses.clear();
         try {
             addresses =(ArrayList<String>) ObjectSerializer.deserialize(sharedPreferences.
                     getString("addresses",ObjectSerializer.serialize(new ArrayList<String>())));
@@ -235,5 +321,54 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             e.printStackTrace();
         }
         Log.i("Addresses",addresses.toString());
+    }
+
+    public void getNames() {
+        names.clear();
+        try {
+            names =(ArrayList<String>) ObjectSerializer.deserialize(sharedPreferences.
+                    getString("names",ObjectSerializer.serialize(new ArrayList<String>())));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Log.i("Names",names.toString());
+    }
+    public void getLocations() {
+        locations.clear();
+
+        try {
+
+            ArrayList<String> lats =(ArrayList<String>) ObjectSerializer.deserialize(sharedPreferences.
+                    getString("latitudes",ObjectSerializer.serialize(new ArrayList<String>())));
+            ArrayList<String> lngs =(ArrayList<String>) ObjectSerializer.deserialize(sharedPreferences.
+                    getString("longitudes",ObjectSerializer.serialize(new ArrayList<String>())));
+            for(int i=0;i<lats.size();++i){
+                locations.add(new LatLng(Double.parseDouble(lats.get(i)),Double.parseDouble(lngs.get(i))));
+            }
+            lats.clear();
+            lngs.clear();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Log.i("Locations",locations.toString());
+    }
+
+    public void getIcons() {
+
+        icons.clear();
+        //iconBitmap.clear();
+
+        try {
+            icons =(ArrayList<String>) ObjectSerializer.deserialize(sharedPreferences.
+                    getString("icons",ObjectSerializer.serialize(new ArrayList<String>())));
+            /*for(int i=0;i<icons.size();++i){
+                DownloadIcon downloadIcon = new DownloadIcon();
+                Bitmap icon = downloadIcon.execute(icons.get(i)).get();
+                iconBitmap.add(icon);
+            }*/
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Log.i("Icons",icons.toString());
     }
 }

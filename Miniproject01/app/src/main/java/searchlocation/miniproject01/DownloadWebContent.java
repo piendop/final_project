@@ -26,8 +26,9 @@ public class DownloadWebContent extends AsyncTask<String,Void,String> {
     int size=10;
     ArrayList<String> addresses = new ArrayList<>();
     ArrayList<String> names = new ArrayList<>();
-    ArrayList<Bitmap> icons = new ArrayList<>();
-    ArrayList<LatLng> locations = new ArrayList<>();
+    ArrayList<String> icons = new ArrayList<>();
+    ArrayList<String> lats = new ArrayList<>();
+    ArrayList<String> lngs = new ArrayList<>();
     public Context context;
 
     public DownloadWebContent(Context context) {
@@ -74,39 +75,59 @@ public class DownloadWebContent extends AsyncTask<String,Void,String> {
                 //save locations
                 JSONObject geometry = place.getJSONObject("geometry");
                 JSONObject location = geometry.getJSONObject("location");
-                locations.add(new LatLng(Double.parseDouble(location.getString("lat")),
-                        Double.parseDouble(location.getString("lng"))));
+                lats.add(location.getString("lat"));
+                lngs.add(location.getString("lng"));
 
                 //save names
                 names.add(place.getString("name"));
 
                 //save icons
-                /*DownloadIcon downloadIcon = new DownloadIcon();
-                try {
-                    icons.add(downloadIcon.execute(place.getString("icon")).get());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }*/
+                icons.add(place.getString("icon"));
+
             }
             getAddresses();
+            getLocations();
+            getNames();
+            getIcons();
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
-
-
-    public void getAddresses(){
-        /*for(int i=0;i<size;++i){
-            Log.i("Address",addresses.get(i));
-        }*/
+    public void getIcons() {
         //the mode private just share data in app only
         SharedPreferences sharedPreferences =context.getSharedPreferences
                 ("searchlocation.miniproject01", Context.MODE_PRIVATE);
 
         //convert array list to string so that we can save it in shape of json object
         try {
+            sharedPreferences.edit().putString("icons",ObjectSerializer.serialize(icons)).apply();
+            MapsActivity.isSearchActive = sharedPreferences.edit().putString("addresses",
+                    ObjectSerializer.serialize(addresses)).commit();
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public void getAddresses(){
+        for(int i=0;i<size;++i){
+            Log.i("Address",addresses.get(i));
+        }
+        //the mode private just share data in app only
+        SharedPreferences sharedPreferences =context.getSharedPreferences
+                ("searchlocation.miniproject01", Context.MODE_PRIVATE);
+
+
+
+        //convert array list to string so that we can save it in shape of json object
+        try {
             sharedPreferences.edit().putString("addresses",ObjectSerializer.serialize(addresses)).apply();
+            MapsActivity.isSearchActive = sharedPreferences.edit().putString("addresses",
+                    ObjectSerializer.serialize(addresses)).commit();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -114,14 +135,40 @@ public class DownloadWebContent extends AsyncTask<String,Void,String> {
 
     public void getLocations(){
         for(int i=0;i<size;++i){
-            Log.i("Latitude",Double.toString(locations.get(i).latitude));
-            Log.i("Latitude",Double.toString(locations.get(i).longitude));
+            Log.i("Latitude",lats.get(i));
+            Log.i("Latitude",lngs.get(i));
         }
+        //the mode private just share data in app only
+        SharedPreferences sharedPreferences =context.getSharedPreferences
+                ("searchlocation.miniproject01", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        //convert array list to string so that we can save it in shape of json object
+        try {
+            editor.putString("latitudes",ObjectSerializer.serialize(lats)).apply();
+            editor.putString("longitudes",ObjectSerializer.serialize(lngs)).apply();
+            MapsActivity.isSearchActive=editor.commit();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public void getNames(){
         for(int i=0;i<size;++i){
             Log.i("Name",names.get(i));
+        }
+        //the mode private just share data in app only
+        SharedPreferences sharedPreferences =context.getSharedPreferences
+                ("searchlocation.miniproject01", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        //convert array list to string so that we can save it in shape of json object
+        try {
+            editor.putString("names",ObjectSerializer.serialize(names)).apply();
+            MapsActivity.isSearchActive = editor.commit();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }
