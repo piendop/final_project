@@ -11,17 +11,11 @@ import searchlocation.miniproject01.Utilis.BottomNavigationViewHelper;
 
 public class ArticleActivity extends AppCompatActivity {
 
-	ImageView imageView = (ImageView) findViewById(R.id.header_image);
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_article);
 		//setupBottomNavigationView();
-		parallexscolling();
-	}
-
-	private void parallexscolling() {
-
 	}
 
 	public void setupBottomNavigationView(){
