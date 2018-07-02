@@ -36,6 +36,10 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -47,7 +51,7 @@ import searchlocation.miniproject01.Utilis.BottomNavigationViewHelper;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, View.OnClickListener {
 
-    private GoogleMap mMap;
+    GoogleMap mMap;
 
     /**************GET USER LOCATION VARIABLES********************************/
     LocationManager locationManager;
@@ -56,17 +60,123 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     /***********************GET TEXT SEARCH VARIABLES******************************************/
     EditText inputSearch ;
     String textSearch="";
-    /********************SHARE PREFERENCE********************/
-    SharedPreferences sharedPreferences;
+
     /********PLACES: NAMES, ADDRESSES AND LOCATIONS************/
     ArrayList<String> addresses = new ArrayList<>();
     ArrayList<String> names = new ArrayList<>();
     ArrayList<LatLng> locations = new ArrayList<>();
     ArrayList<String> icons = new ArrayList<>();
-    static Boolean isSearchActive=false;
-    //ArrayList<Bitmap> iconBitmap =new ArrayList<>();
 
 
+
+
+    /********************************************************************************************/
+    //class to get web content
+    public class DownloadWebContent extends AsyncTask<String,Void,String> {
+
+        JSONObject object;
+        JSONArray array;
+        int size=10;
+
+
+        @Override
+        protected String doInBackground(String... urls) {
+            try {
+                URL url = new URL(urls[0]);//urls[0] can be empty ==> need catch and try
+                //we might not open the connection ==> need catch and try
+                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                InputStream inputStream = urlConnection.getInputStream();
+                InputStreamReader reader = new InputStreamReader(inputStream);
+                int data = reader.read();
+                String result = "";
+                while (data != -1) {
+                    result += (char) data;
+                    data = reader.read();
+                }
+                return result;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return "Failed successfully";
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            try {
+                object=new JSONObject(result);
+                String places = object.getString("results");
+                array = new JSONArray(places);
+
+
+                if(array.length()<size) size=array.length();
+                //save top 10 places
+                for (int i=0;i<size;++i){
+                    JSONObject place = array.getJSONObject(i);
+                    //save addresses
+                    addresses.add(place.getString("formatted_address"));
+
+                    //save locations
+                    JSONObject geometry = place.getJSONObject("geometry");
+                    JSONObject location = geometry.getJSONObject("location");
+                    locations.add(new LatLng(Double.parseDouble(location.getString("lat")),
+                            Double.parseDouble(location.getString("lng"))));
+
+                    //save names
+                    names.add(place.getString("name"));
+
+                    //save icons
+                    icons.add(place.getString("icon"));
+
+                }
+                showOnMap();
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        private void showOnMap() {
+            //markers to add marker
+            ArrayList<Marker> markers = new ArrayList<>();
+            //remove update to not center user location
+            locationManager.removeUpdates(locationListener);
+            //clear user marker
+            mMap.clear();
+
+            for (int i=0;i<locations.size();++i){
+
+                DownloadIcon downloadIcon = new DownloadIcon();
+                try {
+                    Bitmap icon = downloadIcon.execute(icons.get(i)).get();
+                    markers.add(mMap.addMarker(new MarkerOptions().
+                            position(locations.get(i)).
+                            title(names.get(i)).
+                            icon(BitmapDescriptorFactory.fromBitmap(icon))));
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    markers.add(mMap.addMarker(new MarkerOptions().position(locations.get(i)).title(names.get(i))));
+
+                }
+            }
+
+            LatLngBounds.Builder builder = new LatLngBounds.Builder();
+
+            for(Marker marker:markers){
+                builder.include(marker.getPosition());
+            }
+            LatLngBounds bounds=builder.build();
+
+            int padding = 200;//offset from edges of the map in pixel
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds,padding);
+
+            mMap.animateCamera(cameraUpdate);
+
+        }
+
+    }
+/**********************************************************************************************/
 
 
 
@@ -89,32 +199,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         setupBottomNavigationView();
-        sharedPreferences = this.getSharedPreferences("searchlocation.miniproject01", Context.MODE_PRIVATE);
-        //get text search of user
         inputSearch = findViewById(R.id.input_search);
-        initBackgroundAndSearchBar();
         getTextSearch();
-
     }
 
-    private void initBackgroundAndSearchBar() {
-        RelativeLayout relativeLayout = findViewById(R.id.relLayout1);
-        relativeLayout.setVisibility(View.VISIBLE);
-        addresses.clear();
-        locations.clear();
-        names.clear();
-        icons.clear();
-        textSearch="";
-        sharedPreferences.edit().clear().apply();
-        if(sharedPreferences.edit().clear().commit()){
-            isSearchActive=false;
-        }
-    }
 
 
     public void getTextSearch() {
@@ -169,13 +262,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 //to zoom in location range 1-20 1: zoom out 20: zoom in
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation,16f));
 
-                if(isSearchActive){
-                    getAddresses();
-                    getIcons();
-                    getLocations();
-                    getNames();
-                    showOnMap();
-                }
 
             }
 
@@ -203,53 +289,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }else{//already have a permission request location
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,0,locationListener);
         }
-
-    }
-
-    public void showOnMap() {
-        //markers to add marker
-        ArrayList<Marker> markers = new ArrayList<>();
-        //remove update to not center user location
-        locationManager.removeUpdates(locationListener);
-        //clear user marker
-        mMap.clear();
-
-        //add marker of user location
-        /*Location userLocation = getUserLocation();
-        markers.add(mMap.addMarker(new MarkerOptions().position(new LatLng(userLocation.getLatitude(),userLocation.getLongitude())).title("Your location").
-                icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN))));*/
-
-        for (int i=0;i<locations.size();++i){
-            /*markers.add(mMap.addMarker(new MarkerOptions().
-                    position(locations.get(i)).
-                    title(names.get(i)).
-                    icon(BitmapDescriptorFactory.fromBitmap(iconBitmap.get(i)))));*/
-            DownloadIcon downloadIcon = new DownloadIcon();
-            try {
-                Bitmap icon = downloadIcon.execute(icons.get(i)).get();
-                markers.add(mMap.addMarker(new MarkerOptions().
-                        position(locations.get(i)).
-                        title(names.get(i)).
-                        icon(BitmapDescriptorFactory.fromBitmap(icon))));
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                markers.add(mMap.addMarker(new MarkerOptions().position(locations.get(i)).title(names.get(i))));
-
-            }
-        }
-
-        LatLngBounds.Builder builder = new LatLngBounds.Builder();
-
-        for(Marker marker:markers){
-            builder.include(marker.getPosition());
-        }
-        LatLngBounds bounds=builder.build();
-
-        int padding = 200;//offset from edges of the map in pixel
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds,padding);
-
-        mMap.animateCamera(cameraUpdate);
 
     }
 
@@ -295,9 +334,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         apiJson+="&key="+"AIzaSyDRT8C-h9zBQRYut6OODsvbZ2kOCumQ4x0";
         Log.i("Web api",apiJson);
         //now get web content in json
-        DownloadWebContent webContent =new DownloadWebContent(this);
+        DownloadWebContent webContent =new DownloadWebContent();
         webContent.execute(apiJson);
-
     }
 
 
@@ -309,66 +347,5 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 return lastKnownUserLocation;
         }
         return null;
-    }
-
-    public void getAddresses(){
-
-        addresses.clear();
-        try {
-            addresses =(ArrayList<String>) ObjectSerializer.deserialize(sharedPreferences.
-                    getString("addresses",ObjectSerializer.serialize(new ArrayList<String>())));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Log.i("Addresses",addresses.toString());
-    }
-
-    public void getNames() {
-        names.clear();
-        try {
-            names =(ArrayList<String>) ObjectSerializer.deserialize(sharedPreferences.
-                    getString("names",ObjectSerializer.serialize(new ArrayList<String>())));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Log.i("Names",names.toString());
-    }
-    public void getLocations() {
-        locations.clear();
-
-        try {
-
-            ArrayList<String> lats =(ArrayList<String>) ObjectSerializer.deserialize(sharedPreferences.
-                    getString("latitudes",ObjectSerializer.serialize(new ArrayList<String>())));
-            ArrayList<String> lngs =(ArrayList<String>) ObjectSerializer.deserialize(sharedPreferences.
-                    getString("longitudes",ObjectSerializer.serialize(new ArrayList<String>())));
-            for(int i=0;i<lats.size();++i){
-                locations.add(new LatLng(Double.parseDouble(lats.get(i)),Double.parseDouble(lngs.get(i))));
-            }
-            lats.clear();
-            lngs.clear();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Log.i("Locations",locations.toString());
-    }
-
-    public void getIcons() {
-
-        icons.clear();
-        //iconBitmap.clear();
-
-        try {
-            icons =(ArrayList<String>) ObjectSerializer.deserialize(sharedPreferences.
-                    getString("icons",ObjectSerializer.serialize(new ArrayList<String>())));
-            /*for(int i=0;i<icons.size();++i){
-                DownloadIcon downloadIcon = new DownloadIcon();
-                Bitmap icon = downloadIcon.execute(icons.get(i)).get();
-                iconBitmap.add(icon);
-            }*/
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        Log.i("Icons",icons.toString());
     }
 }
