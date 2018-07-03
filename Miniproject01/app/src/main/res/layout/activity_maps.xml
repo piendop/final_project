@@ -28,7 +28,7 @@
             android:src="@drawable/searchbar_symbol_search"
             android:id="@+id/search_mag_icon"
             />
-        <EditText
+        <AutoCompleteTextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_toRightOf="@id/search_mag_icon"

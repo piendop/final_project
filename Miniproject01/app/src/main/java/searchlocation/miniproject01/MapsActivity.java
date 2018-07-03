@@ -19,10 +19,14 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -34,6 +38,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.maps.android.SphericalUtil;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
 import org.json.JSONArray;
@@ -49,7 +54,8 @@ import java.util.ArrayList;
 
 import searchlocation.miniproject01.Utilis.BottomNavigationViewHelper;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, View.OnClickListener {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, View.OnClickListener,
+        GoogleApiClient.OnConnectionFailedListener{
 
     GoogleMap mMap;
 
@@ -58,7 +64,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     LocationListener locationListener;
 
     /***********************GET TEXT SEARCH VARIABLES******************************************/
-    EditText inputSearch ;
+    AutoCompleteTextView inputSearch ;
     String textSearch="";
 
     /********PLACES: NAMES, ADDRESSES AND LOCATIONS************/
@@ -66,8 +72,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     ArrayList<String> names = new ArrayList<>();
     ArrayList<LatLng> locations = new ArrayList<>();
     ArrayList<String> icons = new ArrayList<>();
+    /********PLACE AUTOCOMPLETE ADAPTER***********/
+    PlaceAutocompleteAdapter placeAutocompleteAdapter;
+    GoogleApiClient mGoogleApiClient;
+    //public LatLngBounds LAT_LNG_BOUNDS;
+    private static final LatLngBounds LAT_LNG_BOUNDS = new LatLngBounds(
+            new LatLng(-40, -168), new LatLng(71, 136));
 
 
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+    public LatLngBounds toBounds(LatLng center, double radiusInMeters) {
+        double distanceFromCenterToCorner = radiusInMeters * Math.sqrt(2.0);
+        LatLng southwestCorner =
+                SphericalUtil.computeOffset(center, distanceFromCenterToCorner, 225.0);
+        LatLng northeastCorner =
+                SphericalUtil.computeOffset(center, distanceFromCenterToCorner, 45.0);
+        return new LatLngBounds(southwestCorner, northeastCorner);
+    }
 
 
     /********************************************************************************************/
@@ -206,6 +230,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         setupBottomNavigationView();
         inputSearch = findViewById(R.id.input_search);
         getTextSearch();
+
+        /****autocomplete init***/
+        mGoogleApiClient = new GoogleApiClient
+                .Builder(this)
+                .addApi(Places.GEO_DATA_API)
+                .addApi(Places.PLACE_DETECTION_API)
+                .enableAutoManage(this, this)
+                .build();
     }
 
 
@@ -289,6 +321,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }else{//already have a permission request location
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,0,locationListener);
         }
+        Location userLocation = getUserLocation();
+        if(userLocation!=null) {
+            LatLngBounds latLngBounds = toBounds(new LatLng(userLocation.getLatitude(), userLocation.getLongitude()),
+                    10000);
+            placeAutocompleteAdapter = new PlaceAutocompleteAdapter(this, mGoogleApiClient,
+                    latLngBounds, null);
+        }else{
+            placeAutocompleteAdapter = new PlaceAutocompleteAdapter(this, mGoogleApiClient,
+                    LAT_LNG_BOUNDS, null);
+        }
+        inputSearch.setAdapter(placeAutocompleteAdapter);
 
     }
 
