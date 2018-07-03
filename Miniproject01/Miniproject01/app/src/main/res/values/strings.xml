@@ -1,6 +1,0 @@
-<resources>
-    <string name="app_name">Miniproject01</string>
-    <string name="google_maps_API_key">AIzaSyDBET_Zj5EIr41MzYdo4Oki_uTPu39AsSE</string>
-    <string name="Ongoing_description">Chưa có kế hoạch nào cho ngày hôm nay cả. Tạo ngay một kế hoạch mới để có thể làm việc một cách hiệu quả cũng như tận hưởng cuộc vui một cách trọn vẹn</string>
-    <string name="Ongoing_empty_title">Chưa có lịch hôm nay!</string>
-</resources>
