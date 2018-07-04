@@ -355,7 +355,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         String apiJson = "https://maps.googleapis.com/maps/api/place/textsearch/json?query=";
         //get text search, split string and append api
         textSearch = inputSearch.getText().toString();
-        String texts[]=textSearch.split(" ");
+        String texts[]=textSearch.split(" |, ");
 
         //add the first word
         apiJson+=texts[0];
@@ -371,7 +371,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     Double.toString(lastKnownUserLocation.getLongitude());
         }
         //finally, append key api
-        apiJson+="&key="+"AIzaSyDRT8C-h9zBQRYut6OODsvbZ2kOCumQ4x0";
+        apiJson+="&key="+"AIzaSyCGaXrFNr9aX6jeI-G2JnP4iE7Z5XKEw-U";
         Log.i("Web api",apiJson);
         //now get web content in json
         DownloadWebContent webContent =new DownloadWebContent();
