@@ -1,4 +1,4 @@
-package searchlocation.miniproject01;
+package searchlocation.miniproject01.OnGoing;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
+import searchlocation.miniproject01.R;
 import searchlocation.miniproject01.Utilis.BottomNavigationViewHelper;
 
 public class OnGoingEmptyActivity extends AppCompatActivity {

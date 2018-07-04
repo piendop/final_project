@@ -8,14 +8,11 @@ import android.view.MenuItem;
 
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
-import searchlocation.miniproject01.ArticleActivity;
-import searchlocation.miniproject01.FavoriteActivity;
-import searchlocation.miniproject01.MapActivity;
-import searchlocation.miniproject01.MapsActivity;
-import searchlocation.miniproject01.OnGoingActivity;
+import searchlocation.miniproject01.Reader.ArticleActivity;
+import searchlocation.miniproject01.Search.MapsActivity;
+import searchlocation.miniproject01.OnGoing.OnGoingActivity;
 import searchlocation.miniproject01.R;
-import searchlocation.miniproject01.SharePlanActivity;
-import searchlocation.miniproject01.Test;
+import searchlocation.miniproject01.Models.SharePlanActivity;
 
 public class BottomNavigationViewHelper {
 		public static void setupBottomNavigationView(BottomNavigationViewEx bottomNavigationViewEx) {

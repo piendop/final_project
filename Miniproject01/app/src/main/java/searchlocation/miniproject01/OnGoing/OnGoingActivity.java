@@ -1,4 +1,4 @@
-package searchlocation.miniproject01;
+package searchlocation.miniproject01.OnGoing;
 
 import android.app.Dialog;
 import android.os.Bundle;
@@ -10,6 +10,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
+import searchlocation.miniproject01.R;
 import searchlocation.miniproject01.Utilis.BottomNavigationViewHelper;
 
 public class OnGoingActivity extends AppCompatActivity {

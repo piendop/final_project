@@ -1,4 +1,4 @@
-package searchlocation.miniproject01;
+package searchlocation.miniproject01.Utilis;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;

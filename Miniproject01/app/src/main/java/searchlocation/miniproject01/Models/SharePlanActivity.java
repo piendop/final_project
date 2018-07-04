@@ -1,4 +1,4 @@
-package searchlocation.miniproject01;
+package searchlocation.miniproject01.Models;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -8,6 +8,8 @@ import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
 import java.util.ArrayList;
 
+import searchlocation.miniproject01.Plans;
+import searchlocation.miniproject01.R;
 import searchlocation.miniproject01.Utilis.Adapter;
 import searchlocation.miniproject01.Utilis.BottomNavigationViewHelper;
 

@@ -1,4 +1,4 @@
-package searchlocation.miniproject01;
+package searchlocation.miniproject01.Search;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
