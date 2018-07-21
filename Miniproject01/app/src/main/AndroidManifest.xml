@@ -37,7 +37,7 @@
             android:value="AIzaSyCGaXrFNr9aX6jeI-G2JnP4iE7Z5XKEw-U" />
 
         <activity
-            android:name=".OnGoing.OnGoingActivity"
+            android:name="searchlocation.miniproject01.OnGoing.OnGoingActivity"
             android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -46,13 +46,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Search.MapActivity"
+            android:name="searchlocation.miniproject01.Search.MapActivity"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="adjustPan"/>
-        <activity android:name=".Search.MapsActivity"/>
-        <activity android:name=".Models.SharePlanActivity" />
+        <activity android:name="searchlocation.miniproject01.Search.MapsActivity"/>
+        <activity android:name="searchlocation.miniproject01.Models.SharePlanActivity" />
         <activity android:name=".FavoriteActivity" />
-        <activity android:name=".Reader.ArticleActivity" />
+        <activity android:name="searchlocation.miniproject01.Reader.ArticleActivity" />
     </application>
 
 </manifest>
