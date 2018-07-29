@@ -16,8 +16,8 @@ Dùng để ghi chú đánh dấu các việc đã đang và sắp làm của pr
 **Maps_Activity**
 *Description: Dùng để add địa điểm vô plans/trips thì load cái maps ra*
     [  ] Code_Layout
-    [  ] Search Location
-    [  ] Suggestion when searching
+    [x] Search Location
+    [x] Suggestion when searching
     [  ] Add buttons --> onClick --> Add place to plans then go back to Editor_Activity and continue writing
 
 **Shareplans_Activity** 
@@ -26,6 +26,8 @@ Dùng để ghi chú đánh dấu các việc đã đang và sắp làm của pr
 **Article_Activity** 
 
 **Article_Activity** 
+
+
 
 
 

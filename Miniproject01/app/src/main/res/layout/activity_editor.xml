@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".UI.Editor.EditorActivity">
+    <!--Toolbar for live editor-->
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        >
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <Button
+                android:id="@+id/action_h1"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:width="40dp"
+                android:height="40dp"
+                android:background="@android:color/transparent"
+                android:text="H1"
+                android:textColor="#444444"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/action_h2"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:width="40dp"
+                android:height="40dp"
+                android:background="@android:color/transparent"
+                android:text="H2"
+                android:textColor="#444444"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/action_h3"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:width="40dp"
+                android:height="40dp"
+                android:background="@android:color/transparent"
+                android:text="H3"
+                android:textColor="#444444"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <ImageButton
+                android:id="@+id/action_bold"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@android:color/transparent"
+                android:maxHeight="20dp"
+                android:maxWidth="20dp"
+                android:src="@drawable/icon_bold" />
+
+            <ImageButton
+                android:id="@+id/action_Italic"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@android:color/transparent"
+                android:maxHeight="20dp"
+                android:maxWidth="20dp"
+                android:src="@drawable/icon_italic" />
+
+
+
+            <ImageButton
+                android:id="@+id/action_hr"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@android:color/transparent"
+                android:maxHeight="20dp"
+                android:maxWidth="20dp"
+                android:src="@drawable/icon_hr" />
+
+            <ImageButton
+                android:id="@+id/action_insert_image"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@android:color/transparent"
+                android:maxHeight="20dp"
+                android:maxWidth="20dp"
+                android:src="@drawable/icon_image" />
+
+
+            <ImageButton
+                android:id="@+id/action_insert_link"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@android:color/transparent"
+                android:maxHeight="20dp"
+                android:maxWidth="20dp"
+                android:src="@drawable/icon_link" />
+
+            <ImageButton
+                android:id="@+id/action_map"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@android:color/transparent"
+                android:maxHeight="20dp"
+                android:maxWidth="20dp"
+                android:src="@drawable/icon_marker" />
+
+            <ImageButton
+                android:id="@+id/action_erase"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@android:color/transparent"
+                android:maxHeight="20dp"
+                android:maxWidth="20dp"
+                android:src="@drawable/icon_erase" />
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:scrollbars="vertical"
+        android:layout_marginBottom="40dp"
+        android:layout_alignParentTop="true"
+        android:layout_height="match_parent"
+        >
+        <com.github.irshulx.Editor
+            android:layout_width="match_parent"
+            android:id="@+id/editor"
+            app:render_type="Editor"
+            app:placeholder="Start writing here..."
+            android:paddingTop="10dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:layout_height="match_parent"
+            android:paddingBottom="100dp" />
+    </ScrollView>
+</RelativeLayout>

@@ -1,23 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="453dp"
-    android:layout_height="256dp"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="horizontal"
-    android:layout_marginLeft="13dp"
-    android:elevation="1dp"
-    android:translationZ="5dp"
-    android:background="@drawable/white_border"
-    android:id="@+id/card_custom">
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="453dp"
+        android:layout_height="256dp"
+        android:orientation="horizontal"
+        android:layout_marginLeft="13dp"
+        android:elevation="1dp"
+        android:translationZ="5dp"
+        android:background="@drawable/white_border"
+        android:id="@+id/card_custom">
         <FrameLayout
             android:layout_width="173dp"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:id="@+id/headingImage2"
+            >
             <ImageView
-                android:layout_width="173dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:id="@+id/card_img"
-                android:src="@drawable/img2"
-                android:scaleType="fitXY"
+                android:id="@+id/headingImage"
+                android:scaleType="centerCrop"
+                />
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/white_border_transparent"
                 />
         </FrameLayout>
         <LinearLayout
@@ -25,6 +30,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical"
             >
+            <!--Title of the plan-->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -33,18 +39,21 @@
                 android:textSize="18dp"
                 android:fontFamily="@font/montserrat_semibold"
                 android:textColor="@color/black"
+                android:text='@{Plan.title}'
                 android:id="@+id/card_title"
                 />
+            <!--Tags of the plan-->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
                 android:layout_marginLeft="13dp"
-                android:textSize="10dp"
+                android:textSize="10sp"
                 android:fontFamily="@font/notoserif_regular"
                 android:textColor="@color/blue"
                 android:id="@+id/card_tags"
                 />
+            <!--description of the plan-->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -55,7 +64,7 @@
                 android:textColor="@color/black"
                 android:id="@+id/card_desc"
                 />
-
+            <!--User info-->
         </LinearLayout>
 
     </LinearLayout>
