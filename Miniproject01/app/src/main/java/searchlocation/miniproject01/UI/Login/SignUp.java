@@ -13,47 +13,48 @@ import android.widget.Toast;
 import searchlocation.miniproject01.R;
 
 public class SignUp extends AppCompatActivity {
-/*
-	EditText _nameText = (EditText) findViewById(R.id.input_name);
-	EditText _emailText = (EditText) findViewById(R.id.input_email);
-	EditText _passwordText = (EditText) findViewById(R.id.input_password);
-	EditText _reEnterPasswordText = (EditText) findViewById(R.id.input_Repassword);
-	View _signupButton = (View) findViewById(R.id.sign_up_button);*/
-	//Button mLoginButton = (Button) findViewById(R.id.login_link);
+
+	// UI references.
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_sign_up);
-	/*	mLoginButton.setOnClickListener(new View.OnClickListener() {
+		Button mLoginButton = (Button) findViewById(R.id.login_link);
+		mLoginButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				Intent loginActivity = new Intent(SignUp.this,LoginActivity.class);
 				startActivity(loginActivity);
 			}
-		});*/
+		});
 
-/*
+
 		Button mSignUpButton = (Button) findViewById(R.id.sign_up_button);
 		mSignUpButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				attempSignUp();
 			}
-		});*/
+		});
 	}
-/*
+
 	public void attempSignUp(){
+		EditText _nameText = (EditText) findViewById(R.id.input_name);
+		EditText _emailText = (EditText) findViewById(R.id.input_email);
+		EditText _passwordText = (EditText) findViewById(R.id.input_password);
+		EditText _reEnterPasswordText = (EditText) findViewById(R.id.input_Repassword);
+		View _signupButton = (View) findViewById(R.id.sign_up_button);
 		if (!validate()) {
 			onSignupFailed();
 			return;
 		}
 		_signupButton.setEnabled(false);
-
+/*
 		final ProgressDialog progressDialog = new ProgressDialog(SignupActivity.this,
 				R.style.AppTheme_Dark_Dialog);
 		progressDialog.setIndeterminate(true);
 		progressDialog.setMessage("Creating Account...");
-		progressDialog.show();
+		progressDialog.show();*/
 
 		String name = _nameText.getText().toString();
 		String email = _emailText.getText().toString();
@@ -75,6 +76,7 @@ public class SignUp extends AppCompatActivity {
 	}
 
 	public void onSignupSuccess() {
+		View _signupButton = (View) findViewById(R.id.sign_up_button);
 		_signupButton.setEnabled(true);
 		setResult(RESULT_OK, null);
 		loadIntroActivity();
@@ -82,10 +84,14 @@ public class SignUp extends AppCompatActivity {
 
 	public void onSignupFailed() {
 		Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
-
+		View _signupButton = (View) findViewById(R.id.sign_up_button);
 		_signupButton.setEnabled(true);
 	}
 	public boolean validate() {
+		EditText _nameText = (EditText) findViewById(R.id.input_name);
+		EditText _emailText = (EditText) findViewById(R.id.input_email);
+		EditText _passwordText = (EditText) findViewById(R.id.input_password);
+		EditText _reEnterPasswordText = (EditText) findViewById(R.id.input_Repassword);
 		boolean valid = true;
 
 		String name = _nameText.getText().toString();
@@ -130,5 +136,5 @@ public class SignUp extends AppCompatActivity {
 		Intent loadIntro = new Intent(SignUp.this,IntroActivity.class);
 		startActivity(loadIntro);
 	}
-*/
+
 }
