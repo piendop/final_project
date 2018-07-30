@@ -68,7 +68,8 @@
             android:name=".UI.Login.IntroActivity"
             android:label="@string/app_intro" />
         <activity android:name=".UI.Editor.EditorActivity" />
-        <activity android:name=".UI.profile.ProfileHome"></activity>
+        <activity android:name=".UI.profile.ProfileHome" />
+        <activity android:name=".UI.Login.SignUp"></activity>
     </application>
 
 </manifest>
