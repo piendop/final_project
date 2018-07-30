@@ -2,6 +2,7 @@ package searchlocation.miniproject01.UI.Login;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -28,7 +29,6 @@ public class SignUp extends AppCompatActivity {
 			}
 		});
 
-
 		Button mSignUpButton = (Button) findViewById(R.id.sign_up_button);
 		mSignUpButton.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -46,9 +46,10 @@ public class SignUp extends AppCompatActivity {
 		View _signupButton = (View) findViewById(R.id.sign_up_button);
 		if (!validate()) {
 			onSignupFailed();
-			return;
+		} else {
+			loadIntroActivity();
 		}
-		_signupButton.setEnabled(false);
+
 /*
 		final ProgressDialog progressDialog = new ProgressDialog(SignupActivity.this,
 				R.style.AppTheme_Dark_Dialog);
@@ -62,17 +63,17 @@ public class SignUp extends AppCompatActivity {
 		String reEnterPassword = _reEnterPasswordText.getText().toString();
 
 		// TODO: Implement your own signup logic here.
-
+/*
 		new android.os.Handler().postDelayed(
 				new Runnable() {
 					public void run() {
 						// On complete call either onSignupSuccess or onSignupFailed
 						// depending on success
 						onSignupSuccess();
-						// onSignupFailed();
+						onSignupFailed();
 					//	progressDialog.dismiss();
 					}
-				}, 3000);
+				}, 3000);*/
 	}
 
 	public void onSignupSuccess() {
@@ -81,6 +82,7 @@ public class SignUp extends AppCompatActivity {
 		setResult(RESULT_OK, null);
 		loadIntroActivity();
 	}
+
 
 	public void onSignupFailed() {
 		Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
