@@ -89,9 +89,7 @@ public class SignUp extends AppCompatActivity {
 		boolean valid = true;
 
 		String name = _nameText.getText().toString();
-		String address = _addressText.getText().toString();
 		String email = _emailText.getText().toString();
-		String mobile = _mobileText.getText().toString();
 		String password = _passwordText.getText().toString();
 		String reEnterPassword = _reEnterPasswordText.getText().toString();
 
@@ -102,12 +100,6 @@ public class SignUp extends AppCompatActivity {
 			_nameText.setError(null);
 		}
 
-		if (address.isEmpty()) {
-			_addressText.setError("Enter Valid Address");
-			valid = false;
-		} else {
-			_addressText.setError(null);
-		}
 
 
 		if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
@@ -117,12 +109,6 @@ public class SignUp extends AppCompatActivity {
 			_emailText.setError(null);
 		}
 
-		if (mobile.isEmpty() || mobile.length()!=10) {
-			_mobileText.setError("Enter Valid Mobile Number");
-			valid = false;
-		} else {
-			_mobileText.setError(null);
-		}
 
 		if (password.isEmpty() || password.length() < 4 || password.length() > 10) {
 			_passwordText.setError("between 4 and 10 alphanumeric characters");
