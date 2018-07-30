@@ -21,12 +21,8 @@ public class DownloadIcon extends AsyncTask<String,Void,Bitmap> {
 
             InputStream inputStream = connection.getInputStream();//create a stream to implement
 
-            Bitmap myBitmap= BitmapFactory.decodeStream(inputStream);//convert image from stream to bitmap
-
-            return myBitmap;
-        }catch(MalformedURLException e){
-            e.printStackTrace();
-        }catch (IOException e){
+            return BitmapFactory.decodeStream(inputStream);
+        }catch(Exception e){
             e.printStackTrace();
         }
 
