@@ -2,8 +2,8 @@ package searchlocation.miniproject01.UI.Login;
 
 import android.content.Intent;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.Fragment;
 import android.os.Bundle;
 
 import com.github.paolorotolo.appintro.AppIntro;
@@ -13,15 +13,18 @@ import com.github.paolorotolo.appintro.model.SliderPage;
 
 import searchlocation.miniproject01.R;
 import searchlocation.miniproject01.UI.OnGoing.OnGoingActivity;
+import searchlocation.miniproject01.UI.Utilis.IntroCustomLayout;
 
-public class IntroActivity extends AppIntro2 {
+public class IntroActivity extends AppIntro {
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		//setContentView(R.layout.activity_intro);
-		setUpSlides();
-		//
+		//setUpSlides();
+		addSlide(IntroCustomLayout.newInstance(R.layout.intro_slide1));
+		addSlide(IntroCustomLayout.newInstance(R.layout.intro_slide2));
+		addSlide(IntroCustomLayout.newInstance(R.layout.intro_slide3));
 	}
 
 	private void setUpSlides() {

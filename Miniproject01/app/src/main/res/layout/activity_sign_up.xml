@@ -52,7 +52,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="110dp"
                 android:background="@color/white"
-                app:hintEnabled="false"
+                app:hintEnabled="true"
                 >
                 <EditText
                     android:id="@+id/input_name"
@@ -71,7 +71,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="110dp"
                 android:background="@color/white"
-                app:hintEnabled="false"
+                app:hintEnabled="true"
                 >
                 <EditText
                     android:id="@+id/input_email"
@@ -90,7 +90,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="110dp"
                 android:background="@color/white"
-                app:hintEnabled="false"
+                app:hintEnabled="true"
                 >
                 <EditText
                     android:id="@+id/input_password"
@@ -109,7 +109,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="110dp"
                 android:background="@color/white"
-                app:hintEnabled="false"
+                app:hintEnabled="true"
                 >
                 <EditText
                     android:id="@+id/input_Repassword"
