@@ -9,6 +9,8 @@ public class Place {
 	private String Notes;
 	//Store hex number of the color tag
 	private String colorTagHex;
+	//Longtidute Latitute
+
 
 	//Getter and Setter
 	public String getID() {

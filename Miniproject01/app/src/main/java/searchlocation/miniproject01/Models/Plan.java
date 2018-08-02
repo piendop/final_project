@@ -5,6 +5,8 @@ import java.util.List;
 import com.bumptech.glide.Glide;
 
 public class Plan {
+	//ID
+
 	//URL of Heading Image
 	String headingImage;
 	//Title of the plan

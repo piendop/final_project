@@ -3,6 +3,7 @@ package searchlocation.miniproject01.UI.Login;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.Fragment;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
@@ -35,6 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import searchlocation.miniproject01.R;
+import searchlocation.miniproject01.UI.Fragments.RememberMeFragment;
 import searchlocation.miniproject01.UI.OnGoing.OnGoingActivity;
 import searchlocation.miniproject01.UI.OnGoing.OnGoingEmptyActivity;
 
@@ -279,6 +281,12 @@ public class LoginActivity extends AppCompatActivity {
 	private void loadIntroActivity() {
 		Intent loadIntro = new Intent(LoginActivity.this,IntroActivity.class);
 		startActivity(loadIntro);
+	}
+
+	private boolean IsRememberMe() {
+		RememberMeFragment meFragment = new (RememberMeFragment)
+				getSupportFragmentManager().findFragmentById(R.id.rememberMe_fragment);
+
 	}
 }
 

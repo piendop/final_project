@@ -20,7 +20,9 @@ android {
         }
     }
 }
-
+ext {
+    icepickLibVersion = '3.2.0'
+}
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.android.support.constraint:constraint-layout:1.1.2'
@@ -61,4 +63,12 @@ dependencies {
     implementation 'com.github.apl-devs:appintro:v4.2.3'
 
     implementation 'com.github.irshulx:laser-native-editor:2.1.0'
+
+    //icepick Android Instance State made easy
+    implementation "frankiesardo:icepick:$icepickLibVersion"
+    annotationProcessor "frankiesardo:icepicepickck-processor:$icepickLibVersion"
+
+    //Catch memory leaks in your apps
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.1'
+    releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.1'
 }

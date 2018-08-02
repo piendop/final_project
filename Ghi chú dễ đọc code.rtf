@@ -1,0 +1,42 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1561\cocoasubrtf600
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\fnil\fcharset0 SFMonoNerdFontC-Regular;}
+{\colortbl;\red255\green255\blue255;\red112\green150\blue255;\red25\green25\blue25;\red121\green213\blue255;
+}
+{\*\expandedcolortbl;;\csgenericrgb\c43922\c58824\c100000;\csgenericrgb\c9804\c9804\c9804;\csgenericrgb\c47451\c83529\c100000;
+}
+\paperw11900\paperh16840\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f0\b\fs30 \cf0 Ghi ch\'fa cho d\uc0\u7877  \u273 \u7885 c code\
+\
+Ph\uc0\u7847 n logIn:\
+
+\b0\fs26 1/ G\uc0\u7885 i h\'e0m 
+\f1 \cf2 \cb3 attemptLogin\cf4 ()
+\f0 \cf0 \cb1  (D\'f2ng 157 -> 203) Trong n\'e0y ko c\uc0\u7847 n quan t\'e2m n\'f3 ch\u7881  l\'e0 validate c\'fa ph\'e1p email (ki\u7875 m tra c\'f3 t\u7891 n t\u7841 i account \'85) vs pass th\'f4i\
+\
+Mu\uc0\u7889 n hash h\u7911 ng \u273 \u7875  so s\'e1nh t\u7915  database c\'e1c th\u7913  th\'ec vi\u7871 t trong 
+\b mAuthTask . 
+\b0  \
+\
+D\'f2ng 218-273 l\'e0 Async \uc0\u273 \u7875  x\u7917  l\'ed th\'f4i ko c\'f3 g\'ec \u273 \u7863 c bi\u7879 t\
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\b\fs30 \cf0 Ph\uc0\u7847 n SignUP:\
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\b0\fs26 \cf0 - D\'f2ng 32: Set onclick cho n\'fat \uc0\u273 \'f3 m\u7895 i l\u7847 n b\u7845 m th\'ec g\u7885 i atempt Signup ( D\'f2ng 41)\
+- Attemp sign up th\'ec validate d\uc0\u7919  li\u7879 u ok h\u7871 t th\'ec g\u7885 i c\'e1i Activity Intro.\
+\
+Tui c\uc0\u361 ng s\u7869  d\'f9ng Async gi\u7889 ng b\'ean Login \u273 \u7875  x\u7917  l\'ed song song.\
+-> N\uc0\u7871 u \'f4ng c\'f3 vi\u7871 t ri\'eang code \u273 \u7875  \u273 \u7885 c d\u7919  li\u7879 u v\'f4 database th\'ec vi\u7871 t ri\'eang h\'e0m ra r\u7891 i tui b\u7887  v\'f4 
+\b doInBackground
+\b0 ().\
+\
+H\uc0\u7871 t();\
+\
+\
+\
+}

@@ -62,7 +62,7 @@
                     android:inputType="textPersonName"
                     android:layout_centerInParent="true"
                     android:maxLines="1"
-                    android:hint="Name"
+                    android:hint="User Name"
                     android:backgroundTint="#E6E6E6"
                     android:singleLine="true" />
 
