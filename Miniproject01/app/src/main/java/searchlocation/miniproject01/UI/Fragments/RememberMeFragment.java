@@ -1,7 +1,9 @@
 package searchlocation.miniproject01.UI.Fragments;
 
 import android.app.DialogFragment;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -32,7 +34,6 @@ public class RememberMeFragment extends DialogFragment {
 		notNow.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				((LoginActivity)getActivity()).isRemember = false;
 				loadOnGoingActivity();
 				//getDialog().dismiss();
 			}
@@ -42,12 +43,19 @@ public class RememberMeFragment extends DialogFragment {
 		remember.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				((LoginActivity)getActivity()).isRemember = true;
+				writeAccountToSharedPrenferences();
 				loadOnGoingActivity();
 				//	getDialog().dismiss();
 			}
 		});
 		return view;
+	}
+
+	private void writeAccountToSharedPrenferences() {
+		SharedPreferences sharedPreferences = getActivity().getSharedPreferences("SharedPref",0);
+		SharedPreferences.Editor editor = sharedPreferences.edit();
+		editor.putBoolean("IS_REMEMBER",true);
+		editor.commit();
 	}
 
 	private void loadOnGoingActivity() {

@@ -1,12 +1,15 @@
 package searchlocation.miniproject01.UI;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 
 import searchlocation.miniproject01.R;
 import searchlocation.miniproject01.UI.Login.LoginActivity;
+import searchlocation.miniproject01.UI.OnGoing.OnGoingActivity;
 
 public class Main extends Activity {
 
@@ -17,10 +20,24 @@ public class Main extends Activity {
 		new Handler().postDelayed(new Runnable() {
 			@Override
 			public void run() {
-				Intent login = new Intent(Main.this, LoginActivity.class);
-				startActivity(login);
-				finish();
+				if(isRememberme()){
+					loadOnGoingActivity();
+				} else {
+					loadLogin();
+				}
 			}
-		},3000);
+		},1000);
+	}
+	public void loadLogin(){
+		Intent login = new Intent(Main.this, LoginActivity.class);
+		startActivity(login);
+	}
+	public void loadOnGoingActivity() {
+		Intent loadOnGoing = new Intent(Main.this, OnGoingActivity.class);
+		startActivity(loadOnGoing);
+	}
+	public boolean isRememberme(){
+		SharedPreferences sharedPreferences = getSharedPreferences("SharedPref", 0);
+		return sharedPreferences.getBoolean("IS_REMEMBER",false);
 	}
 }

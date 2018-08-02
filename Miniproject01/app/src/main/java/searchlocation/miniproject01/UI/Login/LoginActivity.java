@@ -39,6 +39,7 @@ import searchlocation.miniproject01.R;
 import searchlocation.miniproject01.UI.Fragments.RememberMeFragment;
 import searchlocation.miniproject01.UI.OnGoing.OnGoingActivity;
 import searchlocation.miniproject01.UI.OnGoing.OnGoingEmptyActivity;
+import searchlocation.miniproject01.UI.Utilis.HideSoftKeyBoardUtil;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -75,6 +76,9 @@ public class LoginActivity extends AppCompatActivity {
 		setContentView(R.layout.activity_login);
 		// Set up the login form.
 		mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
+		//Auto hide keyboard when tap outside Edittext
+		//HideSoftKeyBoardUtil.hide(LoginActivity.this);
+
 		populateAutoComplete();
 		mPasswordView = (EditText) findViewById(R.id.password);
 		mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
