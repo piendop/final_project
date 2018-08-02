@@ -63,7 +63,7 @@ public class LoginActivity extends AppCompatActivity {
 	 * Keep track of the login task to ensure we can cancel it if requested.
 	 */
 	private UserLoginTask mAuthTask = null;
-
+	public Boolean isRemember = null;
 	// UI references.
 	private AutoCompleteTextView mEmailView;
 	private EditText mPasswordView;
@@ -259,7 +259,22 @@ public class LoginActivity extends AppCompatActivity {
 
 			if (success) {
 			//	loadOnGoingActivity();
-				loadIntroActivity();
+			//	loadIntroActivity();
+				//Show dialog
+				RememberMeFragment fragment = new RememberMeFragment();
+				fragment.show(getFragmentManager(),"Open Diaglog");
+//				if (isRemember==null){
+//
+//				}
+//				if(isRemember) {
+//					saveAccount();
+//					loadIntroActivity();
+//					Toast.makeText(LoginActivity.this, "Remember account", Toast.LENGTH_SHORT).show();
+//				} else {
+//					loadIntroActivity();
+//					Toast.makeText(LoginActivity.this, "Not now", Toast.LENGTH_SHORT).show();
+//				}
+
 			} else {
 				mPasswordView.setError(getString(R.string.error_incorrect_password));
 				mPasswordView.requestFocus();
@@ -273,6 +288,9 @@ public class LoginActivity extends AppCompatActivity {
 		}
 	}
 
+	private void saveAccount() {
+	}
+
 	private void loadOnGoingActivity() {
 		Intent loadOnGoing = new Intent(LoginActivity.this, OnGoingActivity.class);
 		startActivity(loadOnGoing);
@@ -283,10 +301,6 @@ public class LoginActivity extends AppCompatActivity {
 		startActivity(loadIntro);
 	}
 
-	private boolean IsRememberMe() {
-		RememberMeFragment meFragment = new (RememberMeFragment)
-				getSupportFragmentManager().findFragmentById(R.id.rememberMe_fragment);
 
-	}
 }
 
