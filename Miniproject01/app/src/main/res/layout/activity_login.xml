@@ -10,6 +10,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="30dp"
+    android:id="@+id/log_in_linear_layout"
     android:background="@color/white"
     tools:context=".UI.Login.LoginActivity">
         <LinearLayout
@@ -26,6 +27,7 @@
                 android:fontFamily="@font/montserrat_bold"
                 android:textSize="32sp"
                 android:layout_gravity="right"
+                android:id="@+id/tv_login"
                 android:textColor="@color/black"
                 />
 

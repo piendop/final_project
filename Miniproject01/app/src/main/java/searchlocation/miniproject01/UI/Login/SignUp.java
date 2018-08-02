@@ -6,81 +6,101 @@ import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.parse.ParseUser;
+import com.parse.SignUpCallback;
+
+import java.text.ParseException;
+
 import searchlocation.miniproject01.R;
+import searchlocation.miniproject01.UI.Fragments.RememberMeFragment;
 
-public class SignUp extends AppCompatActivity {
+public class SignUp extends AppCompatActivity implements View.OnClickListener {
 
+    /************View components in sign up layout***********************/
+    private  LinearLayout linearLayout;
+    private TextView textViewCreateAccount;
+    private EditText _nameText;
+    private EditText _emailText;
+    private EditText _passwordText;
 	// UI references.
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_sign_up);
+        //Auto hide keyboard when tap outside Edittext
+        linearLayout = findViewById(R.id.sign_up_linear_layout);
+        textViewCreateAccount = findViewById(R.id.tv_create_new_account);
+        linearLayout.setOnClickListener(this);
+        textViewCreateAccount.setOnClickListener(this);
 		Button mLoginButton = (Button) findViewById(R.id.login_link);
-		mLoginButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				Intent loginActivity = new Intent(SignUp.this,LoginActivity.class);
-				startActivity(loginActivity);
-			}
-		});
-
+		mLoginButton.setOnClickListener(this);
 		Button mSignUpButton = (Button) findViewById(R.id.sign_up_button);
-		mSignUpButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				attempSignUp();
-			}
-		});
+		mSignUpButton.setOnClickListener(this);
+		_nameText = (EditText) findViewById(R.id.input_name);
+        _emailText = (EditText) findViewById(R.id.input_email);
+        _passwordText = (EditText) findViewById(R.id.input_password);
 	}
 
 	public void attempSignUp(){
-		EditText _nameText = (EditText) findViewById(R.id.input_name);
-		EditText _emailText = (EditText) findViewById(R.id.input_email);
-		EditText _passwordText = (EditText) findViewById(R.id.input_password);
-		EditText _reEnterPasswordText = (EditText) findViewById(R.id.input_Repassword);
-		View _signupButton = (View) findViewById(R.id.sign_up_button);
+
+
 		if (!validate()) {
 			onSignupFailed();
 		} else {
-			loadIntroActivity();
+            ParseUser.logOut();
+            String name = _nameText.getText().toString();
+            String email = _emailText.getText().toString();
+            String password = _passwordText.getText().toString();
+
+
+            // TODO: Implement your own signup logic here.
+
+            if(ParseUser.getCurrentUser()==null) {
+                ParseUser user = new ParseUser();
+                user.setUsername(name);
+                user.setEmail(email);
+                user.setPassword(password);
+
+                user.signUpInBackground(new SignUpCallback() {
+                    @Override
+                    public void done(com.parse.ParseException e) {
+                        if (e == null) {
+                            Log.i("Sign up: ", "Successful");
+                            new android.os.Handler().postDelayed(
+                                    new Runnable() {
+                                        public void run() {
+                                            onSignupSuccess();
+                                        }
+                                    }, 3000);
+                        }else{
+                            Log.i("Signup: ","failed");
+                            _nameText.setError("username already used");
+                            _emailText.setError("email already used");
+                            onSignupFailed();
+                            e.printStackTrace();
+                        }
+                    }
+                });
+            }
 		}
-
-/*
-		final ProgressDialog progressDialog = new ProgressDialog(SignupActivity.this,
-				R.style.AppTheme_Dark_Dialog);
-		progressDialog.setIndeterminate(true);
-		progressDialog.setMessage("Creating Account...");
-		progressDialog.show();*/
-
-		String name = _nameText.getText().toString();
-		String email = _emailText.getText().toString();
-		String password = _passwordText.getText().toString();
-		String reEnterPassword = _reEnterPasswordText.getText().toString();
-
-		// TODO: Implement your own signup logic here.
-/*
-		new android.os.Handler().postDelayed(
-				new Runnable() {
-					public void run() {
-						// On complete call either onSignupSuccess or onSignupFailed
-						// depending on success
-						onSignupSuccess();
-						onSignupFailed();
-					//	progressDialog.dismiss();
-					}
-				}, 3000);*/
 	}
 
 	public void onSignupSuccess() {
 		View _signupButton = (View) findViewById(R.id.sign_up_button);
 		_signupButton.setEnabled(true);
 		setResult(RESULT_OK, null);
-		loadIntroActivity();
+        //TODO: successful login save username
+        RememberMeFragment fragment = new RememberMeFragment();
+        fragment.show(getFragmentManager(),"Open Diaglog");
 	}
 
 
@@ -90,10 +110,7 @@ public class SignUp extends AppCompatActivity {
 		_signupButton.setEnabled(true);
 	}
 	public boolean validate() {
-		EditText _nameText = (EditText) findViewById(R.id.input_name);
-		EditText _emailText = (EditText) findViewById(R.id.input_email);
-		EditText _passwordText = (EditText) findViewById(R.id.input_password);
-		EditText _reEnterPasswordText = (EditText) findViewById(R.id.input_Repassword);
+		EditText _reEnterPasswordText = (EditText) findViewById(R.id.input_repassword);
 		boolean valid = true;
 
 		String name = _nameText.getText().toString();
@@ -134,9 +151,29 @@ public class SignUp extends AppCompatActivity {
 
 		return valid;
 	}
-	public void loadIntroActivity() {
-		Intent loadIntro = new Intent(SignUp.this,IntroActivity.class);
-		startActivity(loadIntro);
-	}
+
+	// TODO: on click
+    @Override
+    public void onClick(View v) {
+        if(v.getId() == R.id.sign_up_linear_layout || v.getId() == R.id.tv_create_new_account){
+            InputMethodManager inputMethodManager =(InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+            if (inputMethodManager != null) {
+                if(getCurrentFocus()!=null)
+                    inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),0);
+            }
+        }else if(v.getId()==R.id.sign_up_button){
+            InputMethodManager inputMethodManager =(InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+            if (inputMethodManager != null) {
+                if(getCurrentFocus()!=null) {
+                    inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                    attempSignUp();
+                }
+            }
+        }else if(v.getId()==R.id.login_link){
+            Intent loginActivity = new Intent(SignUp.this,LoginActivity.class);
+            startActivity(loginActivity);
+        }
+    }
+
 
 }

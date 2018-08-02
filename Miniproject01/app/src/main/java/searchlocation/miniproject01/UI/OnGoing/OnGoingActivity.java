@@ -10,6 +10,7 @@ import android.widget.Toast;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.parse.ParseUser;
 
 import searchlocation.miniproject01.R;
 import searchlocation.miniproject01.UI.Utilis.BottomNavigationViewHelper;
@@ -23,6 +24,7 @@ public class OnGoingActivity extends AppCompatActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		ParseUser.logOut();
 		setupBottomNavigationView();
 
 	}
