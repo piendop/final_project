@@ -34,6 +34,8 @@
             android:layout_toRightOf="@id/search_mag_icon"
             android:layout_centerVertical="true"
             android:fontFamily="@font/montserrat_medium"
+            android:imeOptions="actionDone"
+            android:inputType="textNoSuggestions"
             android:hint="Searchs Address, City, Code …"
             android:id="@+id/input_search"
             android:background="@null"
