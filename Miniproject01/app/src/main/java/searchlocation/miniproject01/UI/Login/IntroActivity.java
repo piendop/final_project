@@ -10,6 +10,8 @@ import com.github.paolorotolo.appintro.AppIntro;
 import com.github.paolorotolo.appintro.AppIntro2;
 import com.github.paolorotolo.appintro.AppIntroFragment;
 import com.github.paolorotolo.appintro.model.SliderPage;
+import com.parse.Parse;
+import com.parse.ParseUser;
 
 import searchlocation.miniproject01.R;
 import searchlocation.miniproject01.UI.OnGoing.OnGoingActivity;
@@ -22,6 +24,7 @@ public class IntroActivity extends AppIntro {
 		super.onCreate(savedInstanceState);
 		//setContentView(R.layout.activity_intro);
 		//setUpSlides();
+		ParseUser.logOut();
 		addSlide(IntroCustomLayout.newInstance(R.layout.intro_slide1));
 		addSlide(IntroCustomLayout.newInstance(R.layout.intro_slide2));
 		addSlide(IntroCustomLayout.newInstance(R.layout.intro_slide3));

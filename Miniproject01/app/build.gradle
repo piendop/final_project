@@ -66,6 +66,8 @@ dependencies {
 //    implementation "frankiesardo:icepick:$icepickLibVersion"
 //    annotationProcessor "frankiesardo:icepicepickck-processor:$icepickLibVersion"
 
+    //parse server
+    implementation 'com.parse:parse-android:1.17.3'
     //Catch memory leaks in your apps
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.1'
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.1'

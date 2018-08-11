@@ -17,6 +17,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="30dp"
     android:background="@color/white"
+    android:id="@+id/sign_up_linear_layout"
     tools:context=".UI.Login.LoginActivity">
     <LinearLayout
         android:id="@+id/email_login_form"
@@ -32,6 +33,7 @@
             android:fontFamily="@font/montserrat_bold"
             android:textSize="32sp"
             android:layout_gravity="right"
+            android:id="@+id/tv_create_new_account"
             android:textColor="@color/black"
             />
 
@@ -112,7 +114,7 @@
                 app:hintEnabled="true"
                 >
                 <EditText
-                    android:id="@+id/input_Repassword"
+                    android:id="@+id/input_repassword"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:fontFamily="@font/montserrat_regular"
