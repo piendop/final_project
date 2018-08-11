@@ -260,7 +260,6 @@ public class LoginActivity extends AppCompatActivity {
 		protected void onPostExecute(final Boolean success) {
 			mAuthTask = null;
 		//	showProgress(false);
-
 			if (success) {
 			//	loadOnGoingActivity();
 			//	loadIntroActivity();
@@ -292,8 +291,7 @@ public class LoginActivity extends AppCompatActivity {
 		}
 	}
 
-	private void saveAccount() {
-	}
+
 
 	private void loadOnGoingActivity() {
 		Intent loadOnGoing = new Intent(LoginActivity.this, OnGoingActivity.class);
