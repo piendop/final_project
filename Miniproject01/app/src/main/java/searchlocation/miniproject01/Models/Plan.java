@@ -1,5 +1,6 @@
 package searchlocation.miniproject01.Models;
 import android.databinding.BindingAdapter;
+import android.graphics.Bitmap;
 import android.widget.ImageView;
 import java.util.List;
 import com.bumptech.glide.Glide;
@@ -18,8 +19,11 @@ public class Plan {
 	private String desc;
 	//Duration
 	private Integer duration;
+	//image
+    private Bitmap image;
 	//Store list of plan one by one
 	private List<Plan> planList;
+
 
 	@BindingAdapter("headingImage")
 	public static void loadImage(ImageView view, String imageUrl) {
@@ -28,7 +32,15 @@ public class Plan {
 				.into(view);
 	}
 
-	public String getHeadingImage() {
+    public Bitmap getImage() {
+        return image;
+    }
+
+    public void setImage(Bitmap image) {
+        this.image=image;
+    }
+
+    public String getHeadingImage() {
 		return headingImage;
 	}
 

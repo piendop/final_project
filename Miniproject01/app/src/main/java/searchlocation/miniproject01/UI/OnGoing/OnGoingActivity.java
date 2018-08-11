@@ -1,8 +1,11 @@
 package searchlocation.miniproject01.UI.OnGoing;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
@@ -13,9 +16,29 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import com.parse.ParseUser;
 
 import searchlocation.miniproject01.R;
+import searchlocation.miniproject01.UI.Login.LoginActivity;
 import searchlocation.miniproject01.UI.Utilis.BottomNavigationViewHelper;
 
 public class OnGoingActivity extends AppCompatActivity {
+
+    @Override
+    public void onBackPressed() {
+        /*alert whether user want to log out*/
+        /***Set up an alert***/
+        new AlertDialog.Builder(this)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setTitle("Are you sure?")
+                .setMessage("Do you want to logout?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Intent intent = new Intent(getApplicationContext(),LoginActivity.class);
+                        startActivity(intent);
+                    }
+                })
+                .setNegativeButton("No", null)
+                .show();
+    }
 
 	private static final String TAG = "OnGoingActivity";
 

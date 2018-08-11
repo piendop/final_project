@@ -15,6 +15,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.parse.ParseUser;
+
 import searchlocation.miniproject01.R;
 import searchlocation.miniproject01.UI.Login.IntroActivity;
 import searchlocation.miniproject01.UI.Login.LoginActivity;
@@ -56,8 +58,8 @@ public class RememberMeFragment extends DialogFragment {
 	private void writeAccountToSharedPrenferences() {
 		SharedPreferences sharedPreferences = getActivity().getSharedPreferences("SharedPref",0);
 		SharedPreferences.Editor editor = sharedPreferences.edit();
-		editor.putBoolean("IS_REMEMBER",true);
-		editor.commit();
+		editor.putString("USERNAME", ParseUser.getCurrentUser().getObjectId());
+		editor.apply();
 	}
 
 	private void loadOnGoingActivity() {

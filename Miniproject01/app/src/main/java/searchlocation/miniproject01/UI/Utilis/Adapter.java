@@ -1,6 +1,7 @@
 package searchlocation.miniproject01.UI.Utilis;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -37,19 +38,19 @@ public class Adapter extends ArrayAdapter<Plan> {
 		if(listItem == null)
 			listItem = LayoutInflater.from(mContext).inflate(R.layout.layout_custom_card_1,parent,false);
 
-		Plan currentMovie = listOfPlans.get(position);
-/*
+		Plan currentPlan = listOfPlans.get(position);
+
 		ImageView image = (ImageView)listItem.findViewById(R.id.header_image);
-		image.setImageResource(currentMovie.getImgId());*/
+		image.setImageBitmap(currentPlan.getImage());
 
 		TextView title = (TextView) listItem.findViewById(R.id.card_title);
-		title.setText(currentMovie.getTitle());
+		title.setText(currentPlan.getTitle());
 
 		TextView tag = (TextView) listItem.findViewById(R.id.card_tags);
-		tag.setText(currentMovie.getTags());
+		tag.setText(currentPlan.getTags());
 
 		TextView desc = (TextView) listItem.findViewById(R.id.card_desc);
-		desc.setText(currentMovie.getDesc());
+		desc.setText(currentPlan.getDesc());
 
 		return listItem;
 	}

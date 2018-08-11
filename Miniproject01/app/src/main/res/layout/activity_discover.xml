@@ -42,7 +42,7 @@
                         />
                 </LinearLayout>
                 <!--Body Content-->
-                <!--<ListView
+                <ListView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginTop="14dp"
@@ -51,7 +51,7 @@
                     android:dividerHeight="10.0sp"
                     android:id="@+id/list_plans"
                     >
-                </ListView>-->
+                </ListView>
 
             </LinearLayout>
             <!--Bottom navigation bar-->

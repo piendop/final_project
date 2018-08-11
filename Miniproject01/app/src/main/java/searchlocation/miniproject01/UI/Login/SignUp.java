@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import searchlocation.miniproject01.UI.ParseApplication;
 
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
@@ -56,7 +57,6 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener {
 		if (!validate()) {
 			onSignupFailed();
 		} else {
-            ParseUser.logOut();
             String name = _nameText.getText().toString();
             String email = _emailText.getText().toString();
             String password = _passwordText.getText().toString();
@@ -85,7 +85,6 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener {
                             Log.i("Signup: ","failed");
                             _nameText.setError("username already used");
                             _emailText.setError("email already used");
-                            onSignupFailed();
                             e.printStackTrace();
                         }
                     }
@@ -164,11 +163,15 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener {
         }else if(v.getId()==R.id.sign_up_button){
             InputMethodManager inputMethodManager =(InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
             if (inputMethodManager != null) {
-                if(getCurrentFocus()!=null) {
+                if(getCurrentFocus()!=null)
                     inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-                    attempSignUp();
-                }
+                attempSignUp();
+
+            }else{
+                attempSignUp();
             }
+
+
         }else if(v.getId()==R.id.login_link){
             Intent loginActivity = new Intent(SignUp.this,LoginActivity.class);
             startActivity(loginActivity);

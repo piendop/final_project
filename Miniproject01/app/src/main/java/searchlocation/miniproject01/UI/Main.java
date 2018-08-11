@@ -7,6 +7,8 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 
+import com.parse.ParseUser;
+
 import searchlocation.miniproject01.R;
 import searchlocation.miniproject01.UI.Login.LoginActivity;
 import searchlocation.miniproject01.UI.OnGoing.OnGoingActivity;
@@ -37,7 +39,11 @@ public class Main extends Activity {
 		startActivity(loadOnGoing);
 	}
 	public boolean isRememberme(){
-		SharedPreferences sharedPreferences = getSharedPreferences("SharedPref", 0);
-		return sharedPreferences.getBoolean("IS_REMEMBER",false);
+	    SharedPreferences sharedPreferences = this.getSharedPreferences("SharedPref",MODE_PRIVATE);
+	    String username = sharedPreferences.getString("USERNAME",null);
+		if(username!=null){
+		    return true;
+        }
+        return false;
 	}
 }
