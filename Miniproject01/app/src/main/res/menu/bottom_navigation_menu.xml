@@ -1,33 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/ic_highlight"
+        android:id="@+id/ic_onGoing"
         android:title=""
-        android:icon="@drawable/ic_highlight"
+        android:icon="@drawable/ic_ongoing"
         >
     </item>
     <item
-        android:id="@+id/ic_maps"
+        android:id="@+id/ic_map"
         android:title=""
-        android:icon="@drawable/ic_maps"
+        android:icon="@drawable/ic_map"
         >
     </item>
     <item
-        android:id="@+id/ic_plan"
+        android:id="@+id/ic_discover"
         android:title=""
-        android:icon="@drawable/ic_plan"
+        android:icon="@drawable/ic_discover"
         >
     </item>
     <item
-        android:id="@+id/ic_favorite"
+        android:id="@+id/ic_library"
         android:title=""
-        android:icon="@drawable/ic_favorite"
+        android:icon="@drawable/ic_library"
         >
     </item>
     <item
-        android:id="@+id/ic_menu"
+        android:id="@+id/ic_profile"
         android:title=""
-        android:icon="@drawable/ic_favorite_copy"
+        android:icon="@drawable/ic_personal"
         >
     </item>
 </menu>

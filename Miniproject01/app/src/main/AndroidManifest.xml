@@ -15,14 +15,20 @@
         android:required="false" />
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
+
+    <!-- To auto-complete the email text field in the login form with the user's emails -->
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.READ_PROFILE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
 
     <application
+        android:name=".UI.Login.ParseApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -37,6 +43,20 @@
             android:value="AIzaSyCGaXrFNr9aX6jeI-G2JnP4iE7Z5XKEw-U" />
 
         <activity
+            android:name=".UI.OnGoing.OnGoingActivity"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".UI.Search.MapActivity"
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="adjustPan" />
+        <!--<activity android:name=".UI.Search.MapsActivity" />-->
+        <!-- <activity android:name=".UI.Discover.DiscoverActivity" /> -->
+        <activity android:name=".UI.FavoriteActivity" />
+        <activity android:name=".UI.Reader.ArticleActivity" />
+        <activity
+            android:name=".UI.Login.LoginActivity"
+            android:label="@string/title_activity_login" />
+        <activity android:name=".UI.Main">
             android:name="searchlocation.miniproject01.OnGoing.OnGoingActivity"
             android:theme="@style/AppTheme">
             <intent-filter>
@@ -45,14 +65,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name="searchlocation.miniproject01.Search.MapActivity"
-            android:theme="@style/AppTheme"
-            android:windowSoftInputMode="adjustPan"/>
-        <activity android:name="searchlocation.miniproject01.Search.MapsActivity"/>
-        <activity android:name="searchlocation.miniproject01.Models.SharePlanActivity" />
-        <activity android:name=".FavoriteActivity" />
-        <activity android:name="searchlocation.miniproject01.Reader.ArticleActivity" />
+        <activity android:name=".UI.OnGoing.OnGoingEmptyActivity" />
+        <activity android:name=".UI.Discover.DiscoverActivity" />
+        <activity android:name=".UI.Login.SignUp"/>
+        <activity android:name=".UI.Login.IntroActivity"/>
     </application>
 
 </manifest>

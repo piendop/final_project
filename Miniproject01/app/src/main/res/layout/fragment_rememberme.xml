@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/rememberMe_fragment"
+    android:layout_marginLeft="16dp"
+    android:layout_marginRight="16dp"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp"
+    android:paddingTop="40dp"
+    android:paddingBottom="40dp"
+    android:background="@drawable/grey_box2"
+    android:layout_alignParentTop="true"
+    >
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:background="@null"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Remember my account?"
+            android:fontFamily="@font/montserrat_bold"
+            android:textColor="@color/black"
+            android:textSize="24sp"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:fontFamily="@font/montserrat_medium"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:layout_marginTop="10dp"
+            android:text="Remember your account on this device to save time whenever you use the app. Use can turn off later in user setting."
+            />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            >
+            <Button
+                android:id="@+id/notnow_button"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/btn_line"
+                android:layout_marginRight="16dp"
+                android:text="Not now"
+                android:textAllCaps="false"
+                android:textColor="@color/blue_light"
+                android:fontFamily="@font/montserrat_semibold"
+                android:textSize="16sp"
+                />
+            <Button
+                android:id="@+id/remember_button"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/btn_filled"
+                android:layout_marginLeft="12dp"
+                android:text="Rememer"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:fontFamily="@font/montserrat_semibold"
+                android:textSize="16sp"
+                />
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>
