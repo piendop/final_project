@@ -11,7 +11,7 @@
         <FrameLayout
             android:layout_width="173dp"
             android:layout_height="match_parent"
-            android:id="@+id/headingImage2"
+            android:id="@+id/fl_title"
             >
             <ImageView
                 android:layout_width="match_parent"

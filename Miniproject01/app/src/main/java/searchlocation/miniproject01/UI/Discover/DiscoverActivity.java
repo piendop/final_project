@@ -52,7 +52,7 @@ public class DiscoverActivity extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_discover);
 		//new MultiplyTask().execute();
-		//listOfPlans = (ListView) findViewById(R.id.list_plans);
+		listOfPlans = (ListView) findViewById(R.id.list_plans);
         planList.clear();
         ParseQuery<ParseObject> query = new ParseQuery<>("Plan");
         SharedPreferences sharedPreferences = this.getSharedPreferences("SharedPref",MODE_PRIVATE);
@@ -60,9 +60,9 @@ public class DiscoverActivity extends AppCompatActivity {
         query.whereEqualTo("userId", username);
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override
-            public void done(List<ParseObject> objects, ParseException e) {
+            public void done(final List<ParseObject> objects, ParseException e) {
                 if(e==null && objects.size()>0){
-                    for(ParseObject object:objects){
+                    for(final ParseObject object:objects){
                         final Plan plan = new Plan();
                         //load image to view
                         ParseFile image = (ParseFile) object.get("image");
@@ -74,6 +74,15 @@ public class DiscoverActivity extends AppCompatActivity {
                                         Log.i("Get image","successful");
                                         Bitmap bitmap = BitmapFactory.decodeByteArray(data,0,data.length);
                                         plan.setImage(bitmap);
+                                        plan.setTitle(object.getString("title"));
+                                        plan.setDesc(object.getString("description"));
+                                        plan.setTags(object.getString("hashtag"));
+                                        //finally,add to planlist
+                                        planList.add(plan);
+                                        if(planList.size()==objects.size()) {
+                                            mAdapter = new Adapter(DiscoverActivity.this, planList);
+                                            listOfPlans.setAdapter(mAdapter);
+                                        }
                                     }else{
                                         Log.i("Get image","failed");
                                         e.printStackTrace();
@@ -81,19 +90,7 @@ public class DiscoverActivity extends AppCompatActivity {
                                 }
                             });
                         }
-                        plan.setTitle(object.getString("title"));
-                        plan.setDesc(object.getString("description"));
-                        plan.setTags(object.getString("hashtag"));
-
-                        //finally,add to planlist
-                        planList.add(plan);
-                        //mAdapter.notifyDataSetChanged();*/
                     }
-
-                    /*if(planList.size()>0) {
-                        mAdapter = new Adapter(DiscoverActivity.this, planList);
-                        listOfPlans.setAdapter(mAdapter);
-                    }*/
                 }else{
                     e.printStackTrace();
                 }

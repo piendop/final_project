@@ -9,7 +9,7 @@ public class Plan {
 	//ID
 
 	//URL of Heading Image
-	String headingImage;
+	//String headingImage;
 	//Title of the plan
 	private String title;
 	//Heading of plan
@@ -18,11 +18,11 @@ public class Plan {
 	//Store description of the plans
 	private String desc;
 	//Duration
-	private Integer duration;
+	//private Integer duration;
 	//image
     private Bitmap image;
 	//Store list of plan one by one
-	private List<Plan> planList;
+	//private List<Plan> planList;
 
 
 	@BindingAdapter("headingImage")
@@ -40,13 +40,13 @@ public class Plan {
         this.image=image;
     }
 
-    public String getHeadingImage() {
+    /*public String getHeadingImage() {
 		return headingImage;
 	}
 
 	public void setHeadingImage(String headingImage) {
 		this.headingImage = headingImage;
-	}
+	}*/
 
 	public String getTitle() {
 		return title;
@@ -72,19 +72,19 @@ public class Plan {
 		this.desc = desc;
 	}
 
-	public Integer getDuration() {
+	/*public Integer getDuration() {
 		return duration;
 	}
 
 	public void setDuration(Integer duration) {
 		this.duration = duration;
-	}
+	}*/
 
-	public List<Plan> getPlanList() {
+	/*public List<Plan> getPlanList() {
 		return planList;
 	}
 
 	public void setPlanList(List<Plan> planList) {
 		this.planList = planList;
-	}
+	}*/
 }

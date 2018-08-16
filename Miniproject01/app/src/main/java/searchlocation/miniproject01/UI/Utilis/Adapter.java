@@ -40,7 +40,7 @@ public class Adapter extends ArrayAdapter<Plan> {
 
 		Plan currentPlan = listOfPlans.get(position);
 
-		ImageView image = (ImageView)listItem.findViewById(R.id.header_image);
+		ImageView image = (ImageView)listItem.findViewById(R.id.headingImage);
 		image.setImageBitmap(currentPlan.getImage());
 
 		TextView title = (TextView) listItem.findViewById(R.id.card_title);
