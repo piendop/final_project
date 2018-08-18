@@ -1,53 +1,58 @@
 package searchlocation.miniproject01.UI.Discover;
 
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.widget.ListView;
-import android.widget.Toast;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.parse.FindCallback;
 import com.parse.GetDataCallback;
-import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import searchlocation.miniproject01.Models.Plan;
 import searchlocation.miniproject01.R;
-import searchlocation.miniproject01.UI.Utilis.Adapter;
 import searchlocation.miniproject01.UI.Utilis.BottomNavigationViewHelper;
+import searchlocation.miniproject01.UI.Utilis.PlanAdapter;
 
-public class DiscoverActivity extends AppCompatActivity {
+public class DiscoverActivity extends AppCompatActivity implements PlanAdapter.OnBottomReachedListener{
 
 
 
-	private ListView listOfPlans;
-	private Adapter mAdapter;
+	private RecyclerView listOfPlans;
+	private PlanAdapter mAdapter;
     ArrayList<Plan> planList = new ArrayList<>();
+    private static int NUM_LIST_ITEMS = 3;
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_discover);
-		listOfPlans = (ListView) findViewById(R.id.list_plans);
-		Plan temp = new Plan();
-		planList.add(temp);
-        mAdapter = new Adapter(DiscoverActivity.this,planList);
+		listOfPlans = findViewById(R.id.list_plans);
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        listOfPlans.setLayoutManager(layoutManager);
+        listOfPlans.setHasFixedSize(true);
+        mAdapter = new PlanAdapter(NUM_LIST_ITEMS,planList,  this);
         listOfPlans.setAdapter(mAdapter);
-        new MultiplyTask().execute();
+
+        //load shared plan initially
+        new LoadingSharePlanInitially().execute();
 
 	}
 
@@ -57,11 +62,15 @@ public class DiscoverActivity extends AppCompatActivity {
 		BottomNavigationViewHelper.enableBottomNavigation(DiscoverActivity.this,bottomNavigation);
 	}
 
-    private class MultiplyTask extends AsyncTask<Void,Void,Void>
+    @Override
+    public void onBottomReached(int position) {
+        new LoadPlan().execute(position);
+    }
+
+    private class LoadingSharePlanInitially extends AsyncTask<Void,Void,Void>
 	{
 		@Override
 		protected Void doInBackground(Void... voids) {
-            planList.clear();
             ParseQuery<ParseObject> query = new ParseQuery<>("Plan");
             final SharedPreferences sharedPreferences = DiscoverActivity.this.getSharedPreferences("SharedPref",MODE_PRIVATE);
             String username = sharedPreferences.getString("USERNAME",null);
@@ -72,6 +81,10 @@ public class DiscoverActivity extends AppCompatActivity {
                 @Override
                 public void done(final List<ParseObject> objects, ParseException e) {
                     if(e==null && objects.size()>0){
+                        if(objects.size()<NUM_LIST_ITEMS){
+                            NUM_LIST_ITEMS = objects.size();
+                            mAdapter.setmNumberItems(NUM_LIST_ITEMS);
+                        }
                         for(final ParseObject object:objects){
                             final Plan plan = new Plan();
                             //load image to view
@@ -89,23 +102,84 @@ public class DiscoverActivity extends AppCompatActivity {
                                             plan.setTags(object.getString("hashtag"));
                                             //finally,add to planlist
                                             planList.add(plan);
-                                            if(planList.size()==3){
+                                            if(planList.size()==NUM_LIST_ITEMS){
+                                                mAdapter.setListOfPlans(planList);
                                                 mAdapter.notifyDataSetChanged();
+                                                SharedPreferences preferences = DiscoverActivity.this.getSharedPreferences("SharedPref",0);
+                                                preferences.edit().putLong("createdAt",object.getCreatedAt().getTime()).apply();
                                             }
                                         }else{
                                             Log.i("Get image","failed");
-                                            e.printStackTrace();
                                         }
                                     }
                                 });
                             }
                         }
                     }else{
-                        e.printStackTrace();
+                        Log.i("Could", "not load object");
                     }
                 }
             });
             return null;
 		}
+    }
+
+    private class LoadPlan extends AsyncTask<Integer,Void,Void>{
+
+        @Override
+        protected Void doInBackground(final Integer... pos) {
+            final SharedPreferences preferences = DiscoverActivity.this.getSharedPreferences("SharedPref",0);
+            Date date = new Date(preferences.getLong("createdAt",0));
+            if(date.getTime()!=0){
+                ParseQuery<ParseObject> query = new ParseQuery<>("Plan");
+                final SharedPreferences sharedPreferences = DiscoverActivity.this.getSharedPreferences("SharedPref",MODE_PRIVATE);
+                String username = sharedPreferences.getString("USERNAME",null);
+                query.whereEqualTo("userId", username);
+                query.whereGreaterThan("createdAt",date);
+                query.setLimit(3);
+                query.findInBackground(new FindCallback<ParseObject>() {
+                    @Override
+                    public void done(final List<ParseObject> objects, ParseException e) {
+                        if(e==null && objects.size()>0){
+                            int position = pos[0];
+                            NUM_LIST_ITEMS+=objects.size();
+                            mAdapter.setmNumberItems(NUM_LIST_ITEMS);
+                            for(final ParseObject object:objects){
+                                ++position;
+                                final Plan plan = new Plan();
+                                //load image to view
+                                ParseFile image = (ParseFile) object.get("image");
+                                if(image!=null){
+                                    final int pos = position;
+                                    image.getDataInBackground(new GetDataCallback() {
+                                        @Override
+                                        public void done(byte[] data, ParseException e) {
+                                            if(e==null&&data!=null){
+                                                Log.i("Get image","successful");
+                                                Bitmap bitmap = BitmapFactory.decodeByteArray(data,0,data.length);
+                                                plan.setImage(bitmap);
+                                                plan.setTitle(object.getString("title"));
+                                                plan.setDesc(object.getString("description"));
+                                                plan.setTags(object.getString("hashtag"));
+
+                                                preferences.edit().putLong("createdAt",object.getCreatedAt().getTime()).apply();
+                                                //load more plan
+                                                mAdapter.addPlan(plan);
+                                                mAdapter.notifyItemInserted(pos);
+                                            }else{
+                                                Log.i("Get image","failed");
+                                            }
+                                        }
+                                    });
+                                }
+                            }
+                        }else{
+                            Log.i("Object","cannot load more");
+                        }
+                    }
+                });
+            }
+            return null;
+        }
     }
 }

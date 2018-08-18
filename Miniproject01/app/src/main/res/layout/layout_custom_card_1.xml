@@ -3,7 +3,7 @@
         android:layout_width="453dp"
         android:layout_height="256dp"
         android:orientation="horizontal"
-        android:layout_marginLeft="13dp"
+        android:layout_marginStart="13dp"
         android:elevation="1dp"
         android:translationZ="5dp"
         android:background="@drawable/white_border"

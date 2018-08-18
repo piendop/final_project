@@ -47,7 +47,7 @@ public class RememberMeFragment extends DialogFragment {
 		remember.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				writeAccountToSharedPrenferences();
+				writeAccountToSharedPreferences();
 				loadOnGoingActivity();
 				//	getDialog().dismiss();
 			}
@@ -55,7 +55,7 @@ public class RememberMeFragment extends DialogFragment {
 		return view;
 	}
 
-	private void writeAccountToSharedPrenferences() {
+	private void writeAccountToSharedPreferences() {
 		SharedPreferences sharedPreferences = getActivity().getSharedPreferences("SharedPref",0);
 		SharedPreferences.Editor editor = sharedPreferences.edit();
 		editor.putString("USERNAME", ParseUser.getCurrentUser().getObjectId());
