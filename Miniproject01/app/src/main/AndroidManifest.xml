@@ -69,6 +69,7 @@
         <activity android:name=".UI.Discover.DiscoverActivity" />
         <activity android:name=".UI.Login.SignUp"/>
         <activity android:name=".UI.Login.IntroActivity"/>
+        <activity android:name=".UI.Reader.Article_Base"/>
     </application>
 
 </manifest>
