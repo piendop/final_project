@@ -20,16 +20,19 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.PlanViewHolder
 	private List<Plan> listOfPlans;
 	private int mNumberItems;
     final private OnBottomReachedListener onBottomReachedListener;
+    final private PlanAdapterOnClickHandler mClickHander;
 
-	public PlanAdapter(int numberOfItems, ArrayList<Plan> list, OnBottomReachedListener onBottomReachedListener){
+	public PlanAdapter(int numberOfItems, ArrayList<Plan> list, OnBottomReachedListener onBottomReachedListener, PlanAdapterOnClickHandler clickHandler){
         listOfPlans = list;
 	    mNumberItems=numberOfItems;
         this.onBottomReachedListener = onBottomReachedListener;
+        this.mClickHander = clickHandler;
     }
 
     public void addPlan(Plan plan){
 	    listOfPlans.add(plan);
     }
+
     public void setListOfPlans(List<Plan> listOfPlans) {
         this.listOfPlans = listOfPlans;
     }
@@ -40,6 +43,10 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.PlanViewHolder
 
     public interface OnBottomReachedListener{
 	    void onBottomReached(int position);
+    }
+
+    public interface PlanAdapterOnClickHandler{
+        void onClick(Plan itemPlan);
     }
 
     @NonNull
@@ -64,12 +71,13 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.PlanViewHolder
         }
     }
 
+
     @Override
     public int getItemCount() {
         return mNumberItems;
     }
 
-    class PlanViewHolder extends RecyclerView.ViewHolder {
+    class PlanViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
 	    ImageView image;
 	    TextView title;
@@ -82,6 +90,7 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.PlanViewHolder
             title = itemView.findViewById(R.id.card_title);
             hashtag = itemView.findViewById(R.id.card_tags);
             desc = itemView.findViewById(R.id.card_desc);
+            itemView.setOnClickListener(this);
         }
 
         void bind(int listIndex){
@@ -90,6 +99,13 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.PlanViewHolder
             title.setText(plan.getTitle());
             hashtag.setText(plan.getTags());
             desc.setText(plan.getDesc());
+        }
+
+        @Override
+        public void onClick(View v) {
+            int index = getAdapterPosition();
+            Plan plan = listOfPlans.get(index);
+            mClickHander.onClick(plan);
         }
     }
 }

@@ -1,5 +1,6 @@
 package searchlocation.miniproject01.UI.Discover;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -20,8 +21,6 @@ import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -31,14 +30,14 @@ import searchlocation.miniproject01.R;
 import searchlocation.miniproject01.UI.Utilis.BottomNavigationViewHelper;
 import searchlocation.miniproject01.UI.Utilis.PlanAdapter;
 
-public class DiscoverActivity extends AppCompatActivity implements PlanAdapter.OnBottomReachedListener{
+public class DiscoverActivity extends AppCompatActivity implements PlanAdapter.OnBottomReachedListener, PlanAdapter.PlanAdapterOnClickHandler{
 
 
 
 	private RecyclerView listOfPlans;
 	private PlanAdapter mAdapter;
     ArrayList<Plan> planList = new ArrayList<>();
-    private static int NUM_LIST_ITEMS = 3;
+    private static int NUM_LIST_ITEMS = 10;
     private ProgressBar mLoadingIndicator;
 
 
@@ -49,14 +48,22 @@ public class DiscoverActivity extends AppCompatActivity implements PlanAdapter.O
 		listOfPlans = findViewById(R.id.list_plans);
 		mLoadingIndicator = findViewById(R.id.pb_loading_indicator);
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        listOfPlans.setLayoutManager(layoutManager);
-        listOfPlans.setHasFixedSize(true);
-        mAdapter = new PlanAdapter(NUM_LIST_ITEMS,planList,  this);
-        listOfPlans.setAdapter(mAdapter);
 
-        //load shared plan initially
-        new LoadingSharePlanInitially().execute();
+		SharedPreferences preferences = this.getSharedPreferences("SharedPref",MODE_PRIVATE);
+		Boolean isLoaded = preferences.getBoolean("isLoaded",false);
+		/*if(!isLoaded){
+		    mLoadingIndicator.setVisibility(View.INVISIBLE);
+		    listOfPlans.setVisibility(View.VISIBLE);
+        //}else{*/
+            LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+            listOfPlans.setLayoutManager(layoutManager);
+            listOfPlans.setHasFixedSize(true);
+            mAdapter = new PlanAdapter(NUM_LIST_ITEMS,planList,  this, this);
+            listOfPlans.setAdapter(mAdapter);
+
+            //load shared plan initially
+            new LoadingSharePlanInitially().execute();
+        //}
 
 	}
 
@@ -72,6 +79,11 @@ public class DiscoverActivity extends AppCompatActivity implements PlanAdapter.O
         new LoadPlan().execute(position);
     }
 
+    @Override
+    public void onClick(Plan itemPlan) {
+        Log.i("Item click",itemPlan.toString());
+    }
+
     private class LoadingSharePlanInitially extends AsyncTask<Void,Void,Void>
 	{
         @Override
@@ -85,54 +97,60 @@ public class DiscoverActivity extends AppCompatActivity implements PlanAdapter.O
             ParseQuery<ParseObject> query = new ParseQuery<>("Plan");
             final SharedPreferences sharedPreferences = DiscoverActivity.this.getSharedPreferences("SharedPref",MODE_PRIVATE);
             String username = sharedPreferences.getString("USERNAME",null);
-            query.whereEqualTo("userId", username);
-            query.orderByAscending("createdAt");
-            query.setLimit(5);
-            query.findInBackground(new FindCallback<ParseObject>() {
-                @Override
-                public void done(final List<ParseObject> objects, ParseException e) {
-                    if(e==null && objects.size()>0){
-                        for(final ParseObject object:objects){
-                            final Plan plan = new Plan();
-                            //load image to view
-                            ParseFile image = (ParseFile) object.get("image");
-                            if(image!=null){
-                                image.getDataInBackground(new GetDataCallback() {
-                                    @Override
-                                    public void done(byte[] data, ParseException e) {
-                                        if(e==null&&data!=null){
-                                            Log.i("Get image","successful");
-                                            Bitmap bitmap = BitmapFactory.decodeByteArray(data,0,data.length);
-                                            plan.setImage(bitmap);
-                                            plan.setTitle(object.getString("title"));
-                                            plan.setDesc(object.getString("description"));
-                                            plan.setTags(object.getString("hashtag"));
-                                            //finally,add to planlist
-                                            planList.add(plan);
-                                            if(planList.size()==NUM_LIST_ITEMS){
-                                                NUM_LIST_ITEMS = objects.size();
-                                                mAdapter.setmNumberItems(NUM_LIST_ITEMS);
-                                                mAdapter.setListOfPlans(planList);
-                                                mAdapter.notifyDataSetChanged();
-                                                mLoadingIndicator.setVisibility(View.INVISIBLE);
-                                                listOfPlans.setVisibility(View.VISIBLE);
-                                                SharedPreferences preferences = DiscoverActivity.this.getSharedPreferences("SharedPref",0);
-                                                preferences.edit().putLong("createdAt",object.getCreatedAt().getTime()).apply();
+            if(username!=null) {
+                query.whereEqualTo("userId", username);
+                query.orderByAscending("createdAt");
+                query.setLimit(10);
+                query.findInBackground(new FindCallback<ParseObject>() {
+                    @Override
+                    public void done(final List<ParseObject> objects, ParseException e) {
+                        if (e == null && objects.size() > 0) {
+                            for (final ParseObject object : objects) {
+                                final Plan plan = new Plan();
+                                //load image to view
+                                ParseFile image = (ParseFile) object.get("image");
+                                if (image != null) {
+                                    image.getDataInBackground(new GetDataCallback() {
+                                        @Override
+                                        public void done(byte[] data, ParseException e) {
+                                            if (e == null && data != null) {
+                                                Log.i("Get image", "successful");
+                                                Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+                                                plan.setImage(bitmap);
+                                                plan.setTitle(object.getString("title"));
+                                                plan.setDesc(object.getString("description"));
+                                                plan.setTags(object.getString("hashtag"));
+                                                //finally,add to planlist
+                                                planList.add(plan);
+                                                SharedPreferences preferences = DiscoverActivity.this.getSharedPreferences("SharedPref", 0);
+                                                Date date = new Date(preferences.getLong("createdAt",0));
+                                                if(object.getCreatedAt().after(date)){
+                                                    preferences.edit().putLong("createdAt", object.getCreatedAt().getTime()).apply();
+                                                }
+                                                if (planList.size() == objects.size()) {
+                                                    NUM_LIST_ITEMS = objects.size();
+                                                    mAdapter.setmNumberItems(NUM_LIST_ITEMS);
+                                                    mAdapter.setListOfPlans(planList);
+                                                    mAdapter.notifyDataSetChanged();
+                                                    mLoadingIndicator.setVisibility(View.INVISIBLE);
+                                                    listOfPlans.setVisibility(View.VISIBLE);
+                                                }
+                                            } else {
+                                                Log.i("Get image", "failed");
                                             }
-                                        }else{
-                                            Log.i("Get image","failed");
                                         }
-                                    }
-                                });
+                                    });
+                                }
                             }
+                        } else {
+                            Log.i("Could", "not load object");
                         }
-                    }else{
-                        Log.i("Could", "not load object");
                     }
-                }
-            });
+                });
+            }
             return null;
 		}
+
     }
 
     private class LoadPlan extends AsyncTask<Integer,Void,Void>{
@@ -147,7 +165,8 @@ public class DiscoverActivity extends AppCompatActivity implements PlanAdapter.O
                 String username = sharedPreferences.getString("USERNAME",null);
                 query.whereEqualTo("userId", username);
                 query.whereGreaterThan("createdAt",date);
-                query.setLimit(3);
+                query.orderByAscending("createdAt");
+                query.setLimit(10);
                 query.findInBackground(new FindCallback<ParseObject>() {
                     @Override
                     public void done(final List<ParseObject> objects, ParseException e) {
@@ -173,7 +192,7 @@ public class DiscoverActivity extends AppCompatActivity implements PlanAdapter.O
 
                                                 preferences.edit().putLong("createdAt",object.getCreatedAt().getTime()).apply();
                                                 //load more plan
-                                                ++NUM_LIST_ITEMS;
+                                                NUM_LIST_ITEMS++;
                                                 mAdapter.setmNumberItems(NUM_LIST_ITEMS);
                                                 mAdapter.addPlan(plan);
                                                 mAdapter.notifyItemInserted(pos);
@@ -191,6 +210,13 @@ public class DiscoverActivity extends AppCompatActivity implements PlanAdapter.O
                 });
             }
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            SharedPreferences preferences = DiscoverActivity.this.getSharedPreferences("SharedPref",0);
+            preferences.edit().putBoolean("isLoaded",true).apply();
         }
     }
 }
