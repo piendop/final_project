@@ -9,6 +9,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.parse.FindCallback;
@@ -37,6 +39,7 @@ public class DiscoverActivity extends AppCompatActivity implements PlanAdapter.O
 	private PlanAdapter mAdapter;
     ArrayList<Plan> planList = new ArrayList<>();
     private static int NUM_LIST_ITEMS = 3;
+    private ProgressBar mLoadingIndicator;
 
 
 	@Override
@@ -44,6 +47,7 @@ public class DiscoverActivity extends AppCompatActivity implements PlanAdapter.O
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_discover);
 		listOfPlans = findViewById(R.id.list_plans);
+		mLoadingIndicator = findViewById(R.id.pb_loading_indicator);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         listOfPlans.setLayoutManager(layoutManager);
@@ -64,27 +68,30 @@ public class DiscoverActivity extends AppCompatActivity implements PlanAdapter.O
 
     @Override
     public void onBottomReached(int position) {
+	    Log.i("Bottom reached: ",Integer.toString(position));
         new LoadPlan().execute(position);
     }
 
     private class LoadingSharePlanInitially extends AsyncTask<Void,Void,Void>
 	{
-		@Override
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            mLoadingIndicator.setVisibility(View.VISIBLE);
+        }
+
+        @Override
 		protected Void doInBackground(Void... voids) {
             ParseQuery<ParseObject> query = new ParseQuery<>("Plan");
             final SharedPreferences sharedPreferences = DiscoverActivity.this.getSharedPreferences("SharedPref",MODE_PRIVATE);
             String username = sharedPreferences.getString("USERNAME",null);
             query.whereEqualTo("userId", username);
             query.orderByAscending("createdAt");
-            query.setLimit(3);
+            query.setLimit(5);
             query.findInBackground(new FindCallback<ParseObject>() {
                 @Override
                 public void done(final List<ParseObject> objects, ParseException e) {
                     if(e==null && objects.size()>0){
-                        if(objects.size()<NUM_LIST_ITEMS){
-                            NUM_LIST_ITEMS = objects.size();
-                            mAdapter.setmNumberItems(NUM_LIST_ITEMS);
-                        }
                         for(final ParseObject object:objects){
                             final Plan plan = new Plan();
                             //load image to view
@@ -103,8 +110,12 @@ public class DiscoverActivity extends AppCompatActivity implements PlanAdapter.O
                                             //finally,add to planlist
                                             planList.add(plan);
                                             if(planList.size()==NUM_LIST_ITEMS){
+                                                NUM_LIST_ITEMS = objects.size();
+                                                mAdapter.setmNumberItems(NUM_LIST_ITEMS);
                                                 mAdapter.setListOfPlans(planList);
                                                 mAdapter.notifyDataSetChanged();
+                                                mLoadingIndicator.setVisibility(View.INVISIBLE);
+                                                listOfPlans.setVisibility(View.VISIBLE);
                                                 SharedPreferences preferences = DiscoverActivity.this.getSharedPreferences("SharedPref",0);
                                                 preferences.edit().putLong("createdAt",object.getCreatedAt().getTime()).apply();
                                             }
@@ -142,8 +153,6 @@ public class DiscoverActivity extends AppCompatActivity implements PlanAdapter.O
                     public void done(final List<ParseObject> objects, ParseException e) {
                         if(e==null && objects.size()>0){
                             int position = pos[0];
-                            NUM_LIST_ITEMS+=objects.size();
-                            mAdapter.setmNumberItems(NUM_LIST_ITEMS);
                             for(final ParseObject object:objects){
                                 ++position;
                                 final Plan plan = new Plan();
@@ -164,6 +173,8 @@ public class DiscoverActivity extends AppCompatActivity implements PlanAdapter.O
 
                                                 preferences.edit().putLong("createdAt",object.getCreatedAt().getTime()).apply();
                                                 //load more plan
+                                                ++NUM_LIST_ITEMS;
+                                                mAdapter.setmNumberItems(NUM_LIST_ITEMS);
                                                 mAdapter.addPlan(plan);
                                                 mAdapter.notifyItemInserted(pos);
                                             }else{

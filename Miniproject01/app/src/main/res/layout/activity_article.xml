@@ -8,13 +8,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="320dp"
-            android:src="@drawable/img2"
-            android:scaleType="fitXY"
-            android:id="@+id/header_image"
-            />
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
