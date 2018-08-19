@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,12 +22,14 @@ import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import searchlocation.miniproject01.Models.Plan;
 import searchlocation.miniproject01.R;
+import searchlocation.miniproject01.UI.Reader.Article_Base;
 import searchlocation.miniproject01.UI.Utilis.BottomNavigationViewHelper;
 import searchlocation.miniproject01.UI.Utilis.PlanAdapter;
 
@@ -82,6 +85,9 @@ public class DiscoverActivity extends AppCompatActivity implements PlanAdapter.O
     @Override
     public void onClick(Plan itemPlan) {
         Log.i("Item click",itemPlan.toString());
+        Intent intent = new Intent(this, Article_Base.class);
+        intent.putExtra("objectId",itemPlan.getObjectId());
+        startActivity(intent);
     }
 
     private class LoadingSharePlanInitially extends AsyncTask<Void,Void,Void>
@@ -120,6 +126,7 @@ public class DiscoverActivity extends AppCompatActivity implements PlanAdapter.O
                                                 plan.setTitle(object.getString("title"));
                                                 plan.setDesc(object.getString("description"));
                                                 plan.setTags(object.getString("hashtag"));
+                                                plan.setObjectId(object.getObjectId());
                                                 //finally,add to planlist
                                                 planList.add(plan);
                                                 SharedPreferences preferences = DiscoverActivity.this.getSharedPreferences("SharedPref", 0);
@@ -189,7 +196,7 @@ public class DiscoverActivity extends AppCompatActivity implements PlanAdapter.O
                                                 plan.setTitle(object.getString("title"));
                                                 plan.setDesc(object.getString("description"));
                                                 plan.setTags(object.getString("hashtag"));
-
+                                                plan.setObjectId(object.getObjectId());
                                                 preferences.edit().putLong("createdAt",object.getCreatedAt().getTime()).apply();
                                                 //load more plan
                                                 NUM_LIST_ITEMS++;

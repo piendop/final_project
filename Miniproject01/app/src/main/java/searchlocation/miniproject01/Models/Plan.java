@@ -1,13 +1,15 @@
 package searchlocation.miniproject01.Models;
 import android.databinding.BindingAdapter;
 import android.graphics.Bitmap;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.widget.ImageView;
 import java.util.List;
 import com.bumptech.glide.Glide;
 
 public class Plan {
 	//ID
-
+    String objectId;
 	//URL of Heading Image
 	//String headingImage;
 	//Title of the plan
@@ -17,15 +19,20 @@ public class Plan {
 	private String tags;
 	//Store description of the plans
 	private String desc;
-	//Duration
-	//private Integer duration;
 	//image
     private Bitmap image;
 	//Store list of plan one by one
-	//private List<Plan> planList;
 
 
-	@BindingAdapter("headingImage")
+    public void setObjectId(String objectId) {
+        this.objectId = objectId;
+    }
+
+    public String getObjectId() {
+        return objectId;
+    }
+
+    @BindingAdapter("headingImage")
 	public static void loadImage(ImageView view, String imageUrl) {
 		Glide.with(view.getContext())
 				.load(imageUrl)
@@ -39,14 +46,6 @@ public class Plan {
     public void setImage(Bitmap image) {
         this.image=image;
     }
-
-    /*public String getHeadingImage() {
-		return headingImage;
-	}
-
-	public void setHeadingImage(String headingImage) {
-		this.headingImage = headingImage;
-	}*/
 
 	public String getTitle() {
 		return title;
@@ -72,19 +71,4 @@ public class Plan {
 		this.desc = desc;
 	}
 
-	/*public Integer getDuration() {
-		return duration;
-	}
-
-	public void setDuration(Integer duration) {
-		this.duration = duration;
-	}*/
-
-	/*public List<Plan> getPlanList() {
-		return planList;
-	}
-
-	public void setPlanList(List<Plan> planList) {
-		this.planList = planList;
-	}*/
 }

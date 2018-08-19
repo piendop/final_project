@@ -3,6 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
+    android:visibility="invisible"
+    android:id="@+id/plan_info"
     >
     <FrameLayout
         android:layout_width="match_parent"
@@ -12,7 +14,6 @@
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/image"
             android:id="@+id/headingImage"
             android:scaleType="centerCrop"
             />
@@ -25,7 +26,7 @@
             android:fontFamily="@font/montserrat_bold"
             android:textColor="@color/white"
             android:textSize="28sp"
-            android:text="Du lịch Phú Quốc: Cẩm nang từ A đến Z"
+            android:id="@+id/tv_title"
             />
     </FrameLayout>
     <TextView
@@ -41,7 +42,7 @@
         android:paddingBottom="10dp"
         android:textSize="22sp"
         android:textColor="@color/black"
-        android:text="Lần thứ 3 đi Phú Quốc. Mình sẽ review theo cách mình đi nhé. Bọn mình đi 4 ngày 3 đêm."
+        android:id="@+id/tv_description"
         android:background="@drawable/grey_box1"
         />
 </LinearLayout>
