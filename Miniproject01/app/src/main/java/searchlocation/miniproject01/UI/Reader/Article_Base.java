@@ -50,9 +50,7 @@ public class Article_Base extends AppCompatActivity implements PlaceItemAdapter.
     private TextView description;
     private LinearLayout planInfo;
     private TextView noConnectionTextView;
-    private Button buttonPlace;
-    private TextView reviewTextView;
-    private static int NUM_LIST_ITEMS=2;
+    private static int NUM_LIST_ITEMS=10;
     private PlaceItemAdapter mAdapter;
     ArrayList<Place> placeList = new ArrayList<>();
     ProgressBar mLoadingIndicator;
@@ -93,8 +91,6 @@ public class Article_Base extends AppCompatActivity implements PlaceItemAdapter.
         title = findViewById(R.id.tv_title);
         description = findViewById(R.id.tv_description);
         planInfo = findViewById(R.id.plan_info);
-        buttonPlace = findViewById(R.id.btn_place);
-        reviewTextView = findViewById(R.id.tv_review);
         mLoadingIndicator = findViewById(R.id.pb_loading_indicator);
         objectId = getIntent().getStringExtra("objectId");
         placeRecyclerView = findViewById(R.id.list_places);
@@ -184,7 +180,7 @@ public class Article_Base extends AppCompatActivity implements PlaceItemAdapter.
             if ( objectId!= null) {
                 query.whereEqualTo("planId", objectId);
                 query.orderByAscending("createdAt");
-                query.setLimit(2);
+                query.setLimit(10);
                 query.findInBackground(new FindCallback<ParseObject>() {
                     @Override
                     public void done(final List<ParseObject> objects, ParseException e) {
@@ -235,7 +231,7 @@ public class Article_Base extends AppCompatActivity implements PlaceItemAdapter.
                 final SharedPreferences sharedPreferences = Article_Base.this.getSharedPreferences("SharedPref", MODE_PRIVATE);
                 query.whereEqualTo("planId", objectId);
                 query.whereGreaterThan("createdAt", date);
-                query.setLimit(2);
+                query.setLimit(10);
                 query.findInBackground(new FindCallback<ParseObject>() {
                     @Override
                     public void done(final List<ParseObject> objects, ParseException e) {
