@@ -18,7 +18,7 @@ import searchlocation.miniproject01.R;
 public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.PlanViewHolder> {
 
 	private List<Plan> listOfPlans;
-	private int mNumberItems;
+	private int mNumberItems=0;
     final private OnBottomReachedListener onBottomReachedListener;
     final private PlanAdapterOnClickHandler mClickHander;
 
