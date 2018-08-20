@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".UI.Reader.Article_Base">
+    xmlns:android="http://schemas.android.com/apk/res/android" >
+    <include layout="@layout/layout_bottom_navigation_reader" />
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="60dp"
+        android:orientation="vertical"
+        tools:context=".UI.Reader.Article_Base">
         <!--Top info-->
         <include layout="@layout/layout_custom_reader_topinfo"/>
         <TextView
@@ -40,5 +44,5 @@
             >
         </android.support.v7.widget.RecyclerView>
         <!--Bottom navigation bar-->
-        <include layout="@layout/layout_bottom_navigation_reader" />
-</LinearLayout>
+    </LinearLayout>
+</RelativeLayout>

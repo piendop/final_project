@@ -37,6 +37,7 @@ public class BottomNavigationViewHelper {
 
 			AHBottomNavigation.setCurrentItem(0);
 
+			AHBottomNavigation.bringToFront();
 		}
 
 		public static void enableBottomNavigation(final Context context, final AHBottomNavigation AHBottomNavigation) {
