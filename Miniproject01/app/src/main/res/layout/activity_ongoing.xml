@@ -1,290 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    >
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="4"
-        android:id="@+id/relLayout3">
-        <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:tools="http://schemas.android.com/tools"
-            android:id="@+id/map"
-            android:name="com.google.android.gms.maps.SupportMapFragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:context=".UI.Search.MapsActivity" />
-    </RelativeLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="6"
-        android:background="#F7F7F7"
-        android:orientation="vertical">
-        <!--sample-->
-        <LinearLayout
-            xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:background="@drawable/white_border"
-            >
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="7"
-                android:orientation="vertical"
-                android:gravity="left"
-                >
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Tham quan Mũi Gành Dầu"
-                    android:textColor="@color/tag_red"
-                    android:fontFamily="@font/montserrat_semibold"
-                    android:paddingLeft="20sp"
-                    android:paddingTop="10sp"
-                    android:textSize="16sp"
-                    />
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:paddingLeft="20sp"
-                    android:gravity="center"
-                    >
-                    <ImageView
-                        android:layout_width="15sp"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_map"
-                        />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingLeft="5sp"
-                        android:textSize="14sp"
-                        android:text="Gành Dầu, Tp. Phú Quốc, ….."
-                        android:textColor="@color/tag_black"
-                        android:fontFamily="@font/montserrat_medium"
-                        />
-                </LinearLayout>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="3"
-                android:orientation="vertical"
-                android:gravity="right"
-                >
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="40dp"
-                    android:src="@drawable/ic_direction"
-                    android:layout_marginRight="30dp"
-                    android:paddingTop="5sp"
-                    />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="30dp"
-                    android:text="Remind me at"
-                    android:textSize="12sp"
-                    android:fontFamily="@font/montserrat_regular"
-                    />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="30dp"
-                    android:text="8:00 AM"
-                    android:textSize="20sp"
-                    android:fontFamily="@font/montserrat_semibold"
-                    android:textColor="@color/black"
-                    />
-            </LinearLayout>
-
-        </LinearLayout>
-        <LinearLayout
-            xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:background="@drawable/white_border"
-            >
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="7"
-                android:orientation="vertical"
-                android:gravity="left"
-                >
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Tham quan Mũi Gành Dầu"
-                    android:textColor="@color/tag_red"
-                    android:fontFamily="@font/montserrat_semibold"
-                    android:paddingLeft="20sp"
-                    android:paddingTop="10sp"
-                    />
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:paddingLeft="20sp"
-                    android:gravity="center"
-                    >
-                    <ImageView
-                        android:layout_width="15sp"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_map"
-                        />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingLeft="5sp"
-                        android:text="Gành Dầu, Tp. Phú Quốc, ….."
-                        android:textColor="@color/tag_black"
-                        android:fontFamily="@font/montserrat_medium"
-                        />
-                </LinearLayout>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="3"
-                android:orientation="vertical"
-                android:gravity="right"
-                >
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="40dp"
-                    android:src="@drawable/ic_direction"
-                    android:layout_marginRight="30dp"
-                    android:paddingTop="5sp"
-                    />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="30dp"
-                    android:text="Remind me at"
-                    android:textSize="12sp"
-                    android:fontFamily="@font/montserrat_regular"
-                    />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="30dp"
-                    android:text="_ _ : _ _"
-                    android:textSize="20sp"
-                    android:fontFamily="@font/montserrat_semibold"
-                    android:textColor="@color/black"
-                    />
-            </LinearLayout>
-
-        </LinearLayout>
-        <LinearLayout
-            xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:background="@drawable/white_border"
-            >
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="7"
-                android:orientation="vertical"
-                android:gravity="left"
-                >
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Tham quan Mũi Gành Dầu"
-                    android:textColor="@color/tag_red"
-                    android:fontFamily="@font/montserrat_semibold"
-                    android:paddingLeft="20sp"
-                    android:paddingTop="10sp"
-                    />
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:paddingLeft="20sp"
-                    android:gravity="center"
-                    >
-                    <ImageView
-                        android:layout_width="15sp"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_map"
-                        />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingLeft="5sp"
-                        android:text="Gành Dầu, Tp. Phú Quốc, ….."
-                        android:textColor="@color/tag_black"
-                        android:fontFamily="@font/montserrat_medium"
-                        />
-                </LinearLayout>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="3"
-                android:orientation="vertical"
-                android:gravity="right"
-                >
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="40dp"
-                    android:src="@drawable/ic_direction"
-                    android:layout_marginRight="30dp"
-                    android:paddingTop="5sp"
-                    />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="30dp"
-                    android:text="Remind me at"
-                    android:textSize="12sp"
-                    android:fontFamily="@font/montserrat_regular"
-                    />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="30dp"
-                    android:text="8:00 AM"
-                    android:textSize="20sp"
-                    android:fontFamily="@font/montserrat_semibold"
-                    android:textColor="@color/black"
-                    />
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <!--<android.support.v7.widget.RecyclerView-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:scrollbars="vertical"-->
-            <!--android:divider="@android:color/transparent"-->
-            <!--android:dividerHeight="10.0sp"-->
-            <!--android:visibility="invisible"-->
-            <!--&gt;-->
-        <!--</android.support.v7.widget.RecyclerView>-->
-    </LinearLayout>
+<RelativeLayout android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
     <include layout="@layout/layout_bottom_navigation_view"/>
-</LinearLayout>
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="60dp"
+        android:orientation="vertical">
+        <!--Section_Maps-->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="4"
+            android:id="@+id/relLayout3">
+            <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:id="@+id/map"
+                android:name="com.google.android.gms.maps.SupportMapFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context=".UI.Search.MapsActivity" />
+        </RelativeLayout>
+        <!--Section_List_Of_Places-->
+        <android.support.v7.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="6"
+            android:scrollbars="vertical"
+            android:divider="@android:color/transparent"
+            android:dividerHeight="10.0sp"
+            android:visibility="invisible">
+        </android.support.v7.widget.RecyclerView>
+    </LinearLayout>
+</RelativeLayout>
