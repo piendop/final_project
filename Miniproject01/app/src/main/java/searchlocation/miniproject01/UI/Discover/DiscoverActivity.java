@@ -100,9 +100,9 @@ public class DiscoverActivity extends AppCompatActivity implements PlanAdapter.O
             listOfPlans.setVisibility(View.INVISIBLE);
         }else {
             if(mAdapter == null) {
-                SharedPreferences preferences = this.getSharedPreferences("SharedPref", MODE_PRIVATE);
+                /*SharedPreferences preferences = this.getSharedPreferences("SharedPref", MODE_PRIVATE);
                 Boolean isLoaded = preferences.getBoolean("isLoaded", false);
-            /*if(!isLoaded){
+            if(!isLoaded){
                 mLoadingIndicator.setVisibility(View.INVISIBLE);
                 listOfPlans.setVisibility(View.VISIBLE);
             //}else{*/

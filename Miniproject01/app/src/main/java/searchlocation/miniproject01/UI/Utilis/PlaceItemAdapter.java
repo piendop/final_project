@@ -18,28 +18,28 @@ import java.util.List;
 
 import searchlocation.miniproject01.Models.ColorTag;
 import searchlocation.miniproject01.Models.Place;
-import searchlocation.miniproject01.Models.Plan;
+import searchlocation.miniproject01.Models.Place;
 import searchlocation.miniproject01.R;
 
-public class PlaceItemAdapter extends RecyclerView.Adapter<PlaceItemAdapter.PlanViewHolder> {
+public class PlaceItemAdapter extends RecyclerView.Adapter<PlaceItemAdapter.PlaceViewHolder> {
 
 	private List<Place> listOfPlaces;
 	private int mNumberItems;
 	final private OnBottomReachedListener onBottomReachedListener;
-	final private PlanAdapterOnClickHandler mClickHander;
+	final private PlaceAdapterOnClickHandler mClickHander;
 
-	public PlaceItemAdapter(int numberOfItems, ArrayList<Place> list, OnBottomReachedListener onBottomReachedListener, PlanAdapterOnClickHandler clickHandler){
+	public PlaceItemAdapter(int numberOfItems, ArrayList<Place> list, OnBottomReachedListener onBottomReachedListener, PlaceAdapterOnClickHandler clickHandler){
 		listOfPlaces = list;
 		mNumberItems=numberOfItems;
 		this.onBottomReachedListener = onBottomReachedListener;
 		this.mClickHander = clickHandler;
 	}
 
-	public void addPlan(Place place){
+	public void addPlace(Place place){
 		listOfPlaces.add(place);
 	}
 
-	public void setListOfPlans(List<Place> listOfPlaces) {
+	public void setListOfPlaces(List<Place> listOfPlaces) {
 		this.listOfPlaces = listOfPlaces;
 	}
 
@@ -51,28 +51,28 @@ public class PlaceItemAdapter extends RecyclerView.Adapter<PlaceItemAdapter.Plan
 		void onBottomReached(int position);
 	}
 
-	public interface PlanAdapterOnClickHandler{
+	public interface PlaceAdapterOnClickHandler{
 		void onClick(String itemName);
 	}
 
 	@NonNull
 	@Override
-	public PlanViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+	public PlaceViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 		Context context = parent.getContext();
 		int layoutForItem = R.layout.layout_custom_card_placeitem;
 		LayoutInflater inflater = LayoutInflater.from(context);
 		boolean shouldAttachToParentImmediately = false;
 		View view = inflater.inflate(layoutForItem,parent,shouldAttachToParentImmediately);
-		PlanViewHolder planViewHolder = new PlanViewHolder(view);
+		PlaceViewHolder placeViewHolder = new PlaceViewHolder(view);
 		//Cho nay sau nay custom
 		int backgroundColor = ColorTag.getColorTag(context,1);
-		Button button = planViewHolder.itemView.findViewById(R.id.btn_place);
+		Button button = placeViewHolder.itemView.findViewById(R.id.btn_place);
 		button.setBackgroundColor(backgroundColor);
-		return planViewHolder;
+		return placeViewHolder;
 	}
 
 	@Override
-	public void onBindViewHolder(@NonNull PlanViewHolder holder, int position) {
+	public void onBindViewHolder(@NonNull PlaceViewHolder holder, int position) {
 		if(listOfPlaces.size()>0)
 			holder.bind(position);
 		if(position == listOfPlaces.size()-1){
@@ -86,12 +86,12 @@ public class PlaceItemAdapter extends RecyclerView.Adapter<PlaceItemAdapter.Plan
 		return mNumberItems;
 	}
 
-	class PlanViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+	class PlaceViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
 		Button placeButton;
 		TextView review;
 
-		public PlanViewHolder(View itemView) {
+		public PlaceViewHolder(View itemView) {
 			super(itemView);
 			placeButton = itemView.findViewById(R.id.btn_place);
 			review = itemView.findViewById(R.id.tv_review);
