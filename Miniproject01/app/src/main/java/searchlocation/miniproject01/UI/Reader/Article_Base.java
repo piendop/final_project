@@ -1,40 +1,63 @@
 package searchlocation.miniproject01.UI.Reader;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
+import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.GetDataCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
+import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import searchlocation.miniproject01.Models.Place;
+import searchlocation.miniproject01.Models.Place;
 import searchlocation.miniproject01.Models.Plan;
 import searchlocation.miniproject01.R;
+import searchlocation.miniproject01.UI.Discover.DiscoverActivity;
 import searchlocation.miniproject01.UI.Utilis.BottomNavigationReader;
 import searchlocation.miniproject01.UI.Utilis.BottomNavigationViewHelper;
 import searchlocation.miniproject01.UI.Utilis.PlaceItemAdapter;
 
-public class Article_Base extends AppCompatActivity implements PlaceItemAdapter.PlanAdapterOnClickHandler {
+public class Article_Base extends AppCompatActivity implements PlaceItemAdapter.PlaceAdapterOnClickHandler, PlaceItemAdapter.OnBottomReachedListener {
 
-    private ImageView imagePlan;
+    private ImageView imagePlace;
     private TextView title;
     private TextView description;
     private LinearLayout planInfo;
     private TextView noConnectionTextView;
+    private static int NUM_LIST_ITEMS=10;
+    private PlaceItemAdapter mAdapter;
+    ArrayList<Place> placeList = new ArrayList<>();
+    ProgressBar mLoadingIndicator;
+    String objectId;
+    private RecyclerView placeRecyclerView;
+
+
 
     public boolean isNetworkConnected() {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -64,23 +87,25 @@ public class Article_Base extends AppCompatActivity implements PlaceItemAdapter.
 		setContentView(R.layout.activity_article_base);
 		setupBottomNavigationReader();
 		noConnectionTextView = findViewById(R.id.tv_no_connection);
-        imagePlan = findViewById(R.id.headingImage);
+        imagePlace = findViewById(R.id.headingImage);
         title = findViewById(R.id.tv_title);
         description = findViewById(R.id.tv_description);
         planInfo = findViewById(R.id.plan_info);
+        mLoadingIndicator = findViewById(R.id.pb_loading_indicator);
+        objectId = getIntent().getStringExtra("objectId");
+        placeRecyclerView = findViewById(R.id.list_places);
         init();
     }
 
     private void init() {
         if(!isNetworkConnected()){
             Log.i("Connection ","failed");
+            planInfo.setVisibility(View.VISIBLE);
             noConnectionTextView.setVisibility(View.VISIBLE);
         }else {
-
-            final String objectId = getIntent().getStringExtra("objectId");
             Log.i("Id ", objectId);
 
-            //set image and text for plan
+            //set image and text for place
             ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Plan");
             query.getInBackground(objectId, new GetCallback<ParseObject>() {
                 @Override
@@ -94,10 +119,11 @@ public class Article_Base extends AppCompatActivity implements PlaceItemAdapter.
                                     if (e == null) {
                                         Log.i("Get image", "successful");
                                         Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
-                                        imagePlan.setImageBitmap(bitmap);
+                                        imagePlace.setImageBitmap(bitmap);
                                         title.setText(object.getString("title"));
                                         description.setText(object.getString("description"));
                                         planInfo.setVisibility(View.VISIBLE);
+                                        noConnectionTextView.setVisibility(View.INVISIBLE);
                                     }else {
                                         Log.i("Get image", "failed");
                                     }
@@ -110,6 +136,19 @@ public class Article_Base extends AppCompatActivity implements PlaceItemAdapter.
                     }
                 }
             });
+
+            if(mAdapter==null){
+                LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+                placeRecyclerView.setLayoutManager(layoutManager);
+                placeRecyclerView.setHasFixedSize(true);
+                mAdapter = new PlaceItemAdapter(NUM_LIST_ITEMS,placeList,this,this);
+                placeRecyclerView.setAdapter(mAdapter);
+                new LoadingSharePlaceInitially().execute();
+            }else{
+                placeRecyclerView.setVisibility(View.VISIBLE);
+                mLoadingIndicator.setVisibility(View.INVISIBLE);
+            }
+
         }
     }
 
@@ -119,6 +158,108 @@ public class Article_Base extends AppCompatActivity implements PlaceItemAdapter.
 		BottomNavigationReader.enableBottomNavigation(Article_Base.this,bottomNavigation);
 	}
 
+    @Override
+    public void onBottomReached(int position) {
+        Log.i("Bottom reached ", Integer.toString(position));
+        new LoadPlace().execute(position);
+
+    }
+
+    private class LoadingSharePlaceInitially extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            mLoadingIndicator.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+
+            ParseQuery<ParseObject> query = new ParseQuery<>("LocationReview");
+
+            if ( objectId!= null) {
+                query.whereEqualTo("planId", objectId);
+                query.orderByAscending("createdAt");
+                query.setLimit(10);
+                query.findInBackground(new FindCallback<ParseObject>() {
+                    @Override
+                    public void done(final List<ParseObject> objects, ParseException e) {
+                        if (e == null && objects.size() > 0) {
+                            for (final ParseObject object : objects) {
+                                final Place place = new Place();
+                                ParseGeoPoint geoPoint = object.getParseGeoPoint("location");
+                                place.setLatitude(geoPoint.getLatitude());
+                                place.setLongitude(geoPoint.getLongitude());
+                                place.setID(object.getObjectId());
+                                place.setName(object.getString("placeName"));
+                                place.setReview(object.getString("review"));
+                                placeList.add(place);
+                                SharedPreferences preferences = Article_Base.this.getSharedPreferences("SharedPref", 0);
+                                Date date = new Date(preferences.getLong("createdPlace", 0));
+                                if (object.getCreatedAt().after(date)) {
+                                    preferences.edit().putLong("createdPlace", object.getCreatedAt().getTime()).apply();
+                                }
+                                if(objects.size()==placeList.size()){
+                                    NUM_LIST_ITEMS=objects.size();
+                                    mAdapter.setmNumberItems(NUM_LIST_ITEMS);
+                                    mAdapter.setListOfPlaces(placeList);
+                                    mAdapter.notifyDataSetChanged();
+                                    mLoadingIndicator.setVisibility(View.INVISIBLE);
+                                    placeRecyclerView.setVisibility(View.VISIBLE);
+                                }
+                            }
+                        } else {
+                            Log.i("Could", "not load object");
+                            mLoadingIndicator.setVisibility(View.INVISIBLE);
+                        }
+                    }
+                });
+            }
+            return null;
+        }
+
+    }
+
+    private class LoadPlace extends AsyncTask<Integer, Void, Void> {
+
+        @Override
+        protected Void doInBackground(final Integer... pos) {
+            final SharedPreferences preferences = Article_Base.this.getSharedPreferences("SharedPref", 0);
+            Date date = new Date(preferences.getLong("createdPlace", 0));
+            if (date.getTime() != 0) {
+                ParseQuery<ParseObject> query = new ParseQuery<>("Plan");
+                final SharedPreferences sharedPreferences = Article_Base.this.getSharedPreferences("SharedPref", MODE_PRIVATE);
+                query.whereEqualTo("planId", objectId);
+                query.whereGreaterThan("createdAt", date);
+                query.setLimit(10);
+                query.findInBackground(new FindCallback<ParseObject>() {
+                    @Override
+                    public void done(final List<ParseObject> objects, ParseException e) {
+                        if (e == null && objects.size() > 0) {
+                            int position = pos[0];
+                            for (final ParseObject object : objects) {
+                                final Place place = new Place();
+                                ParseGeoPoint geoPoint = new ParseGeoPoint(object.getParseGeoPoint("location"));
+                                place.setLatitude(geoPoint.getLatitude());
+                                place.setLongitude(geoPoint.getLongitude());
+                                place.setName(object.getString("placeName"));
+                                place.setID(object.getObjectId());
+                                place.setReview(object.getString("review"));
+                                preferences.edit().putLong("createdPlace",object.getCreatedAt().getTime()).apply();
+                                ++NUM_LIST_ITEMS;
+                                mAdapter.setmNumberItems(NUM_LIST_ITEMS);
+                                mAdapter.addPlace(place);
+                                mAdapter.notifyItemInserted(NUM_LIST_ITEMS);
+                            }
+                        } else {
+                            Log.i("Object", "cannot load more");
+                        }
+                    }
+                });
+            }
+            return null;
+        }
+    }
 	@Override
 	public void onClick(String itemName) {
 		Log.i("Item Name",itemName);
