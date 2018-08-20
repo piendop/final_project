@@ -95,7 +95,7 @@ public class PlaceItemAdapter extends RecyclerView.Adapter<PlaceItemAdapter.Plac
 			super(itemView);
 			placeButton = itemView.findViewById(R.id.btn_place);
 			review = itemView.findViewById(R.id.tv_review);
-			itemView.setOnClickListener(this);
+			placeButton.setOnClickListener(this);
 		}
 
 		void bind(int listIndex){

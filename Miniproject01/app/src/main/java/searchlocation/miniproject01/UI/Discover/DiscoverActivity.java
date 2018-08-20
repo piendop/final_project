@@ -192,6 +192,7 @@ public class DiscoverActivity extends AppCompatActivity implements PlanAdapter.O
                                                     mAdapter.notifyDataSetChanged();
                                                     mLoadingIndicator.setVisibility(View.INVISIBLE);
                                                     listOfPlans.setVisibility(View.VISIBLE);
+                                                    setupBottomNavigationView();
                                                 }
                                             } else {
                                                 Log.i("Get image", "failed");
@@ -204,6 +205,7 @@ public class DiscoverActivity extends AppCompatActivity implements PlanAdapter.O
                             Log.i("Could", "not load object");
                             mLoadingIndicator.setVisibility(View.INVISIBLE);
                             noPlanTextView.setVisibility(View.VISIBLE);
+                            setupBottomNavigationView();
                         }
                     }
                 });

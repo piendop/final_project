@@ -123,6 +123,7 @@ public class Article_Base extends AppCompatActivity implements PlaceItemAdapter.
                                         title.setText(object.getString("title"));
                                         description.setText(object.getString("description"));
                                         planInfo.setVisibility(View.VISIBLE);
+                                        setupBottomNavigationReader();
                                         noConnectionTextView.setVisibility(View.INVISIBLE);
                                     }else {
                                         Log.i("Get image", "failed");
@@ -146,6 +147,7 @@ public class Article_Base extends AppCompatActivity implements PlaceItemAdapter.
                 new LoadingSharePlaceInitially().execute();
             }else{
                 placeRecyclerView.setVisibility(View.VISIBLE);
+                setupBottomNavigationReader();
                 mLoadingIndicator.setVisibility(View.INVISIBLE);
             }
 
