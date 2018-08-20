@@ -22,8 +22,9 @@ import searchlocation.miniproject01.Models.Plan;
 import searchlocation.miniproject01.R;
 import searchlocation.miniproject01.UI.Utilis.BottomNavigationReader;
 import searchlocation.miniproject01.UI.Utilis.BottomNavigationViewHelper;
+import searchlocation.miniproject01.UI.Utilis.PlaceItemAdapter;
 
-public class Article_Base extends AppCompatActivity {
+public class Article_Base extends AppCompatActivity implements PlaceItemAdapter.PlanAdapterOnClickHandler {
 
     private ImageView imagePlan;
     private TextView title;
@@ -76,5 +77,10 @@ public class Article_Base extends AppCompatActivity {
 		AHBottomNavigation bottomNavigation = (AHBottomNavigation) findViewById(R.id.bottomNavigationReader);
 		BottomNavigationReader.setupBottomNavigationView(bottomNavigation);
 		BottomNavigationReader.enableBottomNavigation(Article_Base.this,bottomNavigation);
+	}
+
+	@Override
+	public void onClick(String itemName) {
+		Log.i("Item Name",itemName);
 	}
 }

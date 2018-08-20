@@ -5,4 +5,11 @@
     <color name="blue_light">#628CF5</color>
     <color name="white">#FFFFFF</color>
     <color name="black">#2E2A2A</color>
+    <color name="tag_yellow">#F5A623</color>
+    <color name="tag_red">#D0021B</color>
+    <color name="tag_blue">#4A90E2</color>
+    <color name="tag_green">#417505</color>
+    <color name="tag_purple">#9013FE</color>
+    <color name="tag_pink">#FE13BE</color>
+    <color name="tag_black">#3B3030</color>
 </resources>

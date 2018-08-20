@@ -6,7 +6,7 @@ public class Place {
 	//Name of place (Different name for diff plans)
 	private String Name;
 	//Note of that plans
-	private String Notes;
+	private String review;
 	//Store hex number of the color tag
 	private String colorTagHex;
 	//Longtidute Latitute
@@ -29,11 +29,11 @@ public class Place {
 		Name = name;
 	}
 
-	public String getNotes() {
-		return Notes;
+	public String getReview() {
+		return review;
 	}
 
 	public void setNotes(String notes) {
-		Notes = notes;
+		review = notes;
 	}
 }
