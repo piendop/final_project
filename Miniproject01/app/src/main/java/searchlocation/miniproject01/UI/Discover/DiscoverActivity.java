@@ -73,6 +73,7 @@ public class DiscoverActivity extends AppCompatActivity implements PlanAdapter.O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_discover);
+        setupBottomNavigationView();
         noConnectionTextView = findViewById(R.id.tv_no_connection);
         refreshLayout = findViewById(R.id.swipe_refresh);
         listOfPlans = findViewById(R.id.list_plans);
