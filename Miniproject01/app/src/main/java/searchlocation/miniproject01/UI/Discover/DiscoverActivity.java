@@ -27,6 +27,7 @@ import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
@@ -50,6 +51,7 @@ public class DiscoverActivity extends AppCompatActivity implements PlanAdapter.O
     private TextView noPlanTextView;
     private TextView noConnectionTextView;
     private SwipeRefreshLayout refreshLayout;
+    private AHBottomNavigation bottomNavigation;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -101,21 +103,14 @@ public class DiscoverActivity extends AppCompatActivity implements PlanAdapter.O
             listOfPlans.setVisibility(View.INVISIBLE);
         }else {
             if(mAdapter == null) {
-                /*SharedPreferences preferences = this.getSharedPreferences("SharedPref", MODE_PRIVATE);
-                Boolean isLoaded = preferences.getBoolean("isLoaded", false);
-            if(!isLoaded){
-                mLoadingIndicator.setVisibility(View.INVISIBLE);
-                listOfPlans.setVisibility(View.VISIBLE);
-            //}else{*/
                 LinearLayoutManager layoutManager = new LinearLayoutManager(this);
                 listOfPlans.setLayoutManager(layoutManager);
-                listOfPlans.setHasFixedSize(true);
+                //listOfPlans.setHasFixedSize(true);
                 mAdapter = new PlanAdapter(NUM_LIST_ITEMS, planList, this, this);
                 listOfPlans.setAdapter(mAdapter);
 
                 //load shared plan initially
                 new LoadingSharePlanInitially().execute();
-                //}
             }else{
                 mLoadingIndicator.setVisibility(View.INVISIBLE);
                 listOfPlans.setVisibility(View.VISIBLE);
@@ -124,9 +119,9 @@ public class DiscoverActivity extends AppCompatActivity implements PlanAdapter.O
     }
 
     public void setupBottomNavigationView() {
-        AHBottomNavigation bottomNavigation = (AHBottomNavigation) findViewById(R.id.bottomNavigation);
+        bottomNavigation = (AHBottomNavigation) findViewById(R.id.bottomNavigation);
         BottomNavigationViewHelper.setupBottomNavigationView(bottomNavigation);
-        BottomNavigationViewHelper.enableBottomNavigation(DiscoverActivity.this, bottomNavigation);
+        BottomNavigationViewHelper.enableBottomNavigation(DiscoverActivity.this,bottomNavigation);
     }
 
     @Override
@@ -153,9 +148,9 @@ public class DiscoverActivity extends AppCompatActivity implements PlanAdapter.O
         @Override
         protected Void doInBackground(Void... voids) {
             ParseQuery<ParseObject> query = new ParseQuery<>("Plan");
-            final SharedPreferences sharedPreferences = DiscoverActivity.this.getSharedPreferences("SharedPref", MODE_PRIVATE);
-            String username = sharedPreferences.getString("USERNAME", null);
+            String username = ParseUser.getCurrentUser().getObjectId();
             if (username != null) {
+                Log.i("username ", username);
                 query.whereEqualTo("userId", username);
                 query.orderByAscending("createdAt");
                 query.setLimit(10);
@@ -192,8 +187,8 @@ public class DiscoverActivity extends AppCompatActivity implements PlanAdapter.O
                                                     mAdapter.setListOfPlans(planList);
                                                     mAdapter.notifyDataSetChanged();
                                                     mLoadingIndicator.setVisibility(View.INVISIBLE);
+                                                    refreshLayout.setVisibility(View.VISIBLE);
                                                     listOfPlans.setVisibility(View.VISIBLE);
-                                                    setupBottomNavigationView();
                                                 }
                                             } else {
                                                 Log.i("Get image", "failed");
@@ -206,7 +201,6 @@ public class DiscoverActivity extends AppCompatActivity implements PlanAdapter.O
                             Log.i("Could", "not load object");
                             mLoadingIndicator.setVisibility(View.INVISIBLE);
                             noPlanTextView.setVisibility(View.VISIBLE);
-                            setupBottomNavigationView();
                         }
                     }
                 });
@@ -278,8 +272,6 @@ public class DiscoverActivity extends AppCompatActivity implements PlanAdapter.O
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            SharedPreferences preferences = DiscoverActivity.this.getSharedPreferences("SharedPref", 0);
-            preferences.edit().putBoolean("isLoaded", true).apply();
         }
     }
 

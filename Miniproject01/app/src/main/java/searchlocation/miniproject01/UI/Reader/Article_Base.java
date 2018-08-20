@@ -1,12 +1,15 @@
 package searchlocation.miniproject01.UI.Reader;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -39,11 +42,12 @@ import searchlocation.miniproject01.Models.Place;
 import searchlocation.miniproject01.Models.Plan;
 import searchlocation.miniproject01.R;
 import searchlocation.miniproject01.UI.Discover.DiscoverActivity;
+import searchlocation.miniproject01.UI.OnGoing.OnGoingActivity;
 import searchlocation.miniproject01.UI.Utilis.BottomNavigationReader;
 import searchlocation.miniproject01.UI.Utilis.BottomNavigationViewHelper;
 import searchlocation.miniproject01.UI.Utilis.PlaceItemAdapter;
 
-public class Article_Base extends AppCompatActivity implements PlaceItemAdapter.PlaceAdapterOnClickHandler, PlaceItemAdapter.OnBottomReachedListener {
+public class Article_Base extends AppCompatActivity implements PlaceItemAdapter.PlaceAdapterOnClickHandler, PlaceItemAdapter.OnBottomReachedListener, AHBottomNavigation.OnTabSelectedListener {
 
     private ImageView imagePlace;
     private TextView title;
@@ -56,6 +60,7 @@ public class Article_Base extends AppCompatActivity implements PlaceItemAdapter.
     ProgressBar mLoadingIndicator;
     String objectId;
     private RecyclerView placeRecyclerView;
+    private AHBottomNavigation bottomNavigation;
 
 
 
@@ -95,6 +100,7 @@ public class Article_Base extends AppCompatActivity implements PlaceItemAdapter.
         objectId = getIntent().getStringExtra("objectId");
         placeRecyclerView = findViewById(R.id.list_places);
         init();
+        bottomNavigation.setOnTabSelectedListener(this);
     }
 
     private void init() {
@@ -123,7 +129,6 @@ public class Article_Base extends AppCompatActivity implements PlaceItemAdapter.
                                         title.setText(object.getString("title"));
                                         description.setText(object.getString("description"));
                                         planInfo.setVisibility(View.VISIBLE);
-                                        setupBottomNavigationReader();
                                         noConnectionTextView.setVisibility(View.INVISIBLE);
                                     }else {
                                         Log.i("Get image", "failed");
@@ -141,13 +146,12 @@ public class Article_Base extends AppCompatActivity implements PlaceItemAdapter.
             if(mAdapter==null){
                 LinearLayoutManager layoutManager = new LinearLayoutManager(this);
                 placeRecyclerView.setLayoutManager(layoutManager);
-                placeRecyclerView.setHasFixedSize(true);
+                //placeRecyclerView.setHasFixedSize(true);
                 mAdapter = new PlaceItemAdapter(NUM_LIST_ITEMS,placeList,this,this);
                 placeRecyclerView.setAdapter(mAdapter);
                 new LoadingSharePlaceInitially().execute();
             }else{
                 placeRecyclerView.setVisibility(View.VISIBLE);
-                setupBottomNavigationReader();
                 mLoadingIndicator.setVisibility(View.INVISIBLE);
             }
 
@@ -155,7 +159,7 @@ public class Article_Base extends AppCompatActivity implements PlaceItemAdapter.
     }
 
     public void setupBottomNavigationReader(){
-		AHBottomNavigation bottomNavigation = (AHBottomNavigation) findViewById(R.id.bottomNavigationReader);
+		bottomNavigation = (AHBottomNavigation) findViewById(R.id.bottomNavigationReader);
 		BottomNavigationReader.setupBottomNavigationView(bottomNavigation);
 		BottomNavigationReader.enableBottomNavigation(Article_Base.this,bottomNavigation);
 	}
@@ -166,6 +170,37 @@ public class Article_Base extends AppCompatActivity implements PlaceItemAdapter.
         new LoadPlace().execute(position);
 
     }
+
+    @Override
+    public boolean onTabSelected(int position, boolean wasSelected) {
+        switch (position) {
+            case 0:
+
+                break;
+            case 1:
+
+                break;
+            case 2:
+
+                new AlertDialog.Builder(this)
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setTitle("Are you sure?")
+                        .setMessage("Do you want to add this plan as your current plan?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                Intent onGoing = new Intent(Article_Base.this, OnGoingActivity.class); //ACTIVITY_NUMBER 1
+                                onGoing.putExtra("currentPlan",objectId);
+                                startActivity(onGoing);
+                            }
+                        })
+                        .setNegativeButton("No", null)
+                        .show();
+                break;
+        }
+        return false;
+    }
+
 
     private class LoadingSharePlaceInitially extends AsyncTask<Void, Void, Void> {
         @Override
@@ -195,6 +230,7 @@ public class Article_Base extends AppCompatActivity implements PlaceItemAdapter.
                                 place.setID(object.getObjectId());
                                 place.setName(object.getString("placeName"));
                                 place.setReview(object.getString("review"));
+                                place.setAddress(object.getString("address"));
                                 placeList.add(place);
                                 SharedPreferences preferences = Article_Base.this.getSharedPreferences("SharedPref", 0);
                                 Date date = new Date(preferences.getLong("createdPlace", 0));
@@ -240,6 +276,7 @@ public class Article_Base extends AppCompatActivity implements PlaceItemAdapter.
                         if (e == null && objects.size() > 0) {
                             int position = pos[0];
                             for (final ParseObject object : objects) {
+                                ++position;
                                 final Place place = new Place();
                                 ParseGeoPoint geoPoint = new ParseGeoPoint(object.getParseGeoPoint("location"));
                                 place.setLatitude(geoPoint.getLatitude());
@@ -251,7 +288,7 @@ public class Article_Base extends AppCompatActivity implements PlaceItemAdapter.
                                 ++NUM_LIST_ITEMS;
                                 mAdapter.setmNumberItems(NUM_LIST_ITEMS);
                                 mAdapter.addPlace(place);
-                                mAdapter.notifyItemInserted(NUM_LIST_ITEMS);
+                                mAdapter.notifyItemInserted(position);
                             }
                         } else {
                             Log.i("Object", "cannot load more");

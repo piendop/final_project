@@ -39,11 +39,14 @@ public class Main extends Activity {
 		startActivity(loadOnGoing);
 	}
 	public boolean isRememberme(){
-	    SharedPreferences sharedPreferences = this.getSharedPreferences("SharedPref",MODE_PRIVATE);
-	    String username = sharedPreferences.getString("USERNAME",null);
-		if(username!=null){
+
+        SharedPreferences sharedPreferences = this.getSharedPreferences("SharedPref",0);
+	    Boolean isRemeber =sharedPreferences.getBoolean("isRemember",true);
+
+		if(isRemeber){
 		    return true;
         }
+        ParseUser.logOut();
         return false;
 	}
 }

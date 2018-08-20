@@ -15,6 +15,8 @@ public class Place {
 	private double latitude;
 	private double longitude;
 
+	private String address;
+
 
 	//Getter and Setter
 	public String getID() {
@@ -57,4 +59,11 @@ public class Place {
         this.review = review;
     }
 
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getAddress() {
+        return address;
+    }
 }

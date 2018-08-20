@@ -74,12 +74,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
-		if(ParseUser.getCurrentUser()!=null) {
-            //logout please
-            ParseUser.logOut();
-            SharedPreferences sharedPreferences = this.getSharedPreferences("SharedPref", MODE_PRIVATE);
-            sharedPreferences.edit().putString("USERNAME", null).apply();
-        }
+		ParseUser.logOut();
 		// Set up the login form.
 		mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         linearLayout = findViewById(R.id.log_in_linear_layout);
