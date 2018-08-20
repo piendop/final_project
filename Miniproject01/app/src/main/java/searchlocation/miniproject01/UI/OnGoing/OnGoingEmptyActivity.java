@@ -14,9 +14,8 @@ public class OnGoingEmptyActivity extends AppCompatActivity {
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_ongoingempty);
+		setContentView(R.layout.activity_ongoing);
 		setupBottomNavigationView();
-
 	}
 
 	/*This method I use to setup the bottom navigation with helper from Utils folder*/

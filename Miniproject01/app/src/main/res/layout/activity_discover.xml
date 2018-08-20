@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<RelativeLayout android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <include layout="@layout/layout_bottom_navigation_view"/>
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginBottom="60dp"
         android:orientation="vertical"
         tools:context=".UI.Discover.DiscoverActivity"
         android:background="#FFF7F7F7"
@@ -43,23 +47,8 @@
                 </LinearLayout>
                 <!--Body Content-->
                 <include layout="@layout/layout_custom_searchbar"/>
-                <android.support.v4.widget.SwipeRefreshLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:id="@+id/swipe_refresh">
-                    <android.support.v7.widget.RecyclerView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginTop="14dp"
-                        android:scrollbars="vertical"
-                        android:divider="@android:color/transparent"
-                        android:dividerHeight="10.0sp"
-                        android:id="@+id/list_plans"
-                        android:visibility="invisible"
-                        >
-                    </android.support.v7.widget.RecyclerView>
-                </android.support.v4.widget.SwipeRefreshLayout>
-            <!--</LinearLayout>-->
+                <include layout="@layout/layout_custom_listcard"/>
+        <!--</LinearLayout>-->
 
             <ProgressBar
                 android:id="@+id/pb_loading_indicator"
@@ -86,7 +75,7 @@
                 android:text="There is no connection. Please connect to the internet!"
                 android:visibility="invisible"/>
             <!--Bottom navigation bar-->
-            <include layout="@layout/layout_bottom_navigation_view" />
+
         <!--</RelativeLayout>-->
     </LinearLayout>
-</layout>
+</RelativeLayout>
