@@ -64,6 +64,23 @@
                 android:layout_centerInParent="true"
                 android:layout_gravity="center"
                 android:visibility="invisible" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="42dp"
+                android:id="@+id/tv_no_plan"
+                android:gravity="center"
+                android:layout_centerInParent="true"
+                android:text="No plans are created. Create a new plan"
+                android:visibility="invisible"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="42dp"
+                android:textSize="18sp"
+                android:id="@+id/tv_no_connection"
+                android:gravity="center"
+                android:layout_centerInParent="true"
+                android:text="There is no connection. Please connect to the internet!"
+                android:visibility="invisible"/>
             <!--Bottom navigation bar-->
             <include layout="@layout/layout_bottom_navigation_view" />
         </RelativeLayout>

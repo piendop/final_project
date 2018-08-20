@@ -1,9 +1,11 @@
 package searchlocation.miniproject01.UI.Discover;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -13,6 +15,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.parse.FindCallback;
@@ -33,65 +36,69 @@ import searchlocation.miniproject01.UI.Reader.Article_Base;
 import searchlocation.miniproject01.UI.Utilis.BottomNavigationViewHelper;
 import searchlocation.miniproject01.UI.Utilis.PlanAdapter;
 
-public class DiscoverActivity extends AppCompatActivity implements PlanAdapter.OnBottomReachedListener, PlanAdapter.PlanAdapterOnClickHandler{
+public class DiscoverActivity extends AppCompatActivity implements PlanAdapter.OnBottomReachedListener, PlanAdapter.PlanAdapterOnClickHandler {
 
 
-
-	private RecyclerView listOfPlans;
-	private PlanAdapter mAdapter;
+    private RecyclerView listOfPlans;
+    private PlanAdapter mAdapter;
     ArrayList<Plan> planList = new ArrayList<>();
     private static int NUM_LIST_ITEMS = 10;
     private ProgressBar mLoadingIndicator;
+    private TextView noPlanTextView;
+    private TextView noConnectionTextView;
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_discover);
+        noConnectionTextView = findViewById(R.id.tv_no_connection);
+        if(!isNetworkConnected()){
+            Log.i("Connection ","failed");
+            noConnectionTextView.setVisibility(View.VISIBLE);
+        }else {
+            listOfPlans = findViewById(R.id.list_plans);
+            mLoadingIndicator = findViewById(R.id.pb_loading_indicator);
+            noPlanTextView = findViewById(R.id.tv_no_plan);
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_discover);
-		listOfPlans = findViewById(R.id.list_plans);
-		mLoadingIndicator = findViewById(R.id.pb_loading_indicator);
-
-
-		SharedPreferences preferences = this.getSharedPreferences("SharedPref",MODE_PRIVATE);
-		Boolean isLoaded = preferences.getBoolean("isLoaded",false);
-		/*if(!isLoaded){
-		    mLoadingIndicator.setVisibility(View.INVISIBLE);
-		    listOfPlans.setVisibility(View.VISIBLE);
-        //}else{*/
+            SharedPreferences preferences = this.getSharedPreferences("SharedPref", MODE_PRIVATE);
+            Boolean isLoaded = preferences.getBoolean("isLoaded", false);
+            /*if(!isLoaded){
+                mLoadingIndicator.setVisibility(View.INVISIBLE);
+                listOfPlans.setVisibility(View.VISIBLE);
+            //}else{*/
             LinearLayoutManager layoutManager = new LinearLayoutManager(this);
             listOfPlans.setLayoutManager(layoutManager);
             listOfPlans.setHasFixedSize(true);
-            mAdapter = new PlanAdapter(NUM_LIST_ITEMS,planList,  this, this);
+            mAdapter = new PlanAdapter(NUM_LIST_ITEMS, planList, this, this);
             listOfPlans.setAdapter(mAdapter);
 
             //load shared plan initially
             new LoadingSharePlanInitially().execute();
-        //}
+            //}
+        }
+    }
 
-	}
-
-	public void setupBottomNavigationView(){
-		AHBottomNavigation bottomNavigation = (AHBottomNavigation) findViewById(R.id.bottomNavigation);
-		BottomNavigationViewHelper.setupBottomNavigationView(bottomNavigation);
-		BottomNavigationViewHelper.enableBottomNavigation(DiscoverActivity.this,bottomNavigation);
-	}
+    public void setupBottomNavigationView() {
+        AHBottomNavigation bottomNavigation = (AHBottomNavigation) findViewById(R.id.bottomNavigation);
+        BottomNavigationViewHelper.setupBottomNavigationView(bottomNavigation);
+        BottomNavigationViewHelper.enableBottomNavigation(DiscoverActivity.this, bottomNavigation);
+    }
 
     @Override
     public void onBottomReached(int position) {
-	    Log.i("Bottom reached: ",Integer.toString(position));
+        Log.i("Bottom reached: ", Integer.toString(position));
         new LoadPlan().execute(position);
     }
 
     @Override
     public void onClick(Plan itemPlan) {
-        Log.i("Item click",itemPlan.toString());
+        Log.i("Item click", itemPlan.toString());
         Intent intent = new Intent(this, Article_Base.class);
-        intent.putExtra("objectId",itemPlan.getObjectId());
+        intent.putExtra("objectId", itemPlan.getObjectId());
         startActivity(intent);
     }
 
-    private class LoadingSharePlanInitially extends AsyncTask<Void,Void,Void>
-	{
+    private class LoadingSharePlanInitially extends AsyncTask<Void, Void, Void> {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -99,11 +106,11 @@ public class DiscoverActivity extends AppCompatActivity implements PlanAdapter.O
         }
 
         @Override
-		protected Void doInBackground(Void... voids) {
+        protected Void doInBackground(Void... voids) {
             ParseQuery<ParseObject> query = new ParseQuery<>("Plan");
-            final SharedPreferences sharedPreferences = DiscoverActivity.this.getSharedPreferences("SharedPref",MODE_PRIVATE);
-            String username = sharedPreferences.getString("USERNAME",null);
-            if(username!=null) {
+            final SharedPreferences sharedPreferences = DiscoverActivity.this.getSharedPreferences("SharedPref", MODE_PRIVATE);
+            String username = sharedPreferences.getString("USERNAME", null);
+            if (username != null) {
                 query.whereEqualTo("userId", username);
                 query.orderByAscending("createdAt");
                 query.setLimit(10);
@@ -130,8 +137,8 @@ public class DiscoverActivity extends AppCompatActivity implements PlanAdapter.O
                                                 //finally,add to planlist
                                                 planList.add(plan);
                                                 SharedPreferences preferences = DiscoverActivity.this.getSharedPreferences("SharedPref", 0);
-                                                Date date = new Date(preferences.getLong("createdAt",0));
-                                                if(object.getCreatedAt().after(date)){
+                                                Date date = new Date(preferences.getLong("createdAt", 0));
+                                                if (object.getCreatedAt().after(date)) {
                                                     preferences.edit().putLong("createdAt", object.getCreatedAt().getTime()).apply();
                                                 }
                                                 if (planList.size() == objects.size()) {
@@ -151,67 +158,69 @@ public class DiscoverActivity extends AppCompatActivity implements PlanAdapter.O
                             }
                         } else {
                             Log.i("Could", "not load object");
+                            mLoadingIndicator.setVisibility(View.INVISIBLE);
+                            noPlanTextView.setVisibility(View.VISIBLE);
                         }
                     }
                 });
             }
             return null;
-		}
+        }
 
     }
 
-    private class LoadPlan extends AsyncTask<Integer,Void,Void>{
+    private class LoadPlan extends AsyncTask<Integer, Void, Void> {
 
         @Override
         protected Void doInBackground(final Integer... pos) {
-            final SharedPreferences preferences = DiscoverActivity.this.getSharedPreferences("SharedPref",0);
-            Date date = new Date(preferences.getLong("createdAt",0));
-            if(date.getTime()!=0){
+            final SharedPreferences preferences = DiscoverActivity.this.getSharedPreferences("SharedPref", 0);
+            Date date = new Date(preferences.getLong("createdAt", 0));
+            if (date.getTime() != 0) {
                 ParseQuery<ParseObject> query = new ParseQuery<>("Plan");
-                final SharedPreferences sharedPreferences = DiscoverActivity.this.getSharedPreferences("SharedPref",MODE_PRIVATE);
-                String username = sharedPreferences.getString("USERNAME",null);
+                final SharedPreferences sharedPreferences = DiscoverActivity.this.getSharedPreferences("SharedPref", MODE_PRIVATE);
+                String username = sharedPreferences.getString("USERNAME", null);
                 query.whereEqualTo("userId", username);
-                query.whereGreaterThan("createdAt",date);
+                query.whereGreaterThan("createdAt", date);
                 query.orderByAscending("createdAt");
                 query.setLimit(10);
                 query.findInBackground(new FindCallback<ParseObject>() {
                     @Override
                     public void done(final List<ParseObject> objects, ParseException e) {
-                        if(e==null && objects.size()>0){
+                        if (e == null && objects.size() > 0) {
                             int position = pos[0];
-                            for(final ParseObject object:objects){
+                            for (final ParseObject object : objects) {
                                 ++position;
                                 final Plan plan = new Plan();
                                 //load image to view
                                 ParseFile image = (ParseFile) object.get("image");
-                                if(image!=null){
+                                if (image != null) {
                                     final int pos = position;
                                     image.getDataInBackground(new GetDataCallback() {
                                         @Override
                                         public void done(byte[] data, ParseException e) {
-                                            if(e==null&&data!=null){
-                                                Log.i("Get image","successful");
-                                                Bitmap bitmap = BitmapFactory.decodeByteArray(data,0,data.length);
+                                            if (e == null && data != null) {
+                                                Log.i("Get image", "successful");
+                                                Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
                                                 plan.setImage(bitmap);
                                                 plan.setTitle(object.getString("title"));
                                                 plan.setDesc(object.getString("description"));
                                                 plan.setTags(object.getString("hashtag"));
                                                 plan.setObjectId(object.getObjectId());
-                                                preferences.edit().putLong("createdAt",object.getCreatedAt().getTime()).apply();
+                                                preferences.edit().putLong("createdAt", object.getCreatedAt().getTime()).apply();
                                                 //load more plan
                                                 NUM_LIST_ITEMS++;
                                                 mAdapter.setmNumberItems(NUM_LIST_ITEMS);
                                                 mAdapter.addPlan(plan);
                                                 mAdapter.notifyItemInserted(pos);
-                                            }else{
-                                                Log.i("Get image","failed");
+                                            } else {
+                                                Log.i("Get image", "failed");
                                             }
                                         }
                                     });
                                 }
                             }
-                        }else{
-                            Log.i("Object","cannot load more");
+                        } else {
+                            Log.i("Object", "cannot load more");
                         }
                     }
                 });
@@ -222,8 +231,13 @@ public class DiscoverActivity extends AppCompatActivity implements PlanAdapter.O
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            SharedPreferences preferences = DiscoverActivity.this.getSharedPreferences("SharedPref",0);
-            preferences.edit().putBoolean("isLoaded",true).apply();
+            SharedPreferences preferences = DiscoverActivity.this.getSharedPreferences("SharedPref", 0);
+            preferences.edit().putBoolean("isLoaded", true).apply();
         }
+    }
+
+    public boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        return cm.getActiveNetworkInfo()!=null;
     }
 }
