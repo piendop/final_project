@@ -7,6 +7,8 @@ import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -37,20 +39,43 @@ public class Article_Base extends AppCompatActivity {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         return cm.getActiveNetworkInfo()!=null;
     }
-	@Override
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int itemId = item.getItemId();
+
+        switch (itemId){
+            case R.id.action_refresh:
+
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_article_base);
 		setupBottomNavigationReader();
 		noConnectionTextView = findViewById(R.id.tv_no_connection);
-		if(!isNetworkConnected()){
-		    Log.i("Connection ","failed");
-		    noConnectionTextView.setVisibility(View.VISIBLE);
+        imagePlan = findViewById(R.id.headingImage);
+        title = findViewById(R.id.tv_title);
+        description = findViewById(R.id.tv_description);
+        planInfo = findViewById(R.id.plan_info);
+        init();
+    }
+
+    private void init() {
+        if(!isNetworkConnected()){
+            Log.i("Connection ","failed");
+            noConnectionTextView.setVisibility(View.VISIBLE);
         }else {
-            imagePlan = findViewById(R.id.headingImage);
-            title = findViewById(R.id.tv_title);
-            description = findViewById(R.id.tv_description);
-            planInfo = findViewById(R.id.plan_info);
+
             final String objectId = getIntent().getStringExtra("objectId");
             Log.i("Id ", objectId);
 
@@ -63,7 +88,7 @@ public class Article_Base extends AppCompatActivity {
                         ParseFile file = object.getParseFile("image");
                         if (file != null) {
                             file.getDataInBackground(new GetDataCallback() {
-                                @Override
+                            @Override
                                 public void done(byte[] data, ParseException e) {
                                     if (e == null) {
                                         Log.i("Get image", "successful");
@@ -72,20 +97,22 @@ public class Article_Base extends AppCompatActivity {
                                         title.setText(object.getString("title"));
                                         description.setText(object.getString("description"));
                                         planInfo.setVisibility(View.VISIBLE);
-                                    } else {
+                                    }else {
                                         Log.i("Get image", "failed");
                                     }
                                 }
                             });
                         }
-                    } else {
+                    }
+                    else {
                         Log.i("Could", "not load object");
                     }
                 }
             });
         }
-	}
-	public void setupBottomNavigationReader(){
+    }
+
+    public void setupBottomNavigationReader(){
 		AHBottomNavigation bottomNavigation = (AHBottomNavigation) findViewById(R.id.bottomNavigationReader);
 		BottomNavigationReader.setupBottomNavigationView(bottomNavigation);
 		BottomNavigationReader.enableBottomNavigation(Article_Base.this,bottomNavigation);
