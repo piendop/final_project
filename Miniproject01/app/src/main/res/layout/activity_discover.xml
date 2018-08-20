@@ -7,15 +7,15 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         tools:context=".UI.Discover.DiscoverActivity"
-        android:background="@color/white"
+        android:background="#FFF7F7F7"
         >
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+        <!--<RelativeLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent">-->
+            <!--<LinearLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:orientation="vertical">-->
                 <!--Top Section: Activity Screen Info-->
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -26,7 +26,7 @@
                         android:layout_height="wrap_content"
                         android:text="Share plans"
                         android:fontFamily="@font/montserrat_bold"
-                        android:textSize="30dp"
+                        android:textSize="26sp"
                         android:textColor="@color/black"
                         android:layout_marginTop="26dp"
                         android:layout_marginLeft="16dp"
@@ -36,12 +36,13 @@
                         android:layout_height="wrap_content"
                         android:text="Share your plans with other people"
                         android:fontFamily="@font/montserrat_medium"
-                        android:textSize="16dp"
+                        android:textSize="16sp"
                         android:textColor="#9B9B9B"
                         android:layout_marginLeft="16dp"
                         />
                 </LinearLayout>
                 <!--Body Content-->
+                <include layout="@layout/layout_custom_searchbar"/>
                 <android.support.v4.widget.SwipeRefreshLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -50,7 +51,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_marginTop="14dp"
-                        android:layout_marginStart="14dp"
                         android:scrollbars="vertical"
                         android:divider="@android:color/transparent"
                         android:dividerHeight="10.0sp"
@@ -59,7 +59,7 @@
                         >
                     </android.support.v7.widget.RecyclerView>
                 </android.support.v4.widget.SwipeRefreshLayout>
-            </LinearLayout>
+            <!--</LinearLayout>-->
 
             <ProgressBar
                 android:id="@+id/pb_loading_indicator"
@@ -87,6 +87,6 @@
                 android:visibility="invisible"/>
             <!--Bottom navigation bar-->
             <include layout="@layout/layout_bottom_navigation_view" />
-        </RelativeLayout>
+        <!--</RelativeLayout>-->
     </LinearLayout>
 </layout>

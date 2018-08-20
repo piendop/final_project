@@ -1,0 +1,36 @@
+<LinearLayout android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:layout_marginTop="66dp"
+    android:layout_marginLeft="16dp"
+    android:layout_marginRight="16dp"
+    android:elevation="2dp"
+    android:orientation="horizontal"
+    android:gravity="center"
+    android:background="@drawable/white_border"
+    android:id="@+id/relLayout1"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <ImageView
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_centerVertical="true"
+        android:padding="16dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/searchbar_symbol_search"
+        android:id="@+id/search_mag_icon"
+        />
+    <AutoCompleteTextView
+        android:layout_weight="9"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_toRightOf="@id/search_mag_icon"
+        android:layout_centerVertical="true"
+        android:fontFamily="@font/montserrat_medium"
+        android:imeOptions="actionDone"
+        android:inputType="textNoSuggestions"
+        android:hint="Searchs Address, City, Code …"
+        android:id="@+id/input_search"
+        android:textSize="12sp"
+        android:background="@null"
+        />
+</LinearLayout>
