@@ -18,13 +18,8 @@ public class EditorActivity extends AppCompatActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_editor);
-		Editor editor = (Editor) findViewById(R.id.editor);
-		setUpEditor();
+
 	}
-	private void setUpEditor() {
-		View h1 = findViewById(R.id.action_h1);
-		View h2= findViewById(R.id.action_h2);
-		View h3 = findViewById(R.id.action_h3);
-	}
+
 
 }

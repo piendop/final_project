@@ -37,9 +37,7 @@ public class BottomNavigationViewHelper {
 			AHBottomNavigation.addItem(library);
 			AHBottomNavigation.addItem(profile);
 
-			AHBottomNavigation.setCurrentItem(0);
-
-			AHBottomNavigation.bringToFront();
+//			AHBottomNavigation.setCurrentItem(0);
 		}
 
 		public static void enableBottomNavigation(final Context context, final AHBottomNavigation AHBottomNavigation) {
@@ -50,6 +48,7 @@ public class BottomNavigationViewHelper {
 						case 0:
 //							Toast.makeText(context, "ongoing Activity", Toast.LENGTH_SHORT).show();
 							Intent onGoing = new Intent(context, OnGoingActivity.class); //ACTIVITY_NUMBER 1
+
 							context.startActivity(onGoing);
 							break;
 						case 1:
