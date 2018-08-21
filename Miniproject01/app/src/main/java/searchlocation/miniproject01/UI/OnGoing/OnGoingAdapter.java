@@ -63,7 +63,7 @@ public class OnGoingAdapter extends RecyclerView.Adapter<OnGoingAdapter.Location
 
     @Override
     public int getItemCount() {
-        return 0;
+        return mNumberItems;
     }
 
     public interface OnBottomReachedListener{
