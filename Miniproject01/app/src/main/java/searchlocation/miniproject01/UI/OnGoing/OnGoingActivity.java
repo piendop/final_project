@@ -217,6 +217,7 @@ public class OnGoingActivity extends FragmentActivity implements OnGoingAdapter.
     @Override
     protected void onDestroy() {
         locationManager.removeUpdates(locationListener);
+        placeRecyclerView.removeAllViews();
         super.onDestroy();
     }
 
