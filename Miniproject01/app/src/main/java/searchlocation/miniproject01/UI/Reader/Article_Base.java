@@ -43,6 +43,7 @@ import searchlocation.miniproject01.Models.Plan;
 import searchlocation.miniproject01.R;
 import searchlocation.miniproject01.UI.Discover.DiscoverActivity;
 import searchlocation.miniproject01.UI.OnGoing.OnGoingActivity;
+import searchlocation.miniproject01.UI.OnGoing.OnGoingEmptyActivity;
 import searchlocation.miniproject01.UI.Utilis.BottomNavigationReader;
 import searchlocation.miniproject01.UI.Utilis.BottomNavigationViewHelper;
 import searchlocation.miniproject01.UI.Utilis.PlaceItemAdapter;
@@ -189,9 +190,16 @@ public class Article_Base extends AppCompatActivity implements PlaceItemAdapter.
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                Intent onGoing = new Intent(Article_Base.this, OnGoingActivity.class); //ACTIVITY_NUMBER 1
-                                onGoing.putExtra("currentPlan",objectId);
-                                startActivity(onGoing);
+                                if(objectId!=null){
+                                    Intent onGoing = new Intent(Article_Base.this, OnGoingActivity.class); //ACTIVITY_NUMBER 1
+
+                                    onGoing.putExtra("currentPlan",objectId);
+                                    startActivity(onGoing);
+                                }else{
+                                    Intent intent = new Intent(Article_Base.this, OnGoingEmptyActivity.class);
+                                    startActivity(intent);
+                                }
+
                             }
                         })
                         .setNegativeButton("No", null)
@@ -249,6 +257,7 @@ public class Article_Base extends AppCompatActivity implements PlaceItemAdapter.
                         } else {
                             Log.i("Could", "not load object");
                             mLoadingIndicator.setVisibility(View.INVISIBLE);
+                            objectId = null;
                         }
                     }
                 });
@@ -266,7 +275,6 @@ public class Article_Base extends AppCompatActivity implements PlaceItemAdapter.
             Date date = new Date(preferences.getLong("createdPlace", 0));
             if (date.getTime() != 0) {
                 ParseQuery<ParseObject> query = new ParseQuery<>("Plan");
-                final SharedPreferences sharedPreferences = Article_Base.this.getSharedPreferences("SharedPref", MODE_PRIVATE);
                 query.whereEqualTo("planId", objectId);
                 query.whereGreaterThan("createdAt", date);
                 query.setLimit(10);
