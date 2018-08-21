@@ -20,7 +20,8 @@
                 android:name="com.google.android.gms.maps.SupportMapFragment"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                tools:context=".UI.Search.MapsActivity" />
+                tools:context=".UI.Search.MapsActivity"
+                />
         </RelativeLayout>
         <!--Section_List_Of_Places-->
         <android.support.v7.widget.RecyclerView
@@ -30,7 +31,8 @@
             android:scrollbars="vertical"
             android:divider="@android:color/transparent"
             android:dividerHeight="10.0sp"
-            android:visibility="invisible">
+            android:id="@+id/rv_places"
+            android:visibility="visible">
         </android.support.v7.widget.RecyclerView>
     </LinearLayout>
 </RelativeLayout>

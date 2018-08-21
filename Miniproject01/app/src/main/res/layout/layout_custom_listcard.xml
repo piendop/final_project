@@ -18,4 +18,28 @@
             >
         </android.support.v7.widget.RecyclerView>
     </android.support.v4.widget.SwipeRefreshLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="42dp"
+        android:id="@+id/tv_no_plan"
+        android:gravity="center"
+        android:layout_centerInParent="true"
+        android:text="No plans are created. Create a new plan"
+        android:visibility="invisible"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="42dp"
+        android:textSize="18sp"
+        android:id="@+id/tv_no_connection"
+        android:gravity="center"
+        android:layout_centerInParent="true"
+        android:text="There is no connection. Please connect to the internet!"
+        android:visibility="invisible"/>
+    <ProgressBar
+        android:id="@+id/pb_loading_indicator"
+        android:layout_width="42dp"
+        android:layout_height="42dp"
+        android:layout_gravity="center"
+        android:layout_centerInParent="true"
+        android:visibility="invisible" />
 </RelativeLayout>

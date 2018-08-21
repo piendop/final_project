@@ -11,71 +11,36 @@
         android:layout_marginBottom="60dp"
         android:orientation="vertical"
         tools:context=".UI.Discover.DiscoverActivity"
-        android:background="#FFF7F7F7"
-        >
-        <!--<RelativeLayout-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent">-->
-            <!--<LinearLayout-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="match_parent"-->
-                <!--android:orientation="vertical">-->
-                <!--Top Section: Activity Screen Info-->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="90dp"
-                    android:orientation="vertical">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Share plans"
-                        android:fontFamily="@font/montserrat_bold"
-                        android:textSize="26sp"
-                        android:textColor="@color/black"
-                        android:layout_marginTop="26dp"
-                        android:layout_marginLeft="16dp"
-                        />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Share your plans with other people"
-                        android:fontFamily="@font/montserrat_medium"
-                        android:textSize="16sp"
-                        android:textColor="#9B9B9B"
-                        android:layout_marginLeft="16dp"
-                        />
-                </LinearLayout>
-                <!--Body Content-->
-                <include layout="@layout/layout_custom_searchbar"/>
-                <include layout="@layout/layout_custom_listcard"/>
-        <!--</LinearLayout>-->
-
-            <ProgressBar
-                android:id="@+id/pb_loading_indicator"
-                android:layout_width="42dp"
-                android:layout_height="42dp"
-                android:layout_centerInParent="true"
-                android:layout_gravity="center"
-                android:visibility="invisible" />
+        android:background="#FFF7F7F7">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="90dp"
+            android:orientation="vertical">
             <TextView
-                android:layout_width="match_parent"
-                android:layout_height="42dp"
-                android:id="@+id/tv_no_plan"
-                android:gravity="center"
-                android:layout_centerInParent="true"
-                android:text="No plans are created. Create a new plan"
-                android:visibility="invisible"/>
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Share plans"
+                android:fontFamily="@font/montserrat_bold"
+                android:textSize="26sp"
+                android:textColor="@color/black"
+                android:layout_marginTop="26dp"
+                android:layout_marginLeft="16dp"
+                />
             <TextView
-                android:layout_width="match_parent"
-                android:layout_height="42dp"
-                android:textSize="18sp"
-                android:id="@+id/tv_no_connection"
-                android:gravity="center"
-                android:layout_centerInParent="true"
-                android:text="There is no connection. Please connect to the internet!"
-                android:visibility="invisible"/>
-            <!--Bottom navigation bar-->
-
-        <!--</RelativeLayout>-->
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Share your plans with other people"
+                android:fontFamily="@font/montserrat_medium"
+                android:textSize="16sp"
+                android:textColor="#9B9B9B"
+                android:layout_marginStart="16dp"
+                />
+        </LinearLayout>
+        <!--Body Content-->
+        <include layout="@layout/layout_custom_searchbar"
+            android:id="@+id/search_layout"
+            android:visibility="visible"/>
+        <include layout="@layout/layout_custom_listcard"
+            android:visibility="visible"/>
     </LinearLayout>
 </RelativeLayout>
