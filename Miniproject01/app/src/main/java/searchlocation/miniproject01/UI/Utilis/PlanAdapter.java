@@ -97,7 +97,11 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.PlanViewHolder
             Plan plan = listOfPlans.get(listIndex);
             image.setImageBitmap(plan.getImage());
             title.setText(plan.getTitle());
-            hashtag.setText(plan.getTags());
+            if(plan.getTags()==null || plan.getTags().isEmpty()){
+                hashtag.setText("No hashtag");
+            }else {
+                hashtag.setText(plan.getTags());
+            }
             desc.setText(plan.getDesc());
         }
 
