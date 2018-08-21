@@ -26,4 +26,5 @@ public class EditorActivity extends AppCompatActivity {
 		View h2= findViewById(R.id.action_h2);
 		View h3 = findViewById(R.id.action_h3);
 	}
+
 }

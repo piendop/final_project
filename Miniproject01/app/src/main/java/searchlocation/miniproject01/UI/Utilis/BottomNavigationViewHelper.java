@@ -11,6 +11,7 @@ import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import searchlocation.miniproject01.R;
 import searchlocation.miniproject01.UI.Discover.DiscoverActivity;
 import searchlocation.miniproject01.UI.Editor.EditorActivity;
+import searchlocation.miniproject01.UI.Favorite.FavoriteActivity;
 import searchlocation.miniproject01.UI.OnGoing.OnGoingActivity;
 import searchlocation.miniproject01.UI.Reader.Article_Base;
 import searchlocation.miniproject01.UI.profile.ProfileHome;
@@ -65,7 +66,7 @@ public class BottomNavigationViewHelper {
 							context.startActivity(editor);
 							break;
 						case 3:
-							Intent bookmark = new Intent(context, ProfileHome.class);
+							Intent bookmark = new Intent(context, FavoriteActivity.class);
 							context.startActivity(bookmark);
 							//Toast.makeText(context, "library Activity", Toast.LENGTH_SHORT).show();
 							//AHBottomNavigation.setCurrentItem(3);

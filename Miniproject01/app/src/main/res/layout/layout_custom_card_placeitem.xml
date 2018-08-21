@@ -1,26 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="16sp"
-    android:layout_marginRight="16sp"
+    android:layout_marginTop="6sp"
+    android:layout_marginLeft="5sp"
+    android:layout_marginRight="5sp"
     >
     <Button
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="22sp"
         android:textAllCaps="false"
         android:textColor="@color/white"
-        android:textSize="16sp"
+        android:textSize="15sp"
         android:id="@+id/btn_place"
+        android:fontFamily="@font/montserrat_semibold"
+        android:background="@drawable/white_border"
         />
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/tv_review"
         android:textSize="16sp"
-        android:lineSpacingExtra="3sp"
+        android:lineSpacingExtra="4sp"
         android:fontFamily="@font/notoserif_regular"
         android:textColor="@color/black"
+        android:layout_alignParentStart="true"
+        android:layout_toEndOf="@id/btn_place"
         />
-</FrameLayout>
+</RelativeLayout>

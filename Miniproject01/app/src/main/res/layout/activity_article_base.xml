@@ -44,6 +44,7 @@
                 android:divider="@android:color/transparent"
                 android:id="@+id/list_places"
                 android:visibility="invisible"
+                android:nestedScrollingEnabled="false"
                 >
             </android.support.v7.widget.RecyclerView>
             <!--Bottom navigation bar-->

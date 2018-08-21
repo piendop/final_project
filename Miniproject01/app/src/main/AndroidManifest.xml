@@ -71,6 +71,8 @@
         <activity android:name=".UI.Login.SignUp"/>
         <activity android:name=".UI.Login.IntroActivity"/>
         <activity android:name=".UI.Reader.Article_Base"/>
+        <activity android:name=".UI.profile.ProfileHome"/>
+        <activity android:name=".UI.Editor.EditorActivity"/>
     </application>
 
 </manifest>
