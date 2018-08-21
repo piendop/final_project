@@ -52,7 +52,7 @@
             android:windowSoftInputMode="adjustPan" />
         <!--<activity android:name=".UI.Search.MapsActivity" />-->
         <!-- <activity android:name=".UI.Discover.DiscoverActivity" /> -->
-        <activity android:name=".UI.FavoriteActivity" />
+        <activity android:name=".UI.Favorite.FavoriteActivity" />
         <activity android:name=".UI.Reader.ArticleActivity" />
         <activity
             android:name=".UI.Login.LoginActivity"

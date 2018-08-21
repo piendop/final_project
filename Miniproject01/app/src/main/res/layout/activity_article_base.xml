@@ -3,46 +3,50 @@
     android:layout_width="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android" >
     <include layout="@layout/layout_bottom_navigation_reader" />
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="60dp"
-        android:orientation="vertical"
-        tools:context=".UI.Reader.Article_Base">
-        <!--Top info-->
-        <include layout="@layout/layout_custom_reader_topinfo"/>
-        <TextView
+        android:layout_marginBottom="50dp"
+        >
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="match_parent"
-            android:layout_height="42dp"
-            android:textSize="18sp"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
-            android:layout_gravity="center"
-            android:text="There is no connection. Please connect to the internet!"
-            android:visibility="invisible"
-            android:id="@+id/tv_no_connection"/>
-        <ProgressBar
-            android:id="@+id/pb_loading_indicator"
-            android:layout_width="42dp"
-            android:layout_height="42dp"
-            android:layout_centerInParent="true"
-            android:layout_gravity="center"
-            android:visibility="invisible" />
-        <!--List of place-->
-        <android.support.v7.widget.RecyclerView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:scrollbars="vertical"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="60dp"
-            android:divider="@android:color/transparent"
-            android:dividerHeight="10.0sp"
-            android:id="@+id/list_places"
-            android:visibility="invisible"
-            >
-        </android.support.v7.widget.RecyclerView>
-        <!--Bottom navigation bar-->
-    </LinearLayout>
+            android:layout_height="match_parent"
+            android:layout_marginBottom="50dp"
+            android:orientation="vertical"
+            tools:context=".UI.Reader.Article_Base">
+            <!--Top info-->
+            <include layout="@layout/layout_custom_reader_topinfo"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="42dp"
+                android:textSize="18sp"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center"
+                android:text="There is no connection. Please connect to the internet!"
+                android:visibility="invisible"
+                android:id="@+id/tv_no_connection"/>
+            <ProgressBar
+                android:id="@+id/pb_loading_indicator"
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                android:layout_centerInParent="true"
+                android:layout_gravity="center"
+                android:visibility="invisible" />
+            <!--List of place-->
+            <android.support.v7.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="vertical"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:divider="@android:color/transparent"
+                android:id="@+id/list_places"
+                android:visibility="invisible"
+                >
+            </android.support.v7.widget.RecyclerView>
+            <!--Bottom navigation bar-->
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
 </RelativeLayout>

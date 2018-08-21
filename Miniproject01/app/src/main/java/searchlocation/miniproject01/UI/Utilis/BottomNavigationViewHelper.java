@@ -13,6 +13,7 @@ import searchlocation.miniproject01.UI.Discover.DiscoverActivity;
 import searchlocation.miniproject01.UI.Editor.EditorActivity;
 import searchlocation.miniproject01.UI.OnGoing.OnGoingActivity;
 import searchlocation.miniproject01.UI.Reader.Article_Base;
+import searchlocation.miniproject01.UI.profile.ProfileHome;
 
 public class BottomNavigationViewHelper {
 		public static void setupBottomNavigationView(AHBottomNavigation AHBottomNavigation) {
@@ -64,13 +65,15 @@ public class BottomNavigationViewHelper {
 							context.startActivity(editor);
 							break;
 						case 3:
+							Intent bookmark = new Intent(context, ProfileHome.class);
+							context.startActivity(bookmark);
 							//Toast.makeText(context, "library Activity", Toast.LENGTH_SHORT).show();
 							//AHBottomNavigation.setCurrentItem(3);
 							break;
 						case 4:
 							//Toast.makeText(context, "profile Activity", Toast.LENGTH_SHORT).show();
-							Intent reader = new Intent(context, Article_Base.class);
-							context.startActivity(reader);
+							Intent profile = new Intent(context, ProfileHome.class);
+							context.startActivity(profile);
 							//AHBottomNavigation.setCurrentItem(4);
 							break;
 					}

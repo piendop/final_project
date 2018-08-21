@@ -14,7 +14,7 @@ public class OnGoingEmptyActivity extends AppCompatActivity {
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_ongoing);
+		setContentView(R.layout.activity_ongoing_empty);
 		setupBottomNavigationView();
 	}
 
