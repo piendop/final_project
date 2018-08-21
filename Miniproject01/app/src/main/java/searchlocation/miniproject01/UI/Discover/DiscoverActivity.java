@@ -14,10 +14,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AutoCompleteTextView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
@@ -52,7 +58,10 @@ public class DiscoverActivity extends AppCompatActivity implements PlanAdapter.O
     private TextView noConnectionTextView;
     private SwipeRefreshLayout refreshLayout;
     private AHBottomNavigation bottomNavigation;
-
+    private AutoCompleteTextView searchTextView;
+    private String textSearch;
+    private TextView noSearchTextView;
+    private LinearLayout linearLayout;
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main,menu);
@@ -75,7 +84,10 @@ public class DiscoverActivity extends AppCompatActivity implements PlanAdapter.O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_discover);
+        searchTextView = findViewById(R.id.input_search);
+        linearLayout = findViewById(R.id.relLayout1);
         noConnectionTextView = findViewById(R.id.tv_no_connection);
+        noSearchTextView = findViewById(R.id.tv_no_search);
         refreshLayout = findViewById(R.id.swipe_refresh);
         listOfPlans = findViewById(R.id.list_plans);
         mLoadingIndicator = findViewById(R.id.pb_loading_indicator);
@@ -88,8 +100,119 @@ public class DiscoverActivity extends AppCompatActivity implements PlanAdapter.O
         });
         init();
         setupBottomNavigationView();
+        getTextSearch();
     }
 
+    private void getTextSearch() {
+        searchTextView.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View view, int i, KeyEvent keyEvent) {
+                if(i== KeyEvent.KEYCODE_ENTER && keyEvent.getAction()==KeyEvent.ACTION_DOWN){
+                    InputMethodManager inputMethodManager =(InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                    if(inputMethodManager!=null && getCurrentFocus()!=null)
+                        inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),0);
+                    new LoadingSearchPlanInitially().execute();
+                }
+                return false;
+            }
+        });
+        searchTextView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE){
+                    InputMethodManager inputMethodManager =(InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                    if(inputMethodManager!=null && getCurrentFocus()!=null)
+                        inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),0);
+                    new LoadingSearchPlanInitially().execute();
+                }
+                return false;
+            }
+        });
+    }
+
+
+    private class LoadingSearchPlanInitially extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            mLoadingIndicator.setVisibility(View.VISIBLE);
+            listOfPlans.setVisibility(View.INVISIBLE);
+            searchTextView.setVisibility(View.INVISIBLE);
+            noSearchTextView.setVisibility(View.INVISIBLE);
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+
+            textSearch = searchTextView.getText().toString();
+            planList.clear();
+            Log.i("Text search ",textSearch);
+            if (textSearch != null){
+                ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Plan");
+                String pattern = "^.*" + textSearch + ".*$";
+                query.whereMatches("title", textSearch, "i");
+                query.orderByAscending("createdAt");
+                query.setLimit(10);
+                query.findInBackground(new FindCallback<ParseObject>() {
+                    @Override
+                    public void done(final List<ParseObject> objects, ParseException e) {
+                        if (e == null && objects.size() > 0) {
+                            for (final ParseObject object : objects) {
+                                final Plan plan = new Plan();
+                                //load image to view
+                                ParseFile image = (ParseFile) object.get("image");
+                                if (image != null) {
+                                    image.getDataInBackground(new GetDataCallback() {
+                                        @Override
+                                        public void done(byte[] data, ParseException e) {
+                                            if (e == null && data != null) {
+                                                Log.i("Get image", "successful");
+                                                Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+                                                plan.setImage(bitmap);
+                                                plan.setTitle(object.getString("title"));
+                                                plan.setDesc(object.getString("description"));
+                                                plan.setTags(object.getString("hashtag"));
+                                                plan.setObjectId(object.getObjectId());
+                                                //finally,add to planlist
+                                                planList.add(plan);
+                                                SharedPreferences preferences = DiscoverActivity.this.getSharedPreferences("SharedPref", 0);
+                                                Date date = new Date(preferences.getLong("createdAt", 0));
+                                                if (object.getCreatedAt().after(date)) {
+                                                    preferences.edit().putLong("createdAt", object.getCreatedAt().getTime()).apply();
+                                                }
+                                                if (planList.size() == objects.size()) {
+                                                    NUM_LIST_ITEMS = objects.size();
+                                                    mAdapter.setmNumberItems(NUM_LIST_ITEMS);
+                                                    mAdapter.setListOfPlans(planList);
+                                                    mAdapter.notifyDataSetChanged();
+                                                    mLoadingIndicator.setVisibility(View.INVISIBLE);
+                                                    refreshLayout.setVisibility(View.VISIBLE);
+                                                    listOfPlans.setVisibility(View.VISIBLE);
+                                                }
+                                            } else {
+                                                Log.i("Get image", "failed");
+                                            }
+                                        }
+                                    });
+                                }
+                            }
+                        } else {
+                            Log.i("Could", "not load object");
+                            mLoadingIndicator.setVisibility(View.INVISIBLE);
+                            noSearchTextView.setVisibility(View.VISIBLE);
+                        }
+                    }
+                });
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            searchTextView.setVisibility(View.VISIBLE);
+        }
+    }
     private void refreshPlan() {
         noConnectionTextView.setVisibility(View.INVISIBLE);
         init();

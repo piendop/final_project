@@ -43,7 +43,7 @@ public class Main extends Activity {
         SharedPreferences sharedPreferences = this.getSharedPreferences("SharedPref",0);
 	    Boolean isRemeber =sharedPreferences.getBoolean("isRemember",true);
 
-		if(isRemeber){
+		if(isRemeber && ParseUser.getCurrentUser()!= null){
 		    return true;
         }
         ParseUser.logOut();
