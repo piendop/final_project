@@ -70,8 +70,7 @@ public class OnGoingActivity extends AppCompatActivity implements OnGoingAdapter
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_ongoing);
 		setupBottomNavigationView();
-        placeRecyclerView = findViewById(R.id.rv_places);
-
+		placeRecyclerView = findViewById(R.id.rv_places);
 
 		planId = getIntent().getStringExtra("currentPlan");
 		if(planId!=null && !planId.isEmpty()){
