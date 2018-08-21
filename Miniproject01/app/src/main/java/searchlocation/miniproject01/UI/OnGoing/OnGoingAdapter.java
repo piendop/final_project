@@ -70,6 +70,7 @@ public class OnGoingAdapter extends RecyclerView.Adapter<OnGoingAdapter.Location
         if(listOfPlaces.size()>0){
             holder.bind(position);
         }
+
         if(position==listOfPlaces.size()-1){
             onBottomReachedListener.onBottomReached(position);
         }

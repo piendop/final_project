@@ -62,6 +62,7 @@ public class DiscoverActivity extends AppCompatActivity implements PlanAdapter.O
     private String textSearch;
     private TextView noSearchTextView;
     private LinearLayout linearLayout;
+    private String username;
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main,menu);
@@ -84,6 +85,7 @@ public class DiscoverActivity extends AppCompatActivity implements PlanAdapter.O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_discover);
+        username= ParseUser.getCurrentUser().getObjectId();
         searchTextView = findViewById(R.id.input_search);
         linearLayout = findViewById(R.id.relLayout1);
         noConnectionTextView = findViewById(R.id.tv_no_connection);
@@ -250,7 +252,11 @@ public class DiscoverActivity extends AppCompatActivity implements PlanAdapter.O
     @Override
     public void onBottomReached(int position) {
         Log.i("Bottom reached: ", Integer.toString(position));
-        new LoadPlan().execute(position);
+        if(textSearch!=null && !textSearch.isEmpty()){
+            new LoadSearchPlan().execute(position);
+        }else {
+            new LoadPlan().execute(position);
+        }
     }
 
     @Override
@@ -271,7 +277,6 @@ public class DiscoverActivity extends AppCompatActivity implements PlanAdapter.O
         @Override
         protected Void doInBackground(Void... voids) {
             ParseQuery<ParseObject> query = new ParseQuery<>("Plan");
-            String username = ParseUser.getCurrentUser().getObjectId();
             if (username != null) {
                 Log.i("username ", username);
                 query.whereEqualTo("userId", username);
@@ -339,10 +344,8 @@ public class DiscoverActivity extends AppCompatActivity implements PlanAdapter.O
         protected Void doInBackground(final Integer... pos) {
             final SharedPreferences preferences = DiscoverActivity.this.getSharedPreferences("SharedPref", 0);
             Date date = new Date(preferences.getLong("createdAt", 0));
-            if (date.getTime() != 0) {
+            if (date.getTime() != 0 && username!=null) {
                 ParseQuery<ParseObject> query = new ParseQuery<>("Plan");
-                final SharedPreferences sharedPreferences = DiscoverActivity.this.getSharedPreferences("SharedPref", MODE_PRIVATE);
-                String username = sharedPreferences.getString("USERNAME", null);
                 query.whereEqualTo("userId", username);
                 query.whereGreaterThan("createdAt", date);
                 query.orderByAscending("createdAt");
@@ -398,6 +401,68 @@ public class DiscoverActivity extends AppCompatActivity implements PlanAdapter.O
         }
     }
 
+    private class LoadSearchPlan extends AsyncTask<Integer, Void, Void> {
+
+        @Override
+        protected Void doInBackground(final Integer... pos) {
+            final SharedPreferences preferences = DiscoverActivity.this.getSharedPreferences("SharedPref", 0);
+            Date date = new Date(preferences.getLong("createdAt", 0));
+            if (date.getTime() != 0 && username!=null) {
+                ParseQuery<ParseObject> query = new ParseQuery<>("Plan");
+                query.whereMatches("title", textSearch,"i");
+                query.whereGreaterThan("createdAt", date);
+                query.orderByAscending("createdAt");
+                query.setLimit(10);
+                query.findInBackground(new FindCallback<ParseObject>() {
+                    @Override
+                    public void done(final List<ParseObject> objects, ParseException e) {
+                        if (e == null && objects.size() > 0) {
+                            int position = pos[0];
+                            for (final ParseObject object : objects) {
+                                ++position;
+                                final Plan plan = new Plan();
+                                //load image to view
+                                ParseFile image = (ParseFile) object.get("image");
+                                if (image != null) {
+                                    final int pos = position;
+                                    image.getDataInBackground(new GetDataCallback() {
+                                        @Override
+                                        public void done(byte[] data, ParseException e) {
+                                            if (e == null && data != null) {
+                                                Log.i("Get image", "successful");
+                                                Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+                                                plan.setImage(bitmap);
+                                                plan.setTitle(object.getString("title"));
+                                                plan.setDesc(object.getString("description"));
+                                                plan.setTags(object.getString("hashtag"));
+                                                plan.setObjectId(object.getObjectId());
+                                                preferences.edit().putLong("createdAt", object.getCreatedAt().getTime()).apply();
+                                                //load more plan
+                                                NUM_LIST_ITEMS++;
+                                                mAdapter.setmNumberItems(NUM_LIST_ITEMS);
+                                                mAdapter.addPlan(plan);
+                                                mAdapter.notifyItemInserted(pos);
+                                            } else {
+                                                Log.i("Get image", "failed");
+                                            }
+                                        }
+                                    });
+                                }
+                            }
+                        } else {
+                            Log.i("Object", "cannot load more");
+                        }
+                    }
+                });
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+        }
+    }
     public boolean isNetworkConnected() {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         return cm.getActiveNetworkInfo()!=null;
