@@ -20,7 +20,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
 
     <!-- To auto-complete the email text field in the login form with the user's emails -->
@@ -50,7 +50,7 @@
             android:name=".UI.Search.MapActivity"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="adjustPan" />
-        <!--<activity android:name=".UI.Search.MapsActivity" />-->
+        <!-- <activity android:name=".UI.Search.MapsActivity" /> -->
         <!-- <activity android:name=".UI.Discover.DiscoverActivity" /> -->
         <activity android:name=".UI.Favorite.FavoriteActivity" />
         <activity android:name=".UI.Reader.ArticleActivity" />
@@ -68,11 +68,11 @@
         </activity>
         <activity android:name=".UI.OnGoing.OnGoingEmptyActivity" />
         <activity android:name=".UI.Discover.DiscoverActivity" />
-        <activity android:name=".UI.Login.SignUp"/>
-        <activity android:name=".UI.Login.IntroActivity"/>
-        <activity android:name=".UI.Reader.Article_Base"/>
-        <activity android:name=".UI.profile.ProfileHome"/>
-        <activity android:name=".UI.Editor.EditorActivity"/>
+        <activity android:name=".UI.Login.SignUp" />
+        <activity android:name=".UI.Login.IntroActivity" />
+        <activity android:name=".UI.Reader.Article_Base" />
+        <activity android:name=".UI.profile.ProfileHome" />
+        <activity android:name=".UI.Editor.EditorActivity" />
     </application>
 
 </manifest>
