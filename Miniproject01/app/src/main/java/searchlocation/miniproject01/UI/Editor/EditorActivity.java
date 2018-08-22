@@ -11,6 +11,7 @@ import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -34,6 +35,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 
 import searchlocation.miniproject01.R;
 import searchlocation.miniproject01.UI.OnGoing.OnGoingActivity;
@@ -46,6 +48,7 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
 	private EditText descEditText;
 	private Button importImageButton;
 	private LinearLayout linearLayout;
+	private ArrayList<LocationEditorFragment> listOfLocations;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -59,10 +62,36 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
 
 		importImageButton.setOnClickListener(this);
 
+//		initialize new location fragment list with 1 fragment
+		initialize();
+
+
+		LocationEditorFragment locationEditor = new LocationEditorFragment();
+
+		FragmentManager fragmentManager = getSupportFragmentManager();
+
+		fragmentManager.beginTransaction()
+				.add(R.id.location_review_container,locationEditor)
+				.commit();
+
+		LocationEditorFragment locationEditor2 = new LocationEditorFragment();
+		fragmentManager.beginTransaction()
+				.add(R.id.location_review_container,locationEditor2)
+				.commit();
+
+	}
+
+	private void initialize() {
+//		LocationEditorFragment initItem = new LocationEditorFragment();
+//		this.listOfLocations.add(initItem);
+//		FragmentManager fragmentManager = getSupportFragmentManager();
+//		fragmentManager.beginTransaction()
+//				.add(R.id.location_review_container,listOfLocations.get(listOfLocations.size() - 1))
+//				.commit();
 	}
 
 
-    @Override
+	@Override
     public void onClick(View v) {
         int id = v.getId();
         if(id==R.id.btn_import){

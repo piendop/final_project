@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginLeft="20dp"
+    android:layout_marginRight="20dp"
+    android:orientation="vertical"
+    tools:context=".UI.Editor.LocationEditorFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/edit_review"
+        android:layout_marginTop="6dp"
+        android:paddingBottom="8dp"
+        android:textSize="16sp"
+        android:lineSpacingExtra="4sp"
+        android:fontFamily="@font/notoserif_regular"
+        android:textColor="@color/black"
+        android:hint="Write your review"
+        android:textColorHint="#AEAEAE"
+        android:background="@drawable/grey_box1"
+        />
+    <!--<Button-->
+        <!--android:id="@+id/btn_add_review"-->
+        <!--style="?android:textAppearanceSmall"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="35dp"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:layout_alignParentEnd="true"-->
+        <!--android:layout_marginBottom="17dp"-->
+        <!--android:layout_marginEnd="17dp"-->
+        <!--android:textSize="12sp"-->
+        <!--android:paddingLeft="20dp"-->
+        <!--android:paddingRight="20dp"-->
+        <!--android:background="@drawable/btn_filled"-->
+        <!--android:fontFamily="@font/montserrat_semibold"-->
+        <!--android:gravity="center"-->
+        <!--android:elevation="0dp"-->
+        <!--android:text="Add new place"-->
+        <!--android:textAllCaps="false"-->
+        <!--android:textColor="@color/white"-->
+        <!--android:textStyle="bold" />-->
+</LinearLayout>

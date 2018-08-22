@@ -28,4 +28,7 @@
     <string name="slide3_title">Live tracking your journey</string>
     <string name="slide3_description">Lorem ipsum dolor sit amet, liber nonumes persecuti an vel, has integre gloriatur at. Mollis propriae consulatu id mea, nec.</string>
     <string name="action_reset">Refresh</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
