@@ -17,13 +17,18 @@ import searchlocation.miniproject01.R;
 
 public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.PlanViewHolder> {
 
-	private List<Plan> listOfPlans;
+	private ArrayList<Plan> listOfPlans;
 	private int mNumberItems=0;
     final private OnBottomReachedListener onBottomReachedListener;
     final private PlanAdapterOnClickHandler mClickHander;
 
 	public PlanAdapter(int numberOfItems, ArrayList<Plan> list, OnBottomReachedListener onBottomReachedListener, PlanAdapterOnClickHandler clickHandler){
-        listOfPlans = list;
+
+        if(!list.isEmpty()){
+            listOfPlans = list;
+        }else{
+            listOfPlans = new ArrayList<>();
+        }
 	    mNumberItems=numberOfItems;
         this.onBottomReachedListener = onBottomReachedListener;
         this.mClickHander = clickHandler;
@@ -33,7 +38,7 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.PlanViewHolder
 	    listOfPlans.add(plan);
     }
 
-    public void setListOfPlans(List<Plan> listOfPlans) {
+    public void setListOfPlans(ArrayList<Plan> listOfPlans) {
         this.listOfPlans = listOfPlans;
     }
 
