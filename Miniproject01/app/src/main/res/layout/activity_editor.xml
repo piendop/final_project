@@ -6,7 +6,24 @@
     android:layout_height="match_parent"
     tools:context=".UI.Editor.EditorActivity">
     <!--Toolbar for live editor-->
-    <include layout="@layout/layout_custom_editor_topinfo"/>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <include layout="@layout/layout_custom_editor_topinfo"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/relLayout3">
+            <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:id="@+id/map"
+                android:name="searchlocation.miniproject01.UI.Fragments.PlusOneFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context=".UI.OnGoing.OnGoingActivity"
+                />
+        </RelativeLayout>
+    </ScrollView>
     <HorizontalScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
