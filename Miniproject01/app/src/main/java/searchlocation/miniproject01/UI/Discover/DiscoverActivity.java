@@ -467,4 +467,10 @@ public class DiscoverActivity extends AppCompatActivity implements PlanAdapter.O
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         return cm.getActiveNetworkInfo()!=null;
     }
+
+    @Override
+    protected void onDestroy() {
+        listOfPlans.removeAllViews();
+        super.onDestroy();
+    }
 }

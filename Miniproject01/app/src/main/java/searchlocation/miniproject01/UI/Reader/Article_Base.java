@@ -311,4 +311,10 @@ public class Article_Base extends AppCompatActivity implements PlaceItemAdapter.
 	public void onClick(String itemName) {
 		Log.i("Item Name",itemName);
 	}
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        placeRecyclerView.removeAllViews();
+    }
 }
