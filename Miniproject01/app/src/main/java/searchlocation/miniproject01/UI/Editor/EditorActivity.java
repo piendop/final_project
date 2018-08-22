@@ -1,6 +1,7 @@
 package searchlocation.miniproject01.UI.Editor;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -8,9 +9,11 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,9 +27,11 @@ import android.widget.Toast;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.github.irshulx.Editor;
 import com.github.irshulx.models.EditorTextStyle;
+import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
@@ -36,6 +41,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import searchlocation.miniproject01.R;
+import searchlocation.miniproject01.UI.Login.LoginActivity;
 import searchlocation.miniproject01.UI.OnGoing.OnGoingActivity;
 import searchlocation.miniproject01.UI.Utilis.BottomNavigationViewHelper;
 
@@ -45,9 +51,100 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
 	private EditText titleEditText;
 	private EditText descEditText;
 	private Button importImageButton;
-	private LinearLayout linearLayout;
+    private SharedPreferences sharedPreferences;
 
-	@Override
+    @Override
+    public void onBackPressed() {
+        final String title = titleEditText.getText().toString();
+        final String desc = descEditText.getText().toString();
+        if (title.isEmpty() || desc.isEmpty()) {
+            new AlertDialog.Builder(EditorActivity.this)
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setTitle("There are no title or description!")
+                    .setMessage("Do you want to exit?")
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            Intent intent = new Intent(getApplicationContext(), OnGoingActivity.class);
+                            startActivity(intent);
+                        }
+                    })
+                    .setNegativeButton("No", null)
+                    .show();
+        }else {
+            new AlertDialog.Builder(this)
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setTitle("Are you sure?")
+                    .setMessage("Do you want to save this plan?")
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            String planId = sharedPreferences.getString("newPlan", null);
+
+
+                            if (planId != null) {
+                                ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Plan");
+                                query.getInBackground(planId, new GetCallback<ParseObject>() {
+                                    @Override
+                                    public void done(ParseObject object, ParseException e) {
+                                        object.put("title", title);
+                                        object.put("description", desc);
+                                        object.saveInBackground(new SaveCallback() {
+                                            @Override
+                                            public void done(ParseException e) {
+                                                if (e == null) {
+                                                    Log.i("Title desc ", "successful");
+                                                }
+                                            }
+                                        });
+                                    }
+                                });
+                            } else {
+                                final ParseObject object = new ParseObject("Plan");
+                                Bitmap bitmap = BitmapFactory.decodeResource(getResources(),R.drawable.image2);
+                                ByteArrayOutputStream  stream = new ByteArrayOutputStream();
+                                bitmap.compress(Bitmap.CompressFormat.PNG,100,stream);
+                                byte[] array = stream.toByteArray();
+                                ParseFile file = new ParseFile("image.png",array);
+                                object.put("image",file);
+                                object.saveInBackground(new SaveCallback() {
+                                    @Override
+                                    public void done(ParseException e) {
+                                        if(e==null){
+                                            Log.i("Image null ","successful");
+                                            object.put("title", title);
+                                            object.put("description", desc);
+                                            object.put("userId",ParseUser.getCurrentUser().getObjectId());
+                                            object.saveInBackground(new SaveCallback() {
+                                                @Override
+                                                public void done(ParseException e) {
+                                                    if (e == null) {
+                                                        Log.i("Title desc only ", "successful");
+                                                    }
+                                                }
+                                            });
+                                        }
+                                    }
+                                });
+
+                            }
+                            Intent intent = new Intent(getApplicationContext(), OnGoingActivity.class);
+                            startActivity(intent);
+                        }
+                    })
+                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent intent = new Intent(getApplicationContext(), OnGoingActivity.class);
+                            startActivity(intent);
+                        }
+                    })
+                    .show();
+        }
+
+    }
+
+    @Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_editor);
@@ -55,7 +152,9 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
 		titleEditText = findViewById(R.id.edit_title);
 		descEditText = findViewById(R.id.edit_description);
 		importImageButton = findViewById(R.id.btn_import);
-		linearLayout = findViewById(R.id.plan_info);
+        sharedPreferences = EditorActivity.this.getSharedPreferences("SharedPref",MODE_PRIVATE);
+        //init new plan is null
+        sharedPreferences.edit().putString("newPlan",null).apply();
 
 		importImageButton.setOnClickListener(this);
 
@@ -115,7 +214,7 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
 
                 object.put("image",file);
 
-                object.put("userId", ParseUser.getCurrentUser().getUsername());
+                object.put("userId", ParseUser.getCurrentUser().getObjectId());
 
                 object.saveInBackground(new SaveCallback() {
                     @Override
@@ -123,7 +222,6 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
                         if(e==null){
                             Log.i("Image ","uploaded");
                             //headingImage.setImageBitmap(bitmap);
-                            SharedPreferences sharedPreferences = EditorActivity.this.getSharedPreferences("SharedPref",MODE_PRIVATE);
                             sharedPreferences.edit().putString("newPlan",object.getObjectId()).apply();
                         }else{
                             Toast.makeText(getApplicationContext(),"Image could not be uploaded - please try again later",Toast.LENGTH_SHORT).show();
