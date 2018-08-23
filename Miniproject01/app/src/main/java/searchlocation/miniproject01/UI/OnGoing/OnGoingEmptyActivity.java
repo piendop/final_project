@@ -19,26 +19,14 @@ public class OnGoingEmptyActivity extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_ongoing_empty);
 		setupBottomNavigationView();
-		bottomNavigation.setOnTabSelectedListener(new AHBottomNavigation.OnTabSelectedListener() {
-            @Override
-            public boolean onTabSelected(int position, boolean wasSelected) {
-                if(position==0){
-                    String planId = getIntent().getStringExtra("currentPlan");
-                    if(planId==null){
-                        Intent intent = new Intent(OnGoingEmptyActivity.this,OnGoingEmptyActivity.class);
-                        startActivity(intent);
-                    }
-                }
-                return false;
-            }
-        });
+
 	}
 
 	/*This method I use to setup the bottom navigation with helper from Utils folder*/
 	private void setupBottomNavigationView(){
 		bottomNavigation = (AHBottomNavigation) findViewById(R.id.bottomNavigation);
 		BottomNavigationViewHelper.setupBottomNavigationView(bottomNavigation);
-		//BottomNavigationViewHelper.enableBottomNavigation(OnGoingEmptyActivity.this,BottomNavigation);
+		BottomNavigationViewHelper.enableBottomNavigation(OnGoingEmptyActivity.this,bottomNavigation);
+		bottomNavigation.disableItemAtPosition(0);
 	}
-
 }

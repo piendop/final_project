@@ -17,6 +17,7 @@ import com.parse.ParseUser;
 
 import searchlocation.miniproject01.R;
 import searchlocation.miniproject01.UI.OnGoing.OnGoingActivity;
+import searchlocation.miniproject01.UI.OnGoing.OnGoingEmptyActivity;
 import searchlocation.miniproject01.UI.Utilis.IntroCustomLayout;
 
 public class IntroActivity extends AppIntro {
@@ -50,28 +51,7 @@ public class IntroActivity extends AppIntro {
 		addSlide(IntroCustomLayout.newInstance(R.layout.intro_slide3));
 	}
 
-	private void setUpSlides() {
-		SliderPage sliderPage = new SliderPage();
-		sliderPage.setTitle("Discover Interesting Plans");
-		sliderPage.setTitle(getString(R.string.slide1_title));
-		sliderPage.setDescription(getString(R.string.slide1_description));
-		sliderPage.setImageDrawable(R.drawable.character_discover);
-		addSlide(AppIntroFragment.newInstance(sliderPage));
 
-		SliderPage sliderPage2 = new SliderPage();
-		sliderPage2.setTitle("Discover Interesting Plans");
-		sliderPage2.setTitle(getString(R.string.slide2_title));
-		sliderPage2.setDescription(getString(R.string.slide2_description));
-		sliderPage2.setImageDrawable(R.drawable.character_write);
-		addSlide(AppIntroFragment.newInstance(sliderPage2));
-
-		SliderPage sliderPage3 = new SliderPage();
-		sliderPage3.setTitle("Discover Interesting Plans");
-		sliderPage3.setTitle(getString(R.string.slide3_title));
-		sliderPage3.setDescription(getString(R.string.slide3_description));
-		sliderPage3.setImageDrawable(R.drawable.character_live);
-		addSlide(AppIntroFragment.newInstance(sliderPage3));
-	}
 
 	@Override
 	public void onSkipPressed(Fragment currentFragment) {
@@ -94,7 +74,7 @@ public class IntroActivity extends AppIntro {
 	}
 
 	private void loadOnGoingActivity() {
-		Intent loadOnGoing = new Intent(IntroActivity.this, OnGoingActivity.class);
+		Intent loadOnGoing = new Intent(IntroActivity.this, OnGoingEmptyActivity.class);
 		startActivity(loadOnGoing);
 	}
 }

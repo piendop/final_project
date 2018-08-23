@@ -28,7 +28,7 @@
             android:hint="Your Title"
             android:textColor="@color/white"
             android:textColorHint="#AEAEAE"
-            android:textSize="28sp" />
+            android:textSize="@dimen/textsize_title" />
         <Button
             android:id="@+id/btn_import"
             style="?android:textAppearanceSmall"

@@ -247,6 +247,7 @@ public class DiscoverActivity extends AppCompatActivity implements PlanAdapter.O
         bottomNavigation = (AHBottomNavigation) findViewById(R.id.bottomNavigation);
         BottomNavigationViewHelper.setupBottomNavigationView(bottomNavigation);
         BottomNavigationViewHelper.enableBottomNavigation(DiscoverActivity.this,bottomNavigation);
+        bottomNavigation.disableItemAtPosition(1);
     }
 
     @Override
