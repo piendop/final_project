@@ -13,19 +13,22 @@ import android.media.Image;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
-<<<<<<< HEAD
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-=======
+
 import android.support.v7.app.AlertDialog;
->>>>>>> 8e4fbf79efacd3f2f9eeb4de9a25db90a8645ebe
+
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
@@ -45,20 +48,27 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
+import searchlocation.miniproject01.Models.Place;
 import searchlocation.miniproject01.R;
 import searchlocation.miniproject01.UI.Login.LoginActivity;
 import searchlocation.miniproject01.UI.OnGoing.OnGoingActivity;
+import searchlocation.miniproject01.UI.Search.MapsActivity;
 import searchlocation.miniproject01.UI.Utilis.BottomNavigationViewHelper;
 
-public class EditorActivity extends AppCompatActivity implements View.OnClickListener {
+public class EditorActivity extends AppCompatActivity implements View.OnClickListener{
 
 	private ImageView headingImage;
 	private EditText titleEditText;
 	private EditText descEditText;
 	private Button importImageButton;
-	private LinearLayout linearLayout;
-	private ArrayList<LocationEditorFragment> listOfLocations;
+	private Button addPlaceButton;
     private SharedPreferences sharedPreferences;
+    private String planId;
+    private ArrayList<Place> places;
+    private RecyclerView reviewRecyclerView;
+    private ReviewAdapter reviewAdapter;
+    private String reviewId;
+    private ArrayList<EditModel> editModelArrayList;
 
 
     @Override
@@ -87,14 +97,14 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
                     .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            String planId = sharedPreferences.getString("newPlan", null);
+                            planId = sharedPreferences.getString("newPlan", null);
 
 
                             if (planId != null) {
                                 ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Plan");
                                 query.getInBackground(planId, new GetCallback<ParseObject>() {
                                     @Override
-                                    public void done(ParseObject object, ParseException e) {
+                                    public void done(final ParseObject object, ParseException e) {
                                         object.put("title", title);
                                         object.put("description", desc);
                                         object.saveInBackground(new SaveCallback() {
@@ -156,43 +166,60 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_editor);
+        if(MapsActivity.addresses.size()>0) {
+            MapsActivity.addresses.clear();
+            MapsActivity.locations.clear();
+            MapsActivity.names.clear();
+            MapsActivity.icon.recycle();
+        }
 		headingImage = findViewById(R.id.edit_headingImage);
 		titleEditText = findViewById(R.id.edit_title);
 		descEditText = findViewById(R.id.edit_description);
 		importImageButton = findViewById(R.id.btn_import);
+		addPlaceButton = findViewById(R.id.bt_add_place);
         sharedPreferences = EditorActivity.this.getSharedPreferences("SharedPref",MODE_PRIVATE);
         //init new plan is null
         sharedPreferences.edit().putString("newPlan",null).apply();
 
-		importImageButton.setOnClickListener(this);
+        reviewId = sharedPreferences.getString("reviewId",null);
+        places = new ArrayList<>();
+		//importImageButton.setOnClickListener(this);
+		reviewRecyclerView = findViewById(R.id.rv_reviews);
 
-//		initialize new location fragment list with 1 fragment
-		initialize();
+		addPlaceButton.setOnClickListener(this);
+		editModelArrayList = new ArrayList<>();
 
+        //set up new fragment when a new place is added
+        Boolean isNewPlace = getIntent().getBooleanExtra("isNewPlace",false);
 
-		LocationEditorFragment locationEditor = new LocationEditorFragment();
+        /*if(isNewPlace){//set up fragment
+            FragmentManager fragmentManager = getSupportFragmentManager();
 
-		FragmentManager fragmentManager = getSupportFragmentManager();
+            ReviewFragment reviewFragment = new ReviewFragment();
+            reviewFragment.setListOfPlaces(places);
 
-		fragmentManager.beginTransaction()
-				.add(R.id.location_review_container,locationEditor)
-				.commit();
+            fragmentManager.beginTransaction()
+                    .add(R.id.lv_review,reviewFragment).commit();
 
-		LocationEditorFragment locationEditor2 = new LocationEditorFragment();
-		fragmentManager.beginTransaction()
-				.add(R.id.location_review_container,locationEditor2)
-				.commit();
-
+        }*/
+        if(isNewPlace){
+            if(reviewAdapter==null){
+                for(int i = 0; i < 8; i++){
+                    EditModel editModel = new EditModel();
+                    editModel.setEditTextValue(String.valueOf(i));
+                    editModelArrayList.add(editModel);
+                    places.add(new Place());
+                }
+                LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+                reviewRecyclerView.setLayoutManager(layoutManager);
+                reviewAdapter = new ReviewAdapter(places,8,editModelArrayList);
+                reviewRecyclerView.setAdapter(reviewAdapter);
+            }else{
+                reviewRecyclerView.setVisibility(View.VISIBLE);
+            }
+        }
 	}
 
-	private void initialize() {
-//		LocationEditorFragment initItem = new LocationEditorFragment();
-//		this.listOfLocations.add(initItem);
-//		FragmentManager fragmentManager = getSupportFragmentManager();
-//		fragmentManager.beginTransaction()
-//				.add(R.id.location_review_container,listOfLocations.get(listOfLocations.size() - 1))
-//				.commit();
-	}
 
 
 	@Override
@@ -208,6 +235,29 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
                     getPhoto();
                 }
             }
+        }else if(id == R.id.bt_add_place){
+            planId = sharedPreferences.getString("newPlan",null);
+            if(planId==null){
+                final ParseObject object = new ParseObject("Plan");
+                object.put("userId",ParseUser.getCurrentUser().getObjectId());
+                object.saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        if(e==null){
+                            Log.i("Empty plan ","successful");
+                            Log.i("Plan id ",object.getObjectId());
+                            sharedPreferences.edit().putString("newPlan",object.getObjectId()).apply();
+                            planId = sharedPreferences.getString("newPlan",null);
+                            Intent intent = new Intent(EditorActivity.this,MapsActivity.class);
+                            startActivity(intent);
+                        }
+                    }
+                });
+            }else{
+                Intent intent = new Intent(EditorActivity.this,MapsActivity.class);
+                startActivity(intent);
+            }
+
         }
     }
 

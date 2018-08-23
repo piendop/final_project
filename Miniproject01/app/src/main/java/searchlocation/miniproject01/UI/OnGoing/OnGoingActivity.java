@@ -196,6 +196,7 @@ public class OnGoingActivity extends FragmentActivity implements OnGoingAdapter.
             } else {//already have a permission request location
                 Location location = getUserLocation();
                 LatLng userLocation =  new LatLng(location.getLatitude(),location.getLongitude());
+                mMap.clear();
                 mMap.addMarker(new MarkerOptions().position(userLocation).title("Your location").
                         icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN)));//add a marker and text
                 //to zoom in location range 1-20 1: zoom out 20: zoom in
@@ -217,7 +218,7 @@ public class OnGoingActivity extends FragmentActivity implements OnGoingAdapter.
     @Override
     protected void onDestroy() {
         locationManager.removeUpdates(locationListener);
-        placeRecyclerView.removeAllViews();
+        //placeRecyclerView.removeAllViews();
         super.onDestroy();
     }
 
@@ -320,4 +321,5 @@ public class OnGoingActivity extends FragmentActivity implements OnGoingAdapter.
             return null;
         }
     }
+
 }
