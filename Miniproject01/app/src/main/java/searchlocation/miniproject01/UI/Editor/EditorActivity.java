@@ -13,11 +13,16 @@ import android.media.Image;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
+<<<<<<< HEAD
+import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AlertDialog;
+=======
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 
 import android.support.v7.app.AlertDialog;
 
+>>>>>>> e05f87956c8d5273581a64772f49f06704d3368c
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;

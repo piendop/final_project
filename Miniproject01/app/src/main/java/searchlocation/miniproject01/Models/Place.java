@@ -16,9 +16,15 @@ public class Place {
 	private double longitude;
 
 	private String address;
+	private int colorNumber=1;
 
 
 	//Getter and Setter
+	public int getColorNumber() {return  colorNumber;}
+
+	public void setColorNumber(int colorNumber) {this.colorNumber = colorNumber;}
+
+
 	public String getID() {
 		return ID;
 	}

@@ -27,9 +27,10 @@ public class BottomNavigationViewHelper {
 
 			// Hide title of item
 			AHBottomNavigation.setTitleState(com.aurelhubert.ahbottomnavigation.AHBottomNavigation.TitleState.ALWAYS_HIDE);
-			AHBottomNavigation.setAccentColor(Color.parseColor("#628CF5"));
+			AHBottomNavigation.setAccentColor(Color.parseColor("#E6E6E6"));
 			AHBottomNavigation.setInactiveColor(Color.parseColor("#E6E6E6"));
-
+			AHBottomNavigation.setItemDisableColor(Color.parseColor("#4A90E2"));
+			AHBottomNavigation.setCurrentItem(2);
 			// Add items
 			AHBottomNavigation.addItem(ongoing);
 			AHBottomNavigation.addItem(discover);
@@ -48,7 +49,6 @@ public class BottomNavigationViewHelper {
 						case 0:
 //							Toast.makeText(context, "ongoing Activity", Toast.LENGTH_SHORT).show();
 							Intent onGoing = new Intent(context, OnGoingActivity.class); //ACTIVITY_NUMBER 1
-
 							context.startActivity(onGoing);
 							break;
 						case 1:
@@ -80,6 +80,13 @@ public class BottomNavigationViewHelper {
 					return false;
 				}
 			});
+		}
+
+		public static void disableCurrentItem (AHBottomNavigation ahBottomNavigation,int position)
+		{
+			ahBottomNavigation.setActivated(false);
+			ahBottomNavigation.setSelected(false);
+			ahBottomNavigation.disableItemAtPosition(4);
 		}
 }
 
