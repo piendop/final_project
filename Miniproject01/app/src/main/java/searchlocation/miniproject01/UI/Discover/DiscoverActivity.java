@@ -277,7 +277,7 @@ public class DiscoverActivity extends AppCompatActivity implements PlanAdapter.O
             ParseQuery<ParseObject> query = new ParseQuery<>("Plan");
             if (username != null) {
                 Log.i("username ", username);
-                query.whereEqualTo("userId", username);
+                query.whereNotEqualTo("userId", username);
                 query.orderByAscending("createdAt");
                 query.setLimit(10);
                 query.findInBackground(new FindCallback<ParseObject>() {
@@ -344,7 +344,7 @@ public class DiscoverActivity extends AppCompatActivity implements PlanAdapter.O
             Date date = new Date(preferences.getLong("createdAt", 0));
             if (date.getTime() != 0 && username!=null) {
                 ParseQuery<ParseObject> query = new ParseQuery<>("Plan");
-                query.whereEqualTo("userId", username);
+                query.whereNotEqualTo("userId", username);
                 query.whereGreaterThan("createdAt", date);
                 query.orderByAscending("createdAt");
                 query.setLimit(10);

@@ -1,25 +1,31 @@
 package searchlocation.miniproject01.UI.Editor;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
 import searchlocation.miniproject01.Models.Place;
 import searchlocation.miniproject01.R;
 
+import static android.content.Context.MODE_PRIVATE;
+
 public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewViewHolder>{
     private ArrayList<Place> listOfPlaces;
     private int mNumberItems;
     private TextWatcher textWatcher;
-    public static ArrayList<EditModel> editModelArrayList;
+    private Context context;
+    //public static ArrayList<EditModel> editModelArrayList;
 
     public void setListOfPlaces(ArrayList<Place> listOfPlaces) {
         this.listOfPlaces = listOfPlaces;
@@ -37,19 +43,23 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
         return mNumberItems;
     }
 
-    public ReviewAdapter(ArrayList<Place> places, int number,ArrayList<EditModel> editModels){
+    public void addPlace(Place place){
+        listOfPlaces.add(place);
+    }
+    public ReviewAdapter(ArrayList<Place> places, int number){
         listOfPlaces=places;
         mNumberItems=number;
-        editModelArrayList=editModels;
+        //editModelArrayList=editModels;
     }
     @NonNull
     @Override
     public ReviewViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        Context context = parent.getContext();
+        context = parent.getContext();
         int layoutForItem = R.layout.layout_custom_reviewitem;
         LayoutInflater inflater =LayoutInflater.from(context);
         View view = inflater.inflate(layoutForItem,parent,false);
-        ReviewViewHolder reviewViewHolder = new ReviewViewHolder(view,new ReviewCustomEditTextListener());
+        //ReviewViewHolder reviewViewHolder = new ReviewViewHolder(view,new ReviewCustomEditTextListener());
+        ReviewViewHolder reviewViewHolder = new ReviewViewHolder(view);
         return reviewViewHolder;
     }
 
@@ -57,31 +67,33 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
     public void onBindViewHolder(@NonNull ReviewViewHolder holder, int position) {
         if(listOfPlaces.size()>0){
             holder.bind(position);
-            holder.editTextListener.updatePosition(position);
+            //holder.editTextListener.updatePosition(position);
         }
     }
 
     @Override
     public int getItemCount() {
-        return listOfPlaces.size();
+        return mNumberItems;
     }
 
 
 
-    public class ReviewViewHolder extends RecyclerView.ViewHolder implements TextWatcher{
+    public class ReviewViewHolder extends RecyclerView.ViewHolder{
         protected EditText reviewEditText;
-        ReviewCustomEditTextListener editTextListener;
+        TextView addressTextView;
+        //ReviewCustomEditTextListener editTextListener;
 
-        public ReviewViewHolder(View itemView, ReviewCustomEditTextListener customEditTextListener) {
+        /*public ReviewViewHolder(View itemView, ReviewCustomEditTextListener customEditTextListener) {
             super(itemView);
             reviewEditText = itemView.findViewById(R.id.edit_review);
             editTextListener = customEditTextListener;
             reviewEditText.addTextChangedListener(editTextListener);
-        }
+        }*/
 
         public ReviewViewHolder(View itemView){
             super(itemView);
             reviewEditText = itemView.findViewById(R.id.edit_review);
+            addressTextView = itemView.findViewById(R.id.tv_address);
             reviewEditText.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -90,12 +102,16 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
 
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    editModelArrayList.get(getAdapterPosition()).setEditTextValue(reviewEditText.getText().toString());
+                    //listOfPlaces.get(getAdapterPosition()).setReview(reviewEditText.getText().toString());
                 }
 
                 @Override
                 public void afterTextChanged(Editable s) {
-
+                    /*listOfPlaces.get(getAdapterPosition()).setReview(s.toString());
+                    Log.i("review change ",listOfPlaces.get(getAdapterPosition()).getReview());*/
+                    SharedPreferences sharedPreferences = context.getSharedPreferences
+                            ("SharedPref",MODE_PRIVATE);
+                    sharedPreferences.edit().putString("review",s.toString()).apply();
                 }
             });
         }
@@ -105,29 +121,29 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
             if(review!=null && !review.isEmpty()){
                 reviewEditText.setText(place.getReview());
             }else{
-                reviewEditText.setText(editModelArrayList.get(itemIndex).getEditTextValue());
+                reviewEditText.setText("Write your review...");
             }
+            addressTextView.setText(place.getAddress());
         }
 
 
-        @Override
+        /*@Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
         }
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            int index = getAdapterPosition();
-            listOfPlaces.get(index).setReview(s.toString());
         }
 
         @Override
         public void afterTextChanged(Editable s) {
-
-        }
+            int index = getAdapterPosition();
+            listOfPlaces.get(index).setReview(s.toString());
+        }*/
     }
 
-    private class ReviewCustomEditTextListener implements TextWatcher{
+    /*private class ReviewCustomEditTextListener implements TextWatcher{
 
         private int position;
 
@@ -148,45 +164,5 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
         public void afterTextChanged(Editable s) {
 
         }
-    }
-
-    /*private Context mContext;
-    private ArrayList<Place> places;
-
-    @Override
-    public int getCount() {
-        return places.size();
-    }
-
-    @Override
-    public Object getItem(int position) {
-        return places.get(position);
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
-
-    public ReviewAdapter(Context context, ArrayList<Place> places){
-        mContext=context;
-        this.places=places;
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        EditText editText;
-        if(convertView==null){
-            editText = new EditText(mContext);
-            editText.setTextSize(16);
-            editText.setPadding(0,0,0,8);
-        }else{
-            editText = (EditText)convertView;
-        }
-        String review = places.get(position).getReview();
-        if(review!=null && !review.isEmpty())
-            editText.setText(review);
-        else editText.setText("");
-        return editText;
     }*/
 }
