@@ -8,27 +8,31 @@
     tools:context=".UI.profile.ProfileHome">
     <include layout="@layout/layout_bottom_navigation_view"/>
     <!--top profile info-->
-
     <!--profile fragment container-->
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:layout_marginBottom="50dp">
+        android:layout_marginBottom="50dp"
+        >
         <include layout="@layout/layout_profile_info"/>
         <android.support.design.widget.TabLayout
             android:id="@+id/sliding_tabs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:tabMode="fixed"
-            app:tabGravity="fill"/>
+            app:tabTextColor="#E6E6E6"
+            app:tabSelectedTextColor="@color/blue_light"
+            app:tabIndicatorColor="@color/blue_light"
+            app:tabIndicatorHeight="3dp"
+            app:tabBackground="@color/white"
+            />
         <android.support.v4.view.ViewPager
             android:id="@+id/viewpager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
         <!--<include layout="@layout/layout_profile_tab"/>-->
-    </LinearLayout>
 
+    </LinearLayout>
     <!--Bottom navigation bar-->
 </RelativeLayout>

@@ -8,7 +8,6 @@ import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -23,7 +22,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AutoCompleteTextView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
@@ -35,7 +33,6 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;

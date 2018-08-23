@@ -3,6 +3,8 @@ package searchlocation.miniproject01.UI.Login;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,6 +14,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 import searchlocation.miniproject01.UI.ParseApplication;
@@ -32,7 +35,9 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener {
     private EditText _nameText;
     private EditText _emailText;
     private EditText _passwordText;
+		private ScrollView mScroll;
 	// UI references.
+	@RequiresApi(api = Build.VERSION_CODES.M)
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -47,8 +52,20 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener {
 		Button mSignUpButton = (Button) findViewById(R.id.sign_up_button);
 		mSignUpButton.setOnClickListener(this);
 		_nameText = (EditText) findViewById(R.id.input_name);
-        _emailText = (EditText) findViewById(R.id.input_email);
-        _passwordText = (EditText) findViewById(R.id.input_password);
+		_emailText = (EditText) findViewById(R.id.input_email);
+		_passwordText = (EditText
+				) findViewById(R.id.input_password);
+//
+//		mScroll = (ScrollView) findViewById(R.id.sign_up_container);
+//		mScroll.setOnScrollChangeListener(new View.OnScrollChangeListener() {
+//			@Override
+//			public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+//				InputMethodManager inputMethodManager =(InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+//				if(scrollX!=oldScrollX){
+//					inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+//				}
+//			}
+//		});
 	}
 
 	public void attempSignUp(){
