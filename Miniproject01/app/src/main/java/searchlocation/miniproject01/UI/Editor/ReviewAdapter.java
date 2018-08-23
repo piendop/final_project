@@ -8,13 +8,9 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.EditText;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
-import java.util.List;
 
 import searchlocation.miniproject01.Models.Place;
 import searchlocation.miniproject01.R;
@@ -50,7 +46,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
     @Override
     public ReviewViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         Context context = parent.getContext();
-        int layoutForItem = R.layout.fragment_location_editor;
+        int layoutForItem = R.layout.layout_custom_reviewitem;
         LayoutInflater inflater =LayoutInflater.from(context);
         View view = inflater.inflate(layoutForItem,parent,false);
         ReviewViewHolder reviewViewHolder = new ReviewViewHolder(view,new ReviewCustomEditTextListener());

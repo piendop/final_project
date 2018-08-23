@@ -8,21 +8,10 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
-import android.media.ExifInterface;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
-<<<<<<< HEAD
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
-=======
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-
-import android.support.v7.app.AlertDialog;
-
->>>>>>> e05f87956c8d5273581a64772f49f06704d3368c
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -32,13 +21,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.Toast;
 
-import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
-import com.github.irshulx.Editor;
-import com.github.irshulx.models.EditorTextStyle;
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -48,17 +32,13 @@ import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 
 import searchlocation.miniproject01.Models.Place;
 import searchlocation.miniproject01.R;
-import searchlocation.miniproject01.UI.Login.LoginActivity;
 import searchlocation.miniproject01.UI.OnGoing.OnGoingActivity;
 import searchlocation.miniproject01.UI.Search.MapsActivity;
-import searchlocation.miniproject01.UI.Utilis.BottomNavigationViewHelper;
 
 public class EditorActivity extends AppCompatActivity implements View.OnClickListener{
 
@@ -217,7 +197,7 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
                 }
                 LinearLayoutManager layoutManager = new LinearLayoutManager(this);
                 reviewRecyclerView.setLayoutManager(layoutManager);
-                reviewAdapter = new ReviewAdapter(places,8,editModelArrayList);
+                reviewAdapter = new ReviewAdapter(places,1,editModelArrayList);
                 reviewRecyclerView.setAdapter(reviewAdapter);
             }else{
                 reviewRecyclerView.setVisibility(View.VISIBLE);

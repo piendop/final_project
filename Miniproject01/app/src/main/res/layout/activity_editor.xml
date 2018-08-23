@@ -11,33 +11,12 @@
         <!--android:orientation="vertical">-->
 
     <!--Toolbar for live editor-->
-    <!--<include layout="@layout/layout_custom_editor_topinfo"-->
-        <!--android:visibility="gone"/>-->
+    <include layout="@layout/layout_custom_editor_topinfo" />
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/rv_reviews"/>
-        <Button
-            android:id="@+id/bt_add_place"
-            style="?android:textAppearanceSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="320dp"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginBottom="17dp"
-            android:layout_marginEnd="17dp"
-            android:background="@drawable/btn_filled"
-            android:elevation="0dp"
-            android:fontFamily="@font/montserrat_semibold"
-            android:gravity="center"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
-            android:text="Add place"
-            android:textAllCaps="false"
-            android:textColor="@color/white"
-            android:layout_below="@id/rv_reviews"
-            android:textSize="12sp"
-            android:textStyle="bold" />
+        android:id="@+id/rv_reviews"
+        android:layout_alignBottom="@+id/plan_info"
+        />
     <!--</LinearLayout>-->
 </RelativeLayout>

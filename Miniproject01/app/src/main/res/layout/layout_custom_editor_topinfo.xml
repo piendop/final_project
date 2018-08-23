@@ -69,7 +69,7 @@
         android:textColorHint="#AEAEAE"
         />
     <Button
-        android:id="@+id/btn_add_place1"
+        android:id="@+id/bt_add_place"
         style="?android:textAppearanceSmall"
         android:layout_width="wrap_content"
         android:layout_height="35dp"
