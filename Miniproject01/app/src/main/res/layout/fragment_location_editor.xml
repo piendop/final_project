@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:layout_marginLeft="20dp"
-    android:layout_marginRight="20dp"
-    android:orientation="vertical"
-    tools:context=".UI.Editor.LocationEditorFragment">
+    android:layout_marginRight="20dp">
 
     <!-- TODO: Update blank fragment layout -->
     <EditText
@@ -19,7 +17,7 @@
         android:lineSpacingExtra="4sp"
         android:fontFamily="@font/notoserif_regular"
         android:textColor="@color/black"
-        android:hint="Write your review"
+        android:text="Write your review"
         android:textColorHint="#AEAEAE"
         android:background="@drawable/grey_box1"
         />
@@ -43,4 +41,4 @@
         <!--android:textAllCaps="false"-->
         <!--android:textColor="@color/white"-->
         <!--android:textStyle="bold" />-->
-</LinearLayout>
+</RelativeLayout>

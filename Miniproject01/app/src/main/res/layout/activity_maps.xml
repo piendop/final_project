@@ -26,12 +26,12 @@
             android:layout_marginLeft="26dp"
             android:layout_marginRight="26dp"
             android:src="@drawable/searchbar_symbol_search"
-            android:id="@+id/search_mag_icon"
+            android:id="@+id/iv_search"
             />
         <AutoCompleteTextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_toRightOf="@id/search_mag_icon"
+            android:layout_toEndOf="@id/iv_search"
             android:layout_centerVertical="true"
             android:fontFamily="@font/montserrat_medium"
             android:imeOptions="actionDone"
