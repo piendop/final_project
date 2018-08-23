@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
@@ -23,9 +24,11 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
+import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
@@ -34,6 +37,8 @@ import com.parse.SaveCallback;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import searchlocation.miniproject01.Models.Place;
 import searchlocation.miniproject01.R;
@@ -54,6 +59,7 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
     private ReviewAdapter reviewAdapter;
     private String reviewId;
     private ArrayList<EditModel> editModelArrayList;
+    private static int NUM_LIST_ITEMS = 0;
 
 
     @Override
@@ -68,6 +74,7 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
                     .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
+                            sharedPreferences.edit().putString("newPlan",null).apply();
                             Intent intent = new Intent(getApplicationContext(), OnGoingActivity.class);
                             startActivity(intent);
                         }
@@ -97,6 +104,9 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
                                             public void done(ParseException e) {
                                                 if (e == null) {
                                                     Log.i("Title desc ", "successful");
+                                                    sharedPreferences.edit().putString("newPlan",null).apply();
+                                                    Intent intent = new Intent(getApplicationContext(), OnGoingActivity.class);
+                                                    startActivity(intent);
                                                 }
                                             }
                                         });
@@ -104,40 +114,15 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
                                 });
                             } else {
                                 final ParseObject object = new ParseObject("Plan");
-                                Bitmap bitmap = BitmapFactory.decodeResource(getResources(),R.drawable.image2);
-                                ByteArrayOutputStream  stream = new ByteArrayOutputStream();
-                                bitmap.compress(Bitmap.CompressFormat.PNG,100,stream);
-                                byte[] array = stream.toByteArray();
-                                ParseFile file = new ParseFile("image.png",array);
-                                object.put("image",file);
-                                object.saveInBackground(new SaveCallback() {
-                                    @Override
-                                    public void done(ParseException e) {
-                                        if(e==null){
-                                            Log.i("Image null ","successful");
-                                            object.put("title", title);
-                                            object.put("description", desc);
-                                            object.put("userId",ParseUser.getCurrentUser().getObjectId());
-                                            object.saveInBackground(new SaveCallback() {
-                                                @Override
-                                                public void done(ParseException e) {
-                                                    if (e == null) {
-                                                        Log.i("Title desc only ", "successful");
-                                                    }
-                                                }
-                                            });
-                                        }
-                                    }
-                                });
+                                addSampleImage(object, title, desc);
 
                             }
-                            Intent intent = new Intent(getApplicationContext(), OnGoingActivity.class);
-                            startActivity(intent);
                         }
                     })
                     .setNegativeButton("No", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
+                            sharedPreferences.edit().putString("newPlan",null).apply();
                             Intent intent = new Intent(getApplicationContext(), OnGoingActivity.class);
                             startActivity(intent);
                         }
@@ -145,6 +130,37 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
                     .show();
         }
 
+    }
+
+    private void addSampleImage(final ParseObject object, final String title, final String desc) {
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.image2);
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG,100,stream);
+        byte[] array = stream.toByteArray();
+        ParseFile file = new ParseFile("image.png",array);
+        object.put("image",file);
+        object.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if(e==null){
+                    Log.i("Image null ","successful");
+                    object.put("title", title);
+                    object.put("description", desc);
+                    object.put("userId", ParseUser.getCurrentUser().getObjectId());
+                    object.saveInBackground(new SaveCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            if (e == null) {
+                                Log.i("Title desc only ", "successful");
+                                sharedPreferences.edit().putString("newPlan",null).apply();
+                                Intent intent = new Intent(getApplicationContext(), OnGoingActivity.class);
+                                startActivity(intent);
+                            }
+                        }
+                    });
+                }
+            }
+        });
     }
 
     @Override
@@ -164,44 +180,28 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
 		addPlaceButton = findViewById(R.id.bt_add_place);
         sharedPreferences = EditorActivity.this.getSharedPreferences("SharedPref",MODE_PRIVATE);
         //init new plan is null
-        sharedPreferences.edit().putString("newPlan",null).apply();
+        //sharedPreferences.edit().putString("newPlan",null).apply();
 
+        planId = sharedPreferences.getString("newPlan",null);
         reviewId = sharedPreferences.getString("reviewId",null);
         places = new ArrayList<>();
-		//importImageButton.setOnClickListener(this);
+		importImageButton.setOnClickListener(this);
 		reviewRecyclerView = findViewById(R.id.rv_reviews);
 
 		addPlaceButton.setOnClickListener(this);
 		editModelArrayList = new ArrayList<>();
 
-        //set up new fragment when a new place is added
+
         Boolean isNewPlace = getIntent().getBooleanExtra("isNewPlace",false);
 
-        /*if(isNewPlace){//set up fragment
-            FragmentManager fragmentManager = getSupportFragmentManager();
-
-            ReviewFragment reviewFragment = new ReviewFragment();
-            reviewFragment.setListOfPlaces(places);
-
-            fragmentManager.beginTransaction()
-                    .add(R.id.lv_review,reviewFragment).commit();
-
-        }*/
         if(isNewPlace){
-            if(reviewAdapter==null){
-                for(int i = 0; i < 8; i++){
-                    EditModel editModel = new EditModel();
-                    editModel.setEditTextValue(String.valueOf(i));
-                    editModelArrayList.add(editModel);
-                    places.add(new Place());
-                }
-                LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-                reviewRecyclerView.setLayoutManager(layoutManager);
-                reviewAdapter = new ReviewAdapter(places,1,editModelArrayList);
-                reviewRecyclerView.setAdapter(reviewAdapter);
-            }else{
-                reviewRecyclerView.setVisibility(View.VISIBLE);
-            }
+            NUM_LIST_ITEMS=0;
+            LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+            reviewRecyclerView.setLayoutManager(layoutManager);
+            //placeRecyclerView.setHasFixedSize(true);
+            reviewAdapter = new ReviewAdapter(places, NUM_LIST_ITEMS);
+            reviewRecyclerView.setAdapter(reviewAdapter);
+            new LoadReview().execute();
         }
 	}
 
@@ -224,25 +224,69 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
             planId = sharedPreferences.getString("newPlan",null);
             if(planId==null){
                 final ParseObject object = new ParseObject("Plan");
-                object.put("userId",ParseUser.getCurrentUser().getObjectId());
+                Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.image2);
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.PNG,100,stream);
+                byte[] array = stream.toByteArray();
+                ParseFile file = new ParseFile("image.png",array);
+                object.put("image",file);
                 object.saveInBackground(new SaveCallback() {
                     @Override
                     public void done(ParseException e) {
                         if(e==null){
-                            Log.i("Empty plan ","successful");
-                            Log.i("Plan id ",object.getObjectId());
-                            sharedPreferences.edit().putString("newPlan",object.getObjectId()).apply();
-                            planId = sharedPreferences.getString("newPlan",null);
-                            Intent intent = new Intent(EditorActivity.this,MapsActivity.class);
-                            startActivity(intent);
+                            Log.i("Image null ","successful");
+                            object.put("userId",ParseUser.getCurrentUser().getObjectId());
+                            object.saveInBackground(new SaveCallback() {
+                                @Override
+                                public void done(ParseException e) {
+                                    if(e==null){
+                                        Log.i("Empty plan ","successful");
+                                        Log.i("Plan id ",object.getObjectId());
+                                        sharedPreferences.edit().putString("newPlan",object.getObjectId()).apply();
+                                        Intent intent = new Intent(EditorActivity.this,MapsActivity.class);
+                                        startActivity(intent);
+                                    }
+                                }
+                            });
                         }
                     }
                 });
-            }else{
-                Intent intent = new Intent(EditorActivity.this,MapsActivity.class);
-                startActivity(intent);
+            }
+            else{//save review to parse
+                Log.i("Plan id",planId);
+                saveReviewToParse();
             }
 
+        }
+    }
+
+    private void saveReviewToParse() {
+        final String review = sharedPreferences.getString("review",null);
+        if(review!=null && reviewId!=null) {
+            Log.i("review ",review);
+            Log.i("review id ",reviewId);
+
+            ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("LocationReview");
+            query.setLimit(1);
+            query.getInBackground(reviewId, new GetCallback<ParseObject>() {
+                @Override
+                public void done(ParseObject object, ParseException e) {
+                    if(e==null){
+                        object.put("review",review);
+                        object.put("planId",planId);
+                        object.saveInBackground(new SaveCallback() {
+                            @Override
+                            public void done(ParseException e) {
+                                if(e==null){
+                                    Log.i("Save review ","successful");
+                                    Intent intent = new Intent(EditorActivity.this,MapsActivity.class);
+                                    startActivity(intent);
+                                }
+                            }
+                        });
+                    }
+                }
+            });
         }
     }
 
@@ -277,32 +321,106 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
 
                 byte[] byteArray = stream.toByteArray();
 
-                ParseFile file = new ParseFile("image.png",byteArray);
 
-                final ParseObject object = new ParseObject("Plan");
+                final ParseFile file = new ParseFile("image.png", byteArray);
 
-                object.put("image",file);
+                if(planId==null) {
 
-                object.put("userId", ParseUser.getCurrentUser().getObjectId());
 
-                object.saveInBackground(new SaveCallback() {
-                    @Override
-                    public void done(ParseException e) {
-                        if(e==null){
-                            Log.i("Image ","uploaded");
-                            //headingImage.setImageBitmap(bitmap);
-                            sharedPreferences.edit().putString("newPlan",object.getObjectId()).apply();
-                        }else{
-                            Toast.makeText(getApplicationContext(),"Image could not be uploaded - please try again later",Toast.LENGTH_SHORT).show();
+                    final ParseObject object = new ParseObject("Plan");
+
+                    object.put("image", file);
+
+                    object.put("userId", ParseUser.getCurrentUser().getObjectId());
+
+                    object.saveInBackground(new SaveCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            if (e == null) {
+                                Log.i("Image ", "uploaded");
+                                //headingImage.setImageBitmap(bitmap);
+                                sharedPreferences.edit().putString("newPlan", object.getObjectId()).apply();
+                            } else {
+                                Toast.makeText(getApplicationContext(), "Image could not be uploaded - please try again later", Toast.LENGTH_SHORT).show();
+                            }
                         }
-                    }
-                });
+                    });
 
+                }else{//plan has been created
 
+                    ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Plan");
+                    query.getInBackground(planId, new GetCallback<ParseObject>() {
+                        @Override
+                        public void done(ParseObject object, ParseException e) {
+                            if(e==null){
+                                object.put("image",file);
+
+                                object.put("userId", ParseUser.getCurrentUser().getObjectId());
+
+                                object.saveInBackground(new SaveCallback() {
+                                    @Override
+                                    public void done(ParseException e) {
+                                        if (e == null) {
+                                            Log.i("Image ", "uploaded");
+                                        } else {
+                                            Toast.makeText(getApplicationContext(), "Image could not be uploaded - please try again later", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                    });
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
 
+    }
+
+    private class LoadReview extends AsyncTask<Integer, Void, Void> {
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            reviewRecyclerView.setVisibility(View.INVISIBLE);
+        }
+
+        @Override
+        protected Void doInBackground(final Integer... pos) {
+            if(planId!=null) {
+                Log.i("Plan id",planId);
+                ParseQuery<ParseObject> query = new ParseQuery<>("LocationReview");
+                query.whereEqualTo("planId",planId);
+                query.setLimit(10);
+                query.findInBackground(new FindCallback<ParseObject>() {
+                    @Override
+                    public void done(List<ParseObject> objects, ParseException e) {
+                        if(e==null && objects.size()>0){
+                            for(ParseObject object :objects){
+                                final Place place = new Place();
+                                place.setName(object.getString("placeName"));
+                                place.setID(object.getObjectId());
+                                place.setReview(object.getString("review"));
+                                ++NUM_LIST_ITEMS;
+                                reviewAdapter.setNumberItems(NUM_LIST_ITEMS);
+                                reviewAdapter.addPlace(place);
+                                reviewAdapter.notifyItemInserted(NUM_LIST_ITEMS);
+                                reviewRecyclerView.setVisibility(View.VISIBLE);
+                            }
+                        }else {
+                            Log.i("Object", "cannot load more");
+                        }
+                    }
+                });
+            }
+            return null;
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        reviewRecyclerView.setVisibility(View.INVISIBLE);
+        super.onDestroy();
     }
 }
