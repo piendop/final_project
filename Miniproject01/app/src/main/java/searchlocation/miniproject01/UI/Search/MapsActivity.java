@@ -63,9 +63,13 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
+import searchlocation.miniproject01.Models.Place;
 import searchlocation.miniproject01.R;
+import searchlocation.miniproject01.UI.Database.AppDatabase;
+import searchlocation.miniproject01.UI.Editor.AppExecutors;
 import searchlocation.miniproject01.UI.Editor.EditorActivity;
 import searchlocation.miniproject01.UI.Utilis.BottomNavigationViewHelper;
 import searchlocation.miniproject01.UI.Utilis.WebThread;
@@ -386,8 +390,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if(marker.getTag()!=null && !marker.getTag().equals("User location")){
             Log.i("Location ", marker.getTag().toString());
             int index = (Integer) marker.getTag();
+            //insert new place to local database
+            Date date = new Date();
+            final Place place = new Place(names.get(index),names.get(index),addresses.get(index),locations.get(index).latitude,locations.get(index).longitude,date);
+            insertNewPlace(place);
             //create new location review
-            final ParseObject object = new ParseObject("LocationReview");
+            /*final ParseObject object = new ParseObject("LocationReview");
             ParseGeoPoint geoPoint = new ParseGeoPoint(locations.get(index).latitude,locations.get(index).longitude);
             object.put("location",geoPoint);
             object.put("planId",planId);
@@ -405,14 +413,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         startActivity(intent);
                     }
                 }
-            });
+            });*/
+            return true;
 
         }else if(marker.getTag().equals("User location") && !isSaveUserLocation){
-            isSaveUserLocation=true;
+
             //create user location review
-            final ParseObject object = new ParseObject("LocationReview");
+            /*final ParseObject object = new ParseObject("LocationReview");*/
             Location location = getUserLocation();
-            ParseGeoPoint geoPoint = new ParseGeoPoint(location.getLatitude(),location.getLongitude());
+            isSaveUserLocation=true;
+            Date date = new Date();
+            final Place place = new Place("Your location","Write your review","Write your address",location.getLatitude(),location.getLongitude(),date);
+            insertNewPlace(place);
+            /*ParseGeoPoint geoPoint = new ParseGeoPoint(location.getLatitude(),location.getLongitude());
             object.put("location",geoPoint);
             object.put("planId",planId);
             object.put("placeName","");
@@ -429,9 +442,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         startActivity(intent);
                     }
                 }
-            });
+            });*/
+
+            return true;
         }
         return false;
+    }
+
+    private void insertNewPlace(final Place place) {
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                Log.i("Insert new place ", "successful");
+                AppDatabase.getInstance(getApplicationContext()).placeDao().insertPlace(place);
+                sharedPreferences.edit().putBoolean("isNewPlace",true).apply();
+                finish();
+            }
+        });
+
+
     }
 
     @Override

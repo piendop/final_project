@@ -1,6 +1,9 @@
 package searchlocation.miniproject01.UI.Editor;
 
 import android.Manifest;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProvider;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,11 +15,14 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.provider.MediaStore;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -24,6 +30,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.ParseException;
@@ -41,12 +48,17 @@ import java.util.Date;
 import java.util.List;
 
 import searchlocation.miniproject01.Models.Place;
+import searchlocation.miniproject01.Models.Plan;
 import searchlocation.miniproject01.R;
+import searchlocation.miniproject01.UI.Database.AppDatabase;
 import searchlocation.miniproject01.UI.OnGoing.OnGoingActivity;
 import searchlocation.miniproject01.UI.Search.MapsActivity;
+import searchlocation.miniproject01.UI.Utilis.PlanAdapter;
 
 public class EditorActivity extends AppCompatActivity implements View.OnClickListener{
 
+    // Constant for logging
+    private static final String TAG = EditorActivity.class.getSimpleName();
 	private ImageView headingImage;
 	private EditText titleEditText;
 	private EditText descEditText;
@@ -61,6 +73,7 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
     private static int NUM_LIST_ITEMS = 0;
     private boolean isNewPlace;
     private boolean isNewPlan;
+    private AppDatabase mDb;
 
     @Override
     public void onBackPressed() {
@@ -188,21 +201,12 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_editor);
-        if(MapsActivity.addresses.size()>0) {
-            MapsActivity.addresses.clear();
-            MapsActivity.locations.clear();
-            MapsActivity.names.clear();
-            MapsActivity.icon.recycle();
-        }
+
 		headingImage = findViewById(R.id.edit_headingImage);
 		titleEditText = findViewById(R.id.edit_title);
 		descEditText = findViewById(R.id.edit_description);
 		importImageButton = findViewById(R.id.btn_import);
 		addPlaceButton = findViewById(R.id.bt_add_place);
-        sharedPreferences = EditorActivity.this.getSharedPreferences("SharedPref",MODE_PRIVATE);
-
-
-        reviewId = sharedPreferences.getString("reviewId",null);
         places = new ArrayList<>();
 		importImageButton.setOnClickListener(this);
 		reviewRecyclerView = findViewById(R.id.rv_reviews);
@@ -210,23 +214,103 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
         addPlaceButton.setVisibility(View.VISIBLE);
 		addPlaceButton.setOnClickListener(this);
 
-        isNewPlace = getIntent().getBooleanExtra("isNewPlace",false);
-        isNewPlan = getIntent().getBooleanExtra("isNewPlan",false);
-        planId = sharedPreferences.getString("newPlan",null);
-        if(!isNewPlan){//if it has new place and is not a new plan load reviews
-            NUM_LIST_ITEMS=0;
-            LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-            reviewRecyclerView.setLayoutManager(layoutManager);
-            //placeRecyclerView.setHasFixedSize(true);
-            reviewAdapter = new ReviewAdapter(places, NUM_LIST_ITEMS);
-            reviewRecyclerView.setAdapter(reviewAdapter);
-            new LoadReview().execute();
-        }
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        reviewRecyclerView.setLayoutManager(layoutManager);
+        //placeRecyclerView.setHasFixedSize(true);
+        reviewAdapter = new ReviewAdapter(this);
+        reviewRecyclerView.setAdapter(reviewAdapter);
+
+        DividerItemDecoration decoration = new DividerItemDecoration(getApplicationContext(),DividerItemDecoration.VERTICAL);
+        reviewRecyclerView.addItemDecoration(decoration);
+
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(final RecyclerView.ViewHolder viewHolder, int direction) {
+                //TODO: SWIPE TO DELETE
+                AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        int position = viewHolder.getAdapterPosition();
+                        List<Place> places = reviewAdapter.getListOfPlaces();
+                        mDb.placeDao().deletePlace(places.get(position));
+                    }
+                });
+            }
+        }).attachToRecyclerView(reviewRecyclerView);
+        // TODO: Call retrieveTasks from here and remove the onResume method
+        mDb = AppDatabase.getInstance(getApplicationContext());
+        retrievePlacesAndPlan();
 	}
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if(MapsActivity.addresses.size()>0) {
+            MapsActivity.addresses.clear();
+            MapsActivity.locations.clear();
+            MapsActivity.names.clear();
+            MapsActivity.icon.recycle();
+        }
+        sharedPreferences = EditorActivity.this.getSharedPreferences("SharedPref",MODE_PRIVATE);
+        reviewId = sharedPreferences.getString("reviewId",null);
+        isNewPlace = sharedPreferences.getBoolean("isNewPlace",false);
+        isNewPlan = sharedPreferences.getBoolean("isNewPlan",false);
+        planId = sharedPreferences.getString("newPlan",null);
+        if(isNewPlace){
+            ++NUM_LIST_ITEMS;
+        }
+    }
+
+    private void retrievePlacesAndPlan() {
+        if(!isNewPlan) {
+            ReviewViewModel viewModel = ViewModelProviders.of(this).get(ReviewViewModel.class);
+            viewModel.getPlaces().observe(this, new Observer<List<Place>>() {
+                @Override
+                public void onChanged(@Nullable List<Place> places) {
+                    Log.d(TAG, "Updating lists of reviews from LiveData in ViewModel");
+                    reviewAdapter.setListOfPlaces(places);
+                    reviewAdapter.setNumberItems(places.size());
+                    reviewAdapter.notifyDataSetChanged();
+                }
+            });
+        }
 
 
-	@Override
+        /*PlanViewModel planViewModel = ViewModelProviders.of(this).get(PlanViewModel.class);
+        planViewModel.getPlan().observe(this, new Observer<Plan>() {
+            @Override
+            public void onChanged(@Nullable Plan plan) {
+                Log.d(TAG,"Updating plan from LiveData in ViewModel");
+                populateUI (plan);
+            }
+        });*/
+    }
+
+    private void populateUI(Plan plan) {
+        if (plan == null) {
+            return;
+        }
+
+        String title = plan.getTitle();
+        String desc = plan.getDesc();
+        byte[] data = plan.getData();
+        Bitmap bitmap = BitmapFactory.decodeByteArray(data,0,data.length);
+        if(bitmap!=null)
+            headingImage.setImageBitmap(plan.getImage());
+        if(title!=null && !title.isEmpty())
+            titleEditText.setText(plan.getTitle());
+        if(desc!=null && !desc.isEmpty())
+            descEditText.setText(plan.getDesc());
+
+    }
+
+
+    @Override
     public void onClick(View v) {
         int id = v.getId();
         if(id==R.id.btn_import){
@@ -240,7 +324,6 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
                 }
             }
         }else if(id == R.id.bt_add_place){
-            addPlaceButton.setVisibility(View.INVISIBLE);
             planId = sharedPreferences.getString("newPlan",null);
             if(planId==null){
                 sharedPreferences.edit().putBoolean("isNewPlan",true).apply();
@@ -272,11 +355,44 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
                         }
                     }
                 });
+                //save plan to local database
+                /*final Plan plan = new Plan("","","",ParseUser.getCurrentUser().getObjectId(),array);
+                AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        //insert new plan to database
+                        planDatabase.planDao().insertPlan(plan);
+                    }
+                });*/
             }
             else if(isNewPlace){
-                //save review to parse
-                Log.i("Plan id",planId);
-                saveReviewToParse();
+                //save review to database
+                Log.i("Plan id", planId);
+                final Place place = reviewAdapter.getPlace(reviewAdapter.getNumberItems()-1);
+                AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        mDb.placeDao().updatePlace(place);
+                        finish();
+                    }
+                });
+                Intent intent = new Intent(EditorActivity.this,MapsActivity.class);
+                startActivity(intent);
+                //saveReviewToParse();
+                //save place to local database
+                /*final String review = sharedPreferences.getString("review", null);
+                if (review != null ) {
+                    final Place place = new Place(review);
+                    AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.i("Save review ","successful");
+                            AppDatabase.getInstance(getApplicationContext()).placeDao().insertPlace(place);
+                            finish();
+                        }
+                    });
+
+                }*/
             }
         }
     }
@@ -398,6 +514,7 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
         }
 
     }
+
 
     private class LoadReview extends AsyncTask<Integer, Void, Void> {
 

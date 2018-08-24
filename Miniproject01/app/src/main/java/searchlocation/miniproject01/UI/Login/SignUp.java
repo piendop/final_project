@@ -46,7 +46,6 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener {
         startActivity(a);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -62,8 +61,7 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener {
 		mSignUpButton.setOnClickListener(this);
 		_nameText = (EditText) findViewById(R.id.input_name);
 		_emailText = (EditText) findViewById(R.id.input_email);
-		_passwordText = (EditText
-				) findViewById(R.id.input_password);
+		_passwordText = (EditText) findViewById(R.id.input_password);
 //
 //		mScroll = (ScrollView) findViewById(R.id.sign_up_container);
 //		mScroll.setOnScrollChangeListener(new View.OnScrollChangeListener() {

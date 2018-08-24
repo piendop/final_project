@@ -111,6 +111,7 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.PlanViewHolder
 
         @Override
         public void onClick(View v) {
+
             int index = getAdapterPosition();
             Plan plan = listOfPlans.get(index);
             mClickHander.onClick(plan);
