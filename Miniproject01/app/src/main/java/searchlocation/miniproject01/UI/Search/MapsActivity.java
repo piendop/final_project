@@ -104,6 +104,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private SharedPreferences sharedPreferences;
 
 
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(MapsActivity.this,EditorActivity.class);
+        intent.putExtra("isNewPlace",false);
+        startActivity(intent);
+    }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
@@ -127,7 +133,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             if(ContextCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION)
                     ==PackageManager.PERMISSION_GRANTED){
                 locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-                        0,0,locationListener);
+                        0,100,locationListener);
             }
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -215,7 +221,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if(Build.VERSION.SDK_INT<23){
             if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                     == PackageManager.PERMISSION_GRANTED){
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,0,locationListener);
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,100,locationListener);
             }
         }
         else {
@@ -394,8 +400,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     if(e==null){
                         Log.i("Review Location ","Successful");
                         sharedPreferences.edit().putString("reviewId",object.getObjectId()).apply();
+                        sharedPreferences.edit().putBoolean("isNewPlace",true).apply();
                         Intent intent = new Intent(MapsActivity.this,EditorActivity.class);
-                        intent.putExtra("isNewPlace",true);
                         startActivity(intent);
                     }
                 }

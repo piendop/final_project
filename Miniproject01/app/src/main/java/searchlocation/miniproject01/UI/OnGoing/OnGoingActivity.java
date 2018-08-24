@@ -73,7 +73,7 @@ public class OnGoingActivity extends FragmentActivity implements OnGoingAdapter.
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                     == PackageManager.PERMISSION_GRANTED) {
                 locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-                        0, 0, locationListener);
+                        0, 100, locationListener);
             }
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -182,7 +182,7 @@ public class OnGoingActivity extends FragmentActivity implements OnGoingAdapter.
         if (Build.VERSION.SDK_INT < 23) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                     == PackageManager.PERMISSION_GRANTED) {
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 100, locationListener);
             }
 
         }

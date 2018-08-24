@@ -58,9 +58,9 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
     private RecyclerView reviewRecyclerView;
     private ReviewAdapter reviewAdapter;
     private String reviewId;
-    private ArrayList<EditModel> editModelArrayList;
     private static int NUM_LIST_ITEMS = 0;
-
+    private boolean isNewPlace;
+    private boolean isNewPlan;
 
     @Override
     public void onBackPressed() {
@@ -74,9 +74,7 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
                     .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            sharedPreferences.edit().putString("newPlan",null).apply();
-                            Intent intent = new Intent(getApplicationContext(), OnGoingActivity.class);
-                            startActivity(intent);
+                            deleteNewPlan();
                         }
                     })
                     .setNegativeButton("No", null)
@@ -90,7 +88,7 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             planId = sharedPreferences.getString("newPlan", null);
-
+                            sharedPreferences.edit().putBoolean("isNewPlan",true).apply();
 
                             if (planId != null) {
                                 ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Plan");
@@ -122,14 +120,37 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
                     .setNegativeButton("No", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            sharedPreferences.edit().putString("newPlan",null).apply();
-                            Intent intent = new Intent(getApplicationContext(), OnGoingActivity.class);
-                            startActivity(intent);
+                            deleteNewPlan();
+
                         }
                     })
                     .show();
         }
 
+    }
+
+    private void deleteNewPlan() {
+        sharedPreferences.edit().putString("newPlan",null).apply();
+        sharedPreferences.edit().putBoolean("isNewPlan",true).apply();
+        // TODO : DELETE PLAN IF EXISTS
+        planId = sharedPreferences.getString("newPlan", null);
+        if(planId!=null){
+            ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Plan");
+            query.getInBackground(planId, new GetCallback<ParseObject>() {
+                @Override
+                public void done(ParseObject object, ParseException e) {
+                    if(e==null){
+                        Log.i("Delete ","successful");
+                        object.deleteInBackground();
+                        Intent intent = new Intent(getApplicationContext(), OnGoingActivity.class);
+                        startActivity(intent);
+                    }
+                }
+            });
+        }else{
+            Intent intent = new Intent(getApplicationContext(), OnGoingActivity.class);
+            startActivity(intent);
+        }
     }
 
     private void addSampleImage(final ParseObject object, final String title, final String desc) {
@@ -179,22 +200,20 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
 		importImageButton = findViewById(R.id.btn_import);
 		addPlaceButton = findViewById(R.id.bt_add_place);
         sharedPreferences = EditorActivity.this.getSharedPreferences("SharedPref",MODE_PRIVATE);
-        //init new plan is null
-        //sharedPreferences.edit().putString("newPlan",null).apply();
 
-        planId = sharedPreferences.getString("newPlan",null);
+
         reviewId = sharedPreferences.getString("reviewId",null);
         places = new ArrayList<>();
 		importImageButton.setOnClickListener(this);
 		reviewRecyclerView = findViewById(R.id.rv_reviews);
 
+        addPlaceButton.setVisibility(View.VISIBLE);
 		addPlaceButton.setOnClickListener(this);
-		editModelArrayList = new ArrayList<>();
 
-
-        Boolean isNewPlace = getIntent().getBooleanExtra("isNewPlace",false);
-
-        if(isNewPlace){
+        isNewPlace = getIntent().getBooleanExtra("isNewPlace",false);
+        isNewPlan = getIntent().getBooleanExtra("isNewPlan",false);
+        planId = sharedPreferences.getString("newPlan",null);
+        if(!isNewPlan){//if it has new place and is not a new plan load reviews
             NUM_LIST_ITEMS=0;
             LinearLayoutManager layoutManager = new LinearLayoutManager(this);
             reviewRecyclerView.setLayoutManager(layoutManager);
@@ -221,8 +240,10 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
                 }
             }
         }else if(id == R.id.bt_add_place){
+            addPlaceButton.setVisibility(View.INVISIBLE);
             planId = sharedPreferences.getString("newPlan",null);
             if(planId==null){
+                sharedPreferences.edit().putBoolean("isNewPlan",true).apply();
                 final ParseObject object = new ParseObject("Plan");
                 Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.image2);
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -252,11 +273,11 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
                     }
                 });
             }
-            else{//save review to parse
+            else if(isNewPlace){
+                //save review to parse
                 Log.i("Plan id",planId);
                 saveReviewToParse();
             }
-
         }
     }
 
@@ -325,7 +346,7 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
                 final ParseFile file = new ParseFile("image.png", byteArray);
 
                 if(planId==null) {
-
+                    sharedPreferences.edit().putBoolean("isNewPlan",true).apply();
 
                     final ParseObject object = new ParseObject("Plan");
 
@@ -346,7 +367,7 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
                         }
                     });
 
-                }else{//plan has been created
+                }else {//plan has been created
 
                     ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Plan");
                     query.getInBackground(planId, new GetCallback<ParseObject>() {
@@ -388,6 +409,7 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
 
         @Override
         protected Void doInBackground(final Integer... pos) {
+            planId = sharedPreferences.getString("newPlan",null);
             if(planId!=null) {
                 Log.i("Plan id",planId);
                 ParseQuery<ParseObject> query = new ParseQuery<>("LocationReview");

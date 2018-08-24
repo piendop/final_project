@@ -35,9 +35,18 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener {
     private EditText _nameText;
     private EditText _emailText;
     private EditText _passwordText;
-		private ScrollView mScroll;
+    private ScrollView mScroll;
 	// UI references.
-	@RequiresApi(api = Build.VERSION_CODES.M)
+
+    @Override
+    public void onBackPressed() {
+        Intent a = new Intent(Intent.ACTION_MAIN);
+        a.addCategory(Intent.CATEGORY_HOME);
+        a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(a);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

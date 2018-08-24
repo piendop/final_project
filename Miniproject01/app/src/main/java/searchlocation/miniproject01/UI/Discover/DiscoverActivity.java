@@ -151,6 +151,7 @@ public class DiscoverActivity extends AppCompatActivity implements PlanAdapter.O
                 String pattern = "^.*" + textSearch + ".*$";
                 query.whereMatches("title", textSearch, "i");
                 query.orderByAscending("createdAt");
+                query.whereNotEqualTo("userId",username);
                 query.setLimit(10);
                 query.findInBackground(new FindCallback<ParseObject>() {
                     @Override
@@ -408,7 +409,8 @@ public class DiscoverActivity extends AppCompatActivity implements PlanAdapter.O
             if (date.getTime() != 0 && username!=null) {
                 ParseQuery<ParseObject> query = new ParseQuery<>("Plan");
                 query.whereMatches("title", textSearch,"i");
-                query.whereGreaterThan("createdAt", date);
+                //query.whereGreaterThan("createdAt", date);
+                query.whereNotEqualTo("userId",username);
                 query.orderByAscending("createdAt");
                 query.setLimit(10);
                 query.findInBackground(new FindCallback<ParseObject>() {
