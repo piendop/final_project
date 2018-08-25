@@ -75,7 +75,8 @@
         <activity android:name=".UI.Reader.Article_Base" />
         <activity android:name=".UI.profile.ProfileHome" />
         <activity android:name=".UI.Editor.EditorActivity" />
-        <activity android:name=".UI.Search.MapsActivity"/>
+        <activity android:name=".UI.Search.MapsActivity" />
+        <activity android:name=".UI.Assistant.Assistant"></activity>
     </application>
 
 </manifest>

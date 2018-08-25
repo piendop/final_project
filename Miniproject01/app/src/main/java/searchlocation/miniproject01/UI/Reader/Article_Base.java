@@ -1,5 +1,7 @@
 package searchlocation.miniproject01.UI.Reader;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -42,6 +44,7 @@ import searchlocation.miniproject01.Models.Place;
 import searchlocation.miniproject01.Models.Plan;
 import searchlocation.miniproject01.R;
 import searchlocation.miniproject01.UI.Discover.DiscoverActivity;
+import searchlocation.miniproject01.UI.Fragments.Option1Fragment;
 import searchlocation.miniproject01.UI.OnGoing.OnGoingActivity;
 import searchlocation.miniproject01.UI.OnGoing.OnGoingEmptyActivity;
 import searchlocation.miniproject01.UI.Utilis.BottomNavigationReader;
@@ -91,7 +94,7 @@ public class Article_Base extends AppCompatActivity implements PlaceItemAdapter.
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_article_base);
-		setupBottomNavigationReader();
+//		setupBottomNavigationReader();
 		noConnectionTextView = findViewById(R.id.tv_no_connection);
         imagePlace = findViewById(R.id.headingImage);
         title = findViewById(R.id.tv_title);
@@ -101,7 +104,8 @@ public class Article_Base extends AppCompatActivity implements PlaceItemAdapter.
         objectId = getIntent().getStringExtra("objectId");
         placeRecyclerView = findViewById(R.id.list_places);
         init();
-        bottomNavigation.setOnTabSelectedListener(this);
+        setupBottomNavigationView();
+//        bottomNavigation.setOnTabSelectedListener(this);
     }
 
     private void init() {
@@ -162,8 +166,14 @@ public class Article_Base extends AppCompatActivity implements PlaceItemAdapter.
     public void setupBottomNavigationReader(){
 		bottomNavigation = (AHBottomNavigation) findViewById(R.id.bottomNavigationReader);
 		BottomNavigationReader.setupBottomNavigationView(bottomNavigation);
-		BottomNavigationReader.enableBottomNavigation(Article_Base.this,bottomNavigation);
-	}
+//		BottomNavigationReader.enableBottomNavigation(Article_Base.this,bottomNavigation);
+	  }
+    public void setupBottomNavigationView() {
+        bottomNavigation = (AHBottomNavigation) findViewById(R.id.bottomNavigation);
+        BottomNavigationViewHelper.setupBottomNavigationView(bottomNavigation);
+        BottomNavigationViewHelper.enableBottomNavigation(Article_Base.this,bottomNavigation);
+    }
+
 
     @Override
     public void onBottomReached(int position) {
@@ -300,6 +310,7 @@ public class Article_Base extends AppCompatActivity implements PlaceItemAdapter.
                             }
                         } else {
                             Log.i("Object", "cannot load more");
+                            displayRelatedArticle();
                         }
                     }
                 });
@@ -307,7 +318,16 @@ public class Article_Base extends AppCompatActivity implements PlaceItemAdapter.
             return null;
         }
     }
-	@Override
+
+    private void displayRelatedArticle() {
+        RelatedArticleFragment relatedArticleFragment = new RelatedArticleFragment();
+        android.support.v4.app.FragmentManager manager = getSupportFragmentManager();
+        manager.beginTransaction()
+            .add(R.id.relatedArticle_container,relatedArticleFragment)
+            .commit();
+    }
+
+    @Override
 	public void onClick(String itemName) {
 		Log.i("Item Name",itemName);
 	}

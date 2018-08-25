@@ -18,16 +18,20 @@ public class BottomNavigationReader {
 		public static void setupBottomNavigationView(AHBottomNavigation AHBottomNavigation) {
 			//Create Item
 			AHBottomNavigationItem close = new AHBottomNavigationItem("close", R.drawable.ic_close);
-			AHBottomNavigationItem unmark = new AHBottomNavigationItem("unmark", R.drawable.ic_unmark);
+			AHBottomNavigationItem ghost1 = new AHBottomNavigationItem("ghost1", R.drawable.ic_ghost);
+			AHBottomNavigationItem ghost2 = new AHBottomNavigationItem("ghost2", R.drawable.ic_ghost);
+			AHBottomNavigationItem unmark = new AHBottomNavigationItem("unmark", R.drawable.ic_mark);
 			AHBottomNavigationItem addtoOngoing = new AHBottomNavigationItem("addtoOngoing", R.drawable.ic_addto_ongoing);
 
 			// Hide title of item
 			AHBottomNavigation.setTitleState(com.aurelhubert.ahbottomnavigation.AHBottomNavigation.TitleState.ALWAYS_HIDE);
-			AHBottomNavigation.setAccentColor(Color.parseColor("#628CF5"));
-			AHBottomNavigation.setInactiveColor(Color.parseColor("#E6E6E6"));
+//			AHBottomNavigation.setAccentColor(Color.parseColor("#628CF5"));
+//			AHBottomNavigation.setInactiveColor(Color.parseColor("#E6E6E6"));
 
 			// Add items
 			AHBottomNavigation.addItem(close);
+			AHBottomNavigation.addItem(ghost1);
+			AHBottomNavigation.addItem(ghost2);
 			AHBottomNavigation.addItem(unmark);
 			AHBottomNavigation.addItem(addtoOngoing);
 		}

@@ -1,30 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="6dp"
     android:layout_marginEnd="5dp"
+    android:layout_marginLeft="15dp"
+    android:orientation="vertical"
     >
-    <Button
+
+    <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_height="22dp"
-        android:textAllCaps="false"
-        android:textColor="@color/white"
-        android:textSize="15sp"
-        android:id="@+id/btn_place"
-        android:fontFamily="@font/montserrat_semibold"
-        android:background="@drawable/white_border"
-        />
+        android:layout_height="50dp"
+        android:id="@+id/name_container"
+        android:background="@color/tag_red"
+        >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_marginLeft="5dp"
+            android:paddingLeft="15dp"
+            android:gravity="center_vertical"
+            android:background="@color/white"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/notoserif_bold"
+                android:textSize="19sp"
+                android:textColor="@color/black"
+                android:id="@+id/reader_name"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_medium"
+                android:textSize="12sp"
+                android:textColor="@color/tag_black"
+                android:text="323 Tân Hương, Tân Quý, Tân Phú"
+                />
+
+        </LinearLayout>
+    </RelativeLayout>
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/tv_review"
-        android:textSize="16sp"
+        android:textSize="17sp"
         android:lineSpacingExtra="4sp"
+        android:layout_marginTop="14dp"
         android:fontFamily="@font/notoserif_regular"
         android:textColor="@color/black"
-        android:layout_alignParentStart="true"
-        android:layout_toEndOf="@id/btn_place"
+        android:layout_alignBottom="@id/name_container"
         />
-</RelativeLayout>
+</LinearLayout>
