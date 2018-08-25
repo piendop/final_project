@@ -29,6 +29,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -77,25 +78,40 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
     private boolean isNewPlace;
     private boolean isNewPlan;
     private AppDatabase mDb;
+    private TextView finishTextView;
+    private TextView discardTextView;
 
     /*************************************************************/
     @Override
     public void onBackPressed() {
+        finishPlan();
+
+    }
+
+    private void finishPlan() {
         final String title = titleEditText.getText().toString();
         final String desc = descEditText.getText().toString();
         if (title.isEmpty() || desc.isEmpty()) {
             new AlertDialog.Builder(EditorActivity.this)
                     .setIcon(android.R.drawable.ic_dialog_alert)
                     .setTitle("There are no title or description!")
-                    .setMessage("Do you want to exit?")
+                    .setMessage("Do you want to save this plan?")
                     .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            deleteNewPlan();
-
+                            Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.image2);
+                            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                            bitmap.compress(Bitmap.CompressFormat.PNG,100,stream);
+                            byte[] dataSample = stream.toByteArray();
+                            savePlanWithImage("No title","No description",dataSample);
                         }
                     })
-                    .setNegativeButton("No", null)
+                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            deleteNewPlan();
+                        }
+                    })
                     .show();
         }else {
             new AlertDialog.Builder(this)
@@ -113,12 +129,10 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             deleteNewPlan();
-
                         }
                     })
                     .show();
         }
-
     }
 
     private void deleteDatabase() {
@@ -178,12 +192,20 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
                 if(data!=null) {
                     savePlanWithImage(_title, _desc, data);
                 }else{
-                    savePlanWithNoImage(_title, _desc);
+                    Bitmap bitmap = BitmapFactory.decodeResource(getResources(),R.drawable.image2);
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.PNG,100,stream);
+                    byte[] dataSample = stream.toByteArray();
+                    savePlanWithImage(_title, _desc,dataSample);
                 }
             }
 
         }else{
-            saveNewPlanWithTitleAndDescOnly(title, desc);
+            Bitmap bitmap = BitmapFactory.decodeResource(getResources(),R.drawable.image2);
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.PNG,100,stream);
+            byte[] dataSample = stream.toByteArray();
+            savePlanWithImage(title,desc,dataSample);
         }
     }
 
@@ -297,9 +319,12 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
         places = new ArrayList<>();
 		importImageButton.setOnClickListener(this);
 		reviewRecyclerView = findViewById(R.id.rv_reviews);
+		finishTextView = findViewById(R.id.btn_finish);
+		discardTextView = findViewById(R.id.btn_discard);
 
 		addPlace.setOnClickListener(this);
-
+        finishTextView.setOnClickListener(this);
+        discardTextView.setOnClickListener(this);
 
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -456,6 +481,24 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
                 Intent intent = new Intent(EditorActivity.this,MapsActivity.class);
                 startActivity(intent);
             }
+        }else if(id == R.id.btn_finish){
+
+            finishPlan();
+
+        }else if(id == R.id.btn_discard){
+            new AlertDialog.Builder(EditorActivity.this)
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setTitle("This plan is unsaved!")
+                    .setMessage("Do you want to exit?")
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            deleteNewPlan();
+
+                        }
+                    })
+                    .setNegativeButton("No", null)
+                    .show();
         }
     }
 

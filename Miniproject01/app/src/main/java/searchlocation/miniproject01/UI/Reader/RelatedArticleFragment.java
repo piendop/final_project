@@ -154,6 +154,7 @@ public class RelatedArticleFragment extends Fragment implements RelatedArticleAd
 
 						} else {
 							Log.i("Could", "not load object");
+							list.setVisibility(View.VISIBLE);
 						}
 					}
 				});
