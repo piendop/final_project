@@ -134,27 +134,34 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
     private void savePlaces() {
         ReviewViewModel viewModel = ViewModelProviders.of(EditorActivity.this).get(ReviewViewModel.class);
         List<Place> places = viewModel.getPlaces().getValue();
-        for(Place place:places){
-            final ParseObject object = new ParseObject("LocationReview");
-            ParseGeoPoint geoPoint = new ParseGeoPoint(place.getLatitude(),place.getLongitude());
-            object.put("location",geoPoint);
-            object.put("planId",planId);
-            object.put("placeName",place.getName());
-            object.put("address",place.getAddress());
-            object.put("review",place.getReview());
-            object.saveInBackground(new SaveCallback() {
-                @Override
-                public void done(ParseException e) {
-                    if(e==null){
-                        Log.i("Review Location ","Successful");
-                        sharedPreferences.edit().putString("reviewId",object.getObjectId()).apply();
-                        sharedPreferences.edit().putBoolean("isNewPlace",true).apply();
-                        Intent intent = new Intent(EditorActivity.this,OnGoingActivity.class);
-                        startActivity(intent);
+        if(places!=null && places.size()>0) {
+            for (Place place : places) {
+                final ParseObject object = new ParseObject("LocationReview");
+                ParseGeoPoint geoPoint = new ParseGeoPoint(place.getLatitude(), place.getLongitude());
+                object.put("location", geoPoint);
+                object.put("planId", planId);
+                object.put("placeName", place.getName());
+                object.put("address", place.getAddress());
+                object.put("review", place.getReview());
+                object.saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        if (e == null) {
+                            Log.i("Review Location ", "Successful");
+                            sharedPreferences.edit().putString("reviewId", object.getObjectId()).apply();
+                            sharedPreferences.edit().putBoolean("isNewPlace", true).apply();
+                            Intent intent = new Intent(EditorActivity.this, OnGoingActivity.class);
+                            startActivity(intent);
+                        }
                     }
-                }
-            });
+                });
 
+            }
+        }else{
+            Log.i("Review Location ", "Successful");
+            sharedPreferences.edit().putBoolean("isNewPlace", true).apply();
+            Intent intent = new Intent(EditorActivity.this, OnGoingActivity.class);
+            startActivity(intent);
         }
     }
 
@@ -164,14 +171,17 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
         PlanViewModel planViewModel = ViewModelProviders.of(EditorActivity.this).get(PlanViewModel.class);
         if(planId!=null){
             Plan plan = planViewModel.getPlan().getValue();
-            final String _title = plan.getTitle();
-            final String _desc = plan.getDesc();
-            byte[] data = plan.getData();
-            if(data!=null) {
-                savePlanWithImage(_title, _desc, data);
-            }else{
-                savePlanWithNoImage(_title, _desc);
+            if(plan!=null) {
+                final String _title = plan.getTitle();
+                final String _desc = plan.getDesc();
+                byte[] data = plan.getData();
+                if(data!=null) {
+                    savePlanWithImage(_title, _desc, data);
+                }else{
+                    savePlanWithNoImage(_title, _desc);
+                }
             }
+
         }else{
             saveNewPlanWithTitleAndDescOnly(title, desc);
         }
@@ -357,11 +367,7 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
 
         isNewPlan = sharedPreferences.getBoolean("isNewPlan",false);
         planId = sharedPreferences.getString("newPlan",null);
-        if(isNewPlan) {
-            newPlan();
-        }else{
-            retrievePlacesAndPlan();
-        }
+        retrievePlacesAndPlan();
     }
 
     private void retrievePlacesAndPlan() {
@@ -540,13 +546,15 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
                     //update plan
                     PlanViewModel planViewModel = ViewModelProviders.of(this).get(PlanViewModel.class);
                     final Plan plan = planViewModel.getPlan().getValue();
-                    plan.setData(byteArray);
-                    AppExecutors.getInstance().diskIO().execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            mDb.planDao().updatePlan(plan);
-                        }
-                    });
+                    if(plan!=null) {
+                        plan.setData(byteArray);
+                        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                mDb.planDao().updatePlan(plan);
+                            }
+                        });
+                    }
                 }
             } catch (IOException e) {
                 e.printStackTrace();
