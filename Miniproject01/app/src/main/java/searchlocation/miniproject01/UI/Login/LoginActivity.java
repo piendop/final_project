@@ -192,8 +192,6 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             //	showProgress(true);
-
-            // TODO: register the new account here.
             if (isEmailValid(email)) {
                 ParseQuery<ParseUser> user = ParseUser.getQuery();
                 user.whereEqualTo("email", email);
@@ -208,7 +206,6 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
                                 @Override
                                 public void done(ParseUser user, ParseException e) {
                                     if (user != null) {
-                                        //TODO: successful login save username
                                         RememberMeFragment fragment = new RememberMeFragment();
                                         fragment.show(getFragmentManager(), "Open Diaglog");
                                     } else {
@@ -226,7 +223,6 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
                     @Override
                     public void done(ParseUser user, ParseException e) {
                         if (user != null) {
-                            //TODO: successful login save username
                             RememberMeFragment fragment = new RememberMeFragment();
                             fragment.show(getFragmentManager(), "Open Diaglog");
                         } else {
@@ -241,12 +237,10 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
 	}
 
 	private boolean isEmailValid(String email) {
-		//TODO: Replace this with your own logic
 		return email.contains("@");
 	}
 
 	private boolean isPasswordValid(String password) {
-		//TODO: Replace this with your own logic
 		return password.length() > 4;
 	}
 

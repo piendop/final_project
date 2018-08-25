@@ -111,7 +111,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onBackPressed() {
         Intent intent = new Intent(MapsActivity.this,EditorActivity.class);
-        intent.putExtra("isNewPlace",false);
+        sharedPreferences.edit().putBoolean("isNewPlan",false).apply();
+        sharedPreferences.edit().putBoolean("isNewPlace",false).apply();
         startActivity(intent);
     }
 
@@ -159,7 +160,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         webThread.handleRequest();
         inputSearch = findViewById(R.id.input_search);
         sharedPreferences = MapsActivity.this.getSharedPreferences("SharedPref",MODE_PRIVATE);
-        planId = sharedPreferences.getString("newPlan",null);
+
         searchImageView.setOnClickListener(this);
         /****autocomplete init***/
         mGoogleApiClient = new GoogleApiClient

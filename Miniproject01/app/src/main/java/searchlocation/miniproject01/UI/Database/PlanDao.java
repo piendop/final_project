@@ -13,15 +13,15 @@ import searchlocation.miniproject01.Models.Plan;
 @Dao
 public interface PlanDao {
 
-    /*@Query("SELECT * FROM `plan`")
+    @Query("SELECT * FROM `plan`")
     LiveData<Plan> loadPlan();
 
     @Insert
     void insertPlan(Plan plan);
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
-    void updatePlace(Plan plan);
+    void updatePlan(Plan plan);
 
     @Delete
-    void deletePlace(Plan plan);*/
+    void deletePlan(Plan plan);
 }

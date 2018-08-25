@@ -8,8 +8,9 @@ import android.content.Context;
 import android.util.Log;
 
 import searchlocation.miniproject01.Models.Place;
+import searchlocation.miniproject01.Models.Plan;
 
-@Database(entities = {Place.class}, version = 1, exportSchema = false)
+@Database(entities = {Place.class, Plan.class}, version = 1, exportSchema = false)
 @TypeConverters(DateConverter.class)
 public abstract class AppDatabase extends RoomDatabase {
 
@@ -32,6 +33,8 @@ public abstract class AppDatabase extends RoomDatabase {
     }
 
     public abstract PlaceDao placeDao();
+
+    public abstract PlanDao planDao();
 
 }
 

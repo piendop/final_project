@@ -98,15 +98,32 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.PlanViewHolder
         }
 
         void bind(int listIndex){
-            Plan plan = listOfPlans.get(listIndex);
-            image.setImageBitmap(plan.getImage());
-            title.setText(plan.getTitle());
-            if(plan.getTags()==null || plan.getTags().isEmpty()){
-                hashtag.setText("No hashtag");
-            }else {
-                hashtag.setText(plan.getTags());
+            if(listIndex<listOfPlans.size()) {
+                Plan plan = listOfPlans.get(listIndex);
+
+                if(plan.getImage()!=null){
+                    image.setImageBitmap(plan.getImage());
+                }else{
+                    image.setImageResource(R.drawable.image2);
+                }
+
+                if(plan.getTitle()!=null &&!plan.getTitle().isEmpty()){
+                    title.setText(plan.getTitle());
+                }else{
+                    title.setText("No title");
+                }
+                if (plan.getTags() == null || plan.getTags().isEmpty()) {
+                    hashtag.setText("No hashtag");
+                } else {
+                    hashtag.setText(plan.getTags());
+                }
+                if(plan.getDesc()!=null &&!plan.getDesc().isEmpty()){
+                    desc.setText(plan.getDesc());
+                }else{
+                    desc.setText("No description");
+                }
+
             }
-            desc.setText(plan.getDesc());
         }
 
         @Override

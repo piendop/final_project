@@ -1,6 +1,7 @@
 package searchlocation.miniproject01.UI.Editor;
 
 import android.Manifest;
+import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
@@ -57,6 +58,8 @@ import searchlocation.miniproject01.UI.Utilis.PlanAdapter;
 
 public class EditorActivity extends AppCompatActivity implements View.OnClickListener{
 
+
+    /*********************************************************************************/
     // Constant for logging
     private static final String TAG = EditorActivity.class.getSimpleName();
 	private ImageView headingImage;
@@ -75,6 +78,7 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
     private boolean isNewPlan;
     private AppDatabase mDb;
 
+    /*************************************************************/
     @Override
     public void onBackPressed() {
         final String title = titleEditText.getText().toString();
@@ -100,41 +104,13 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
                     .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            planId = sharedPreferences.getString("newPlan", null);
-                            sharedPreferences.edit().putBoolean("isNewPlan",true).apply();
-
-                            if (planId != null) {
-                                ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Plan");
-                                query.getInBackground(planId, new GetCallback<ParseObject>() {
-                                    @Override
-                                    public void done(final ParseObject object, ParseException e) {
-                                        object.put("title", title);
-                                        object.put("description", desc);
-                                        object.saveInBackground(new SaveCallback() {
-                                            @Override
-                                            public void done(ParseException e) {
-                                                if (e == null) {
-                                                    Log.i("Title desc ", "successful");
-                                                    sharedPreferences.edit().putString("newPlan",null).apply();
-                                                    Intent intent = new Intent(getApplicationContext(), OnGoingActivity.class);
-                                                    startActivity(intent);
-                                                }
-                                            }
-                                        });
-                                    }
-                                });
-                            } else {
-                                final ParseObject object = new ParseObject("Plan");
-                                addSampleImage(object, title, desc);
-
-                            }
+                            savePlanAndPlaces(title, desc);
                         }
                     })
                     .setNegativeButton("No", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             deleteNewPlan();
-
                         }
                     })
                     .show();
@@ -142,10 +118,123 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
 
     }
 
+    private void savePlaces() {
+        ReviewViewModel viewModel = ViewModelProviders.of(EditorActivity.this).get(ReviewViewModel.class);
+        List<Place> places = viewModel.getPlaces().getValue();
+        for(Place place:places){
+            final ParseObject object = new ParseObject("LocationReview");
+            ParseGeoPoint geoPoint = new ParseGeoPoint(place.getLatitude(),place.getLongitude());
+            object.put("location",geoPoint);
+            object.put("planId",planId);
+            object.put("placeName",place.getName());
+            object.put("address",place.getAddress());
+            object.put("review",place.getReview());
+            object.saveInBackground(new SaveCallback() {
+                @Override
+                public void done(ParseException e) {
+                    if(e==null){
+                        Log.i("Review Location ","Successful");
+                        sharedPreferences.edit().putString("reviewId",object.getObjectId()).apply();
+                        sharedPreferences.edit().putBoolean("isNewPlace",true).apply();
+                        Intent intent = new Intent(EditorActivity.this,OnGoingActivity.class);
+                        startActivity(intent);
+                    }
+                }
+            });
+
+        }
+    }
+
+    private void savePlanAndPlaces(String title, String desc) {
+        planId = sharedPreferences.getString("newPlan", null);
+        sharedPreferences.edit().putBoolean("isNewPlan",true).apply();
+        PlanViewModel planViewModel = ViewModelProviders.of(EditorActivity.this).get(PlanViewModel.class);
+        if(planId!=null){
+            Plan plan = planViewModel.getPlan().getValue();
+            final String _title = plan.getTitle();
+            final String _desc = plan.getDesc();
+            byte[] data = plan.getData();
+            if(data!=null) {
+                savePlanWithImage(_title, _desc, data);
+            }else{
+                savePlanWithNoImage(_title, _desc);
+            }
+        }else{
+            saveNewPlanWithTitleAndDescOnly(title, desc);
+        }
+    }
+
+    private void saveNewPlanWithTitleAndDescOnly(String title, String desc) {
+        ParseObject object = new ParseObject("Plan");
+        object.put("title", title);
+        object.put("description", desc);
+        object.put("userId", ParseUser.getCurrentUser().getObjectId());
+        object.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e == null) {
+                    Log.i("Title desc only ", "successful");
+                    sharedPreferences.edit().putString("newPlan",null).apply();
+                    savePlaces();
+                }
+            }
+        });
+    }
+
+    private void savePlanWithNoImage(final String _title, final String _desc) {
+        ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Plan");
+        query.getInBackground(planId, new GetCallback<ParseObject>() {
+            @Override
+            public void done(final ParseObject object, ParseException e) {
+                object.put("title", _title);
+                object.put("description", _desc);
+                object.saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        if (e == null) {
+                            Log.i("Title desc ", "successful");
+                            sharedPreferences.edit().putString("newPlan",null).apply();
+                            savePlaces();
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    private void savePlanWithImage(final String _title, final String _desc, byte[] data) {
+        final ParseFile file = new ParseFile("image.png",data);
+        ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Plan");
+        query.getInBackground(planId, new GetCallback<ParseObject>() {
+            @Override
+            public void done(final ParseObject object, ParseException e) {
+                if(e==null){
+                    object.put("image",file);
+                    object.saveInBackground(new SaveCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            if(e==null){
+                                Log.i("Save image"," successful");
+                                object.put("title", _title);
+                                object.put("description", _desc);
+                                object.saveInBackground(new SaveCallback() {
+                                    @Override
+                                    public void done(ParseException e) {
+                                        Log.i("Save title desc ","successful");
+                                        savePlaces();
+                                    }
+                                });
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    }
+
     private void deleteNewPlan() {
         sharedPreferences.edit().putString("newPlan",null).apply();
         sharedPreferences.edit().putBoolean("isNewPlan",true).apply();
-        // TODO : DELETE PLAN IF EXISTS
         planId = sharedPreferences.getString("newPlan", null);
         if(planId!=null){
             ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Plan");
@@ -155,8 +244,7 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
                     if(e==null){
                         Log.i("Delete ","successful");
                         object.deleteInBackground();
-                        Intent intent = new Intent(getApplicationContext(), OnGoingActivity.class);
-                        startActivity(intent);
+                        savePlaces();
                     }
                 }
             });
@@ -166,37 +254,7 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
         }
     }
 
-    private void addSampleImage(final ParseObject object, final String title, final String desc) {
-        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.image2);
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG,100,stream);
-        byte[] array = stream.toByteArray();
-        ParseFile file = new ParseFile("image.png",array);
-        object.put("image",file);
-        object.saveInBackground(new SaveCallback() {
-            @Override
-            public void done(ParseException e) {
-                if(e==null){
-                    Log.i("Image null ","successful");
-                    object.put("title", title);
-                    object.put("description", desc);
-                    object.put("userId", ParseUser.getCurrentUser().getObjectId());
-                    object.saveInBackground(new SaveCallback() {
-                        @Override
-                        public void done(ParseException e) {
-                            if (e == null) {
-                                Log.i("Title desc only ", "successful");
-                                sharedPreferences.edit().putString("newPlan",null).apply();
-                                Intent intent = new Intent(getApplicationContext(), OnGoingActivity.class);
-                                startActivity(intent);
-                            }
-                        }
-                    });
-                }
-            }
-        });
-    }
-
+    /******************************************************************************/
     @Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -231,7 +289,6 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
 
             @Override
             public void onSwiped(final RecyclerView.ViewHolder viewHolder, int direction) {
-                //TODO: SWIPE TO DELETE
                 AppExecutors.getInstance().diskIO().execute(new Runnable() {
                     @Override
                     public void run() {
@@ -242,10 +299,30 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
                 });
             }
         }).attachToRecyclerView(reviewRecyclerView);
-        // TODO: Call retrieveTasks from here and remove the onResume method
+
         mDb = AppDatabase.getInstance(getApplicationContext());
-        retrievePlacesAndPlan();
+
+
 	}
+
+    private void newPlan() {
+        if(isNewPlan){
+            final ReviewViewModel viewModel = ViewModelProviders.of(this).get(ReviewViewModel.class);
+            final PlanViewModel planViewModel = ViewModelProviders.of(this).get(PlanViewModel.class);
+            viewModel.getPlaces().observe(this, new Observer<List<Place>>() {
+                @Override
+                public void onChanged(@Nullable List<Place> places) {
+                    viewModel.getPlaces().removeObserver(this);
+                }
+            });
+            planViewModel.getPlan().observe(this, new Observer<Plan>() {
+                @Override
+                public void onChanged(@Nullable Plan plan) {
+                    planViewModel.getPlan().removeObserver(this);
+                }
+            });
+        }
+    }
 
     @Override
     protected void onStart() {
@@ -258,37 +335,38 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
         }
         sharedPreferences = EditorActivity.this.getSharedPreferences("SharedPref",MODE_PRIVATE);
         reviewId = sharedPreferences.getString("reviewId",null);
-        isNewPlace = sharedPreferences.getBoolean("isNewPlace",false);
+
         isNewPlan = sharedPreferences.getBoolean("isNewPlan",false);
         planId = sharedPreferences.getString("newPlan",null);
-        if(isNewPlace){
-            ++NUM_LIST_ITEMS;
+        if(isNewPlan) {
+            newPlan();
+        }else{
+            retrievePlacesAndPlan();
         }
     }
 
     private void retrievePlacesAndPlan() {
-        if(!isNewPlan) {
-            ReviewViewModel viewModel = ViewModelProviders.of(this).get(ReviewViewModel.class);
-            viewModel.getPlaces().observe(this, new Observer<List<Place>>() {
-                @Override
-                public void onChanged(@Nullable List<Place> places) {
-                    Log.d(TAG, "Updating lists of reviews from LiveData in ViewModel");
-                    reviewAdapter.setListOfPlaces(places);
-                    reviewAdapter.setNumberItems(places.size());
-                    reviewAdapter.notifyDataSetChanged();
-                }
-            });
-        }
+        ReviewViewModel viewModel = ViewModelProviders.of(this).get(ReviewViewModel.class);
+        PlanViewModel planViewModel = ViewModelProviders.of(this).get(PlanViewModel.class);
+        viewModel.getPlaces().observe(this, new Observer<List<Place>>() {
+            @Override
+            public void onChanged(@Nullable List<Place> places) {
+                Log.d(TAG, "Updating lists of reviews from LiveData in ViewModel");
+                reviewAdapter.setListOfPlaces(places);
+                reviewAdapter.setNumberItems(places.size());
+                reviewAdapter.notifyDataSetChanged();
+            }
+        });
 
-
-        /*PlanViewModel planViewModel = ViewModelProviders.of(this).get(PlanViewModel.class);
         planViewModel.getPlan().observe(this, new Observer<Plan>() {
             @Override
             public void onChanged(@Nullable Plan plan) {
-                Log.d(TAG,"Updating plan from LiveData in ViewModel");
-                populateUI (plan);
+                if(plan!=null)
+                    Log.i("Plan ",plan.toString());
+                Log.d(TAG, "Updating plan from LiveData in ViewModel");
+                populateUI(plan);
             }
-        });*/
+        });
     }
 
     private void populateUI(Plan plan) {
@@ -299,9 +377,10 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
         String title = plan.getTitle();
         String desc = plan.getDesc();
         byte[] data = plan.getData();
-        Bitmap bitmap = BitmapFactory.decodeByteArray(data,0,data.length);
-        if(bitmap!=null)
-            headingImage.setImageBitmap(plan.getImage());
+        if(data!=null) {
+            Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+            headingImage.setImageBitmap(bitmap);
+        }
         if(title!=null && !title.isEmpty())
             titleEditText.setText(plan.getTitle());
         if(desc!=null && !desc.isEmpty())
@@ -324,108 +403,61 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
                 }
             }
         }else if(id == R.id.bt_add_place){
-            planId = sharedPreferences.getString("newPlan",null);
+            isNewPlace = sharedPreferences.getBoolean("isNewPlace",false);
             if(planId==null){
-                sharedPreferences.edit().putBoolean("isNewPlan",true).apply();
-                final ParseObject object = new ParseObject("Plan");
-                Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.image2);
-                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.PNG,100,stream);
-                byte[] array = stream.toByteArray();
-                ParseFile file = new ParseFile("image.png",array);
-                object.put("image",file);
-                object.saveInBackground(new SaveCallback() {
-                    @Override
-                    public void done(ParseException e) {
-                        if(e==null){
-                            Log.i("Image null ","successful");
-                            object.put("userId",ParseUser.getCurrentUser().getObjectId());
-                            object.saveInBackground(new SaveCallback() {
-                                @Override
-                                public void done(ParseException e) {
-                                    if(e==null){
-                                        Log.i("Empty plan ","successful");
-                                        Log.i("Plan id ",object.getObjectId());
-                                        sharedPreferences.edit().putString("newPlan",object.getObjectId()).apply();
-                                        Intent intent = new Intent(EditorActivity.this,MapsActivity.class);
-                                        startActivity(intent);
-                                    }
-                                }
-                            });
-                        }
-                    }
-                });
-                //save plan to local database
-                /*final Plan plan = new Plan("","","",ParseUser.getCurrentUser().getObjectId(),array);
-                AppExecutors.getInstance().diskIO().execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        //insert new plan to database
-                        planDatabase.planDao().insertPlan(plan);
-                    }
-                });*/
+
+                addEmptyPlan();
+                //save new plan to local database
+                final Plan plan = new Plan(titleEditText.getText().toString(),"",descEditText.getText().toString(),ParseUser.getCurrentUser().getObjectId(),null);
+                insertNewPlan(plan);
             }
             else if(isNewPlace){
-                //save review to database
+                //update the last item of place
                 Log.i("Plan id", planId);
                 final Place place = reviewAdapter.getPlace(reviewAdapter.getNumberItems()-1);
                 AppExecutors.getInstance().diskIO().execute(new Runnable() {
                     @Override
                     public void run() {
                         mDb.placeDao().updatePlace(place);
-                        finish();
+                        Intent intent = new Intent(EditorActivity.this,MapsActivity.class);
+                        startActivity(intent);
                     }
                 });
-                Intent intent = new Intent(EditorActivity.this,MapsActivity.class);
-                startActivity(intent);
-                //saveReviewToParse();
-                //save place to local database
-                /*final String review = sharedPreferences.getString("review", null);
-                if (review != null ) {
-                    final Place place = new Place(review);
-                    AppExecutors.getInstance().diskIO().execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            Log.i("Save review ","successful");
-                            AppDatabase.getInstance(getApplicationContext()).placeDao().insertPlace(place);
-                            finish();
-                        }
-                    });
 
-                }*/
             }
         }
     }
 
-    private void saveReviewToParse() {
-        final String review = sharedPreferences.getString("review",null);
-        if(review!=null && reviewId!=null) {
-            Log.i("review ",review);
-            Log.i("review id ",reviewId);
-
-            ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("LocationReview");
-            query.setLimit(1);
-            query.getInBackground(reviewId, new GetCallback<ParseObject>() {
-                @Override
-                public void done(ParseObject object, ParseException e) {
-                    if(e==null){
-                        object.put("review",review);
-                        object.put("planId",planId);
-                        object.saveInBackground(new SaveCallback() {
-                            @Override
-                            public void done(ParseException e) {
-                                if(e==null){
-                                    Log.i("Save review ","successful");
-                                    Intent intent = new Intent(EditorActivity.this,MapsActivity.class);
-                                    startActivity(intent);
-                                }
-                            }
-                        });
-                    }
-                }
-            });
-        }
+    private void insertNewPlan(final Plan plan) {
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                mDb.planDao().insertPlan(plan);
+                sharedPreferences.edit().putBoolean("isNewPlan",true).apply();
+                Intent intent = new Intent(EditorActivity.this,MapsActivity.class);
+                startActivity(intent);
+            }
+        });
     }
+
+    private void addEmptyPlan() {
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                final ParseObject object = new ParseObject("Plan");
+                object.saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        Log.i("Save empty plan", "successful");
+                        sharedPreferences.edit().putString("newPlan",object.getObjectId()).apply();
+                        sharedPreferences.edit().putBoolean("isNewPlan",true).apply();
+                    }
+                });
+            }
+        });
+    }
+
+    /******************************************************************************/
 
     private void getPhoto() {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -437,6 +469,7 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode==1 && resultCode == RESULT_OK && data!=null){
+
 
             //uri link image with app
             Uri selectedImage  = data.getData();
@@ -458,53 +491,25 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
 
                 byte[] byteArray = stream.toByteArray();
 
-
-                final ParseFile file = new ParseFile("image.png", byteArray);
-
                 if(planId==null) {
-                    sharedPreferences.edit().putBoolean("isNewPlan",true).apply();
+                    addEmptyPlan();
 
-                    final ParseObject object = new ParseObject("Plan");
+                    //save plan to room
+                    final Plan plan = new Plan("Your title","","",ParseUser.getCurrentUser().getObjectId(),byteArray);
 
-                    object.put("image", file);
+                    insertNewPlan(plan);
 
-                    object.put("userId", ParseUser.getCurrentUser().getObjectId());
-
-                    object.saveInBackground(new SaveCallback() {
-                        @Override
-                        public void done(ParseException e) {
-                            if (e == null) {
-                                Log.i("Image ", "uploaded");
-                                //headingImage.setImageBitmap(bitmap);
-                                sharedPreferences.edit().putString("newPlan", object.getObjectId()).apply();
-                            } else {
-                                Toast.makeText(getApplicationContext(), "Image could not be uploaded - please try again later", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
 
                 }else {//plan has been created
 
-                    ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Plan");
-                    query.getInBackground(planId, new GetCallback<ParseObject>() {
+                    //update plan
+                    PlanViewModel planViewModel = ViewModelProviders.of(this).get(PlanViewModel.class);
+                    final Plan plan = planViewModel.getPlan().getValue();
+                    plan.setData(byteArray);
+                    AppExecutors.getInstance().diskIO().execute(new Runnable() {
                         @Override
-                        public void done(ParseObject object, ParseException e) {
-                            if(e==null){
-                                object.put("image",file);
-
-                                object.put("userId", ParseUser.getCurrentUser().getObjectId());
-
-                                object.saveInBackground(new SaveCallback() {
-                                    @Override
-                                    public void done(ParseException e) {
-                                        if (e == null) {
-                                            Log.i("Image ", "uploaded");
-                                        } else {
-                                            Toast.makeText(getApplicationContext(), "Image could not be uploaded - please try again later", Toast.LENGTH_SHORT).show();
-                                        }
-                                    }
-                                });
-                            }
+                        public void run() {
+                            mDb.planDao().updatePlan(plan);
                         }
                     });
                 }
@@ -515,6 +520,15 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
 
     }
 
+    /**************************************************************************/
+
+    @Override
+    protected void onDestroy() {
+        reviewRecyclerView.setVisibility(View.INVISIBLE);
+        super.onDestroy();
+    }
+
+    /******************************************************************************/
 
     private class LoadReview extends AsyncTask<Integer, Void, Void> {
 
@@ -557,9 +571,66 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
         }
     }
 
-    @Override
-    protected void onDestroy() {
-        reviewRecyclerView.setVisibility(View.INVISIBLE);
-        super.onDestroy();
+    private void saveReviewToParse() {
+        final String review = sharedPreferences.getString("review",null);
+        if(review!=null && reviewId!=null) {
+            Log.i("review ",review);
+            Log.i("review id ",reviewId);
+
+            ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("LocationReview");
+            query.setLimit(1);
+            query.getInBackground(reviewId, new GetCallback<ParseObject>() {
+                @Override
+                public void done(ParseObject object, ParseException e) {
+                    if(e==null){
+                        object.put("review",review);
+                        object.put("planId",planId);
+                        object.saveInBackground(new SaveCallback() {
+                            @Override
+                            public void done(ParseException e) {
+                                if(e==null){
+                                    Log.i("Save review ","successful");
+                                    Intent intent = new Intent(EditorActivity.this,MapsActivity.class);
+                                    startActivity(intent);
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        }
     }
+
+    private void addSampleImage(final ParseObject object, final String title, final String desc) {
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.image2);
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG,100,stream);
+        byte[] array = stream.toByteArray();
+        ParseFile file = new ParseFile("image.png",array);
+        object.put("image",file);
+        object.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if(e==null){
+                    Log.i("Image null ","successful");
+                    object.put("title", title);
+                    object.put("description", desc);
+                    object.put("userId", ParseUser.getCurrentUser().getObjectId());
+                    object.saveInBackground(new SaveCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            if (e == null) {
+                                Log.i("Title desc only ", "successful");
+                                sharedPreferences.edit().putString("newPlan",null).apply();
+                                Intent intent = new Intent(getApplicationContext(), OnGoingActivity.class);
+                                startActivity(intent);
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+
 }

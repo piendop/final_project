@@ -86,7 +86,7 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener {
             String password = _passwordText.getText().toString();
 
 
-            // TODO: Implement your own signup logic here.
+
 
             if(ParseUser.getCurrentUser()==null) {
                 ParseUser user = new ParseUser();
@@ -121,7 +121,6 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener {
 		View _signupButton = (View) findViewById(R.id.sign_up_button);
 		_signupButton.setEnabled(true);
 		setResult(RESULT_OK, null);
-        //TODO: successful login save username
         RememberMeFragment fragment = new RememberMeFragment();
         fragment.show(getFragmentManager(),"Open Diaglog");
 	}
@@ -175,7 +174,6 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener {
 		return valid;
 	}
 
-	// TODO: on click
     @Override
     public void onClick(View v) {
         if(v.getId() == R.id.sign_up_linear_layout || v.getId() == R.id.tv_create_new_account){

@@ -22,11 +22,14 @@ public class Plan {
 	//URL of Heading Image
 	//String headingImage;
 	//Title of the plan
+    @ColumnInfo(name = "title")
 	private String title;
 	//Heading of plan
 	//Store hashtag about that plan
+    @ColumnInfo(name = "tags")
 	private String tags;
 	//Store description of the plans
+    @ColumnInfo(name = "desc")
 	private String desc;
 	//image
     @Ignore
