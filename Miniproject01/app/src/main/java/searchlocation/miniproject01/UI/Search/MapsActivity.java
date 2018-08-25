@@ -151,7 +151,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        setupBottomNavigationView();
+//        setupBottomNavigationView();
         relativeLayout = findViewById(R.id.relLayout1);
         searchImageView = findViewById(R.id.iv_search);
         webThread = new WebThread(new Handler(),this);
@@ -170,11 +170,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .build();
         getTextSearch();
     }
-    public void setupBottomNavigationView(){
-        bottomNavigation =  findViewById(R.id.bottomNavigation);
-        BottomNavigationViewHelper.setupBottomNavigationView(bottomNavigation);
-        BottomNavigationViewHelper.enableBottomNavigation(MapsActivity.this,bottomNavigation);
-    }
+
 
 
     /**

@@ -57,6 +57,5 @@
             tools:context=".UI.Search.MapsActivity" />
     </RelativeLayout>
     <!--Bottom navigation bar-->
-    <include layout="@layout/layout_bottom_navigation_view"/>
 </RelativeLayout>
 </LinearLayout>

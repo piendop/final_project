@@ -5,16 +5,51 @@
     android:layout_height="wrap_content"
     android:layout_marginLeft="20dp"
     android:layout_marginRight="20dp">
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/tv_name"/>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/tv_address"/>
-    <EditText
+    <LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="6dp"
+    android:layout_marginEnd="5dp"
+    android:layout_marginLeft="15dp"
+    android:orientation="vertical"
+    >
+        <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:id="@+id/name_container"
+        >
+            <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_marginLeft="5dp"
+            android:paddingLeft="15dp"
+            android:gravity="center_vertical"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/notoserif_bold"
+                android:textSize="19sp"
+                android:textColor="@color/black"
+                android:id="@+id/tv_name"
+                android:singleLine="true"
+                android:layout_gravity="left"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_medium"
+                android:textSize="12sp"
+                android:id="@+id/tv_address"
+                android:singleLine="true"
+                android:layout_gravity="left"
+                android:textColor="@color/tag_black"
+                />
+        </LinearLayout>
+    </RelativeLayout>
+        <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/edit_review"
@@ -27,26 +62,8 @@
         android:text="Write your review"
         android:inputType="textMultiLine"
         android:textColorHint="#AEAEAE"
-        android:background="@drawable/grey_box1"
+        android:minHeight="80dp"
         />
-    <!--<Button-->
-        <!--android:id="@+id/btn_add_review"-->
-        <!--style="?android:textAppearanceSmall"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="35dp"-->
-        <!--android:layout_alignParentBottom="true"-->
-        <!--android:layout_alignParentEnd="true"-->
-        <!--android:layout_marginBottom="17dp"-->
-        <!--android:layout_marginEnd="17dp"-->
-        <!--android:textSize="12sp"-->
-        <!--android:paddingLeft="20dp"-->
-        <!--android:paddingRight="20dp"-->
-        <!--android:background="@drawable/btn_filled"-->
-        <!--android:fontFamily="@font/montserrat_semibold"-->
-        <!--android:gravity="center"-->
-        <!--android:elevation="0dp"-->
-        <!--android:text="Add new place"-->
-        <!--android:textAllCaps="false"-->
-        <!--android:textColor="@color/white"-->
-        <!--android:textStyle="bold" />-->
+    </LinearLayout>
+
 </RelativeLayout>

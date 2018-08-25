@@ -66,7 +66,6 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
 	private EditText titleEditText;
 	private EditText descEditText;
 	private Button importImageButton;
-	private Button addPlaceButton;
 	private ImageView addPlace;
     private SharedPreferences sharedPreferences;
     private String planId;
@@ -283,14 +282,10 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
 		descEditText = findViewById(R.id.edit_description);
 		importImageButton = findViewById(R.id.btn_import);
 		addPlace = findViewById(R.id.btn_addplace);
-		addPlaceButton = findViewById(R.id.bt_add_place);
         places = new ArrayList<>();
 		importImageButton.setOnClickListener(this);
 		reviewRecyclerView = findViewById(R.id.rv_reviews);
 
-
-        addPlaceButton.setVisibility(View.VISIBLE);
-		addPlaceButton.setOnClickListener(this);
 		addPlace.setOnClickListener(this);
 
 
@@ -425,7 +420,7 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
                     getPhoto();
                 }
             }
-        }else if(id == R.id.bt_add_place){
+        }else if(id == R.id.btn_addplace){
             isNewPlace = sharedPreferences.getBoolean("isNewPlace",false);
             if(planId==null){
 
@@ -435,7 +430,11 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
                 insertNewPlan(plan);
             }
             else {
+
+                //update the last item of place
+
                 //update all items
+
                 Log.i("Plan id", planId);
                 ReviewViewModel viewModel = ViewModelProviders.of(this).get(ReviewViewModel.class);
                 List<Place> places = viewModel.getPlaces().getValue();
