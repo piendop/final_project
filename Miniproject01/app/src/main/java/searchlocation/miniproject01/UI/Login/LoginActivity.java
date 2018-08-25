@@ -7,6 +7,8 @@ import android.app.Fragment;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -22,6 +24,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
+import android.util.Base64;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -36,11 +40,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.parse.FindCallback;
+import com.parse.GetCallback;
+import com.parse.GetDataCallback;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
+import com.parse.ParseFile;
+import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,6 +78,8 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
 	private EditText mPasswordView;
 	private LinearLayout linearLayout;
 	private TextView textViewLogin;
+	private SharedPreferences myPrefrence;
+	private String username;
 
 	@Override
 	public void onBackPressed() {
@@ -206,7 +217,11 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
                                 @Override
                                 public void done(ParseUser user, ParseException e) {
                                     if (user != null) {
-                                        RememberMeFragment fragment = new RememberMeFragment();
+
+                                        //TODO: successful login save username
+																			saveImageToSharedPreferences();
+																			RememberMeFragment fragment = new RememberMeFragment();
+
                                         fragment.show(getFragmentManager(), "Open Diaglog");
                                     } else {
                                         mPasswordView.setError("wrong password");
@@ -223,6 +238,9 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
                     @Override
                     public void done(ParseUser user, ParseException e) {
                         if (user != null) {
+
+                            //TODO: successful login save username
+														saveImageToSharedPreferences();
                             RememberMeFragment fragment = new RememberMeFragment();
                             fragment.show(getFragmentManager(), "Open Diaglog");
                         } else {
@@ -234,6 +252,43 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
         }
 
 
+	}
+
+	private void saveImageToSharedPreferences() {
+		username= ParseUser.getCurrentUser().getObjectId();
+		ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("User");
+		query.getInBackground(username, new GetCallback<ParseObject>() {
+			@Override
+			public void done(ParseObject object, ParseException e) {
+				if(e==null){
+					final ParseFile image = (ParseFile) object.get("avatar");
+					if(image!=null){
+						image.getDataInBackground(new GetDataCallback() {
+							@Override
+							public void done(byte[] data, ParseException e) {
+								if (e == null && data != null) {
+									Log.i("Get avatar", "successful");
+									Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+									SharedPreferences.Editor editor = myPrefrence.edit();
+									editor.putString("USER_AVATAR", encodeTobase64(bitmap));
+									editor.commit();
+								}
+							}
+						});
+					}
+				}
+			}
+		});
+
+	}
+	public static String encodeTobase64(Bitmap image) {
+		Bitmap immage = image;
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		immage.compress(Bitmap.CompressFormat.PNG, 100, baos);
+		byte[] b = baos.toByteArray();
+		String imageEncoded = Base64.encodeToString(b, Base64.DEFAULT);
+		Log.d("Image Log:", imageEncoded);
+		return imageEncoded;
 	}
 
 	private boolean isEmailValid(String email) {

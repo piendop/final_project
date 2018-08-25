@@ -66,8 +66,8 @@ public class PlaceItemAdapter extends RecyclerView.Adapter<PlaceItemAdapter.Plac
 		PlaceViewHolder placeViewHolder = new PlaceViewHolder(view);
 		//Cho nay sau nay custom
 		int backgroundColor = ColorTag.getColorTag(context,1);
-		Button button = placeViewHolder.itemView.findViewById(R.id.btn_place);
-		button.setBackgroundColor(backgroundColor);
+//		Button button = placeViewHolder.itemView.findViewById(R.id.btn_place);
+//		button.setBackgroundColor(backgroundColor);
 		return placeViewHolder;
 	}
 
@@ -88,19 +88,18 @@ public class PlaceItemAdapter extends RecyclerView.Adapter<PlaceItemAdapter.Plac
 
 	class PlaceViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-		Button placeButton;
+		TextView name;
 		TextView review;
 
 		public PlaceViewHolder(View itemView) {
 			super(itemView);
-			placeButton = itemView.findViewById(R.id.btn_place);
+			name = itemView.findViewById(R.id.reader_name);
 			review = itemView.findViewById(R.id.tv_review);
-			placeButton.setOnClickListener(this);
 		}
 
 		void bind(int listIndex){
 			Place place = listOfPlaces.get(listIndex);
-			placeButton.setText(place.getName());
+			name.setText(place.getName());
 			review.setText(place.getReview());
 		}
 

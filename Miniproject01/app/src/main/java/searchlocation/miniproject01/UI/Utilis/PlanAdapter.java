@@ -18,8 +18,8 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.PlanViewHolder
 
 	private ArrayList<Plan> listOfPlans;
 	private int mNumberItems=0;
-    final private OnBottomReachedListener onBottomReachedListener;
-    final private PlanAdapterOnClickHandler mClickHander;
+	final private OnBottomReachedListener onBottomReachedListener;
+	final private PlanAdapterOnClickHandler mClickHander;
 
 	public PlanAdapter(int numberOfItems, ArrayList<Plan> list, OnBottomReachedListener onBottomReachedListener, PlanAdapterOnClickHandler clickHandler){
 

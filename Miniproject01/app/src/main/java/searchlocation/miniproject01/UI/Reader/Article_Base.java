@@ -1,5 +1,7 @@
 package searchlocation.miniproject01.UI.Reader;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -42,6 +44,7 @@ import searchlocation.miniproject01.Models.Place;
 import searchlocation.miniproject01.Models.Plan;
 import searchlocation.miniproject01.R;
 import searchlocation.miniproject01.UI.Discover.DiscoverActivity;
+import searchlocation.miniproject01.UI.Fragments.Option1Fragment;
 import searchlocation.miniproject01.UI.OnGoing.OnGoingActivity;
 import searchlocation.miniproject01.UI.OnGoing.OnGoingEmptyActivity;
 import searchlocation.miniproject01.UI.Utilis.BottomNavigationReader;
@@ -91,7 +94,7 @@ public class Article_Base extends AppCompatActivity implements PlaceItemAdapter.
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_article_base);
-		setupBottomNavigationReader();
+//		setupBottomNavigationReader();
 		noConnectionTextView = findViewById(R.id.tv_no_connection);
         imagePlace = findViewById(R.id.headingImage);
         title = findViewById(R.id.tv_title);
@@ -101,7 +104,9 @@ public class Article_Base extends AppCompatActivity implements PlaceItemAdapter.
         objectId = getIntent().getStringExtra("objectId");
         placeRecyclerView = findViewById(R.id.list_places);
         init();
-        bottomNavigation.setOnTabSelectedListener(this);
+        Log.i("Call","Setup Bottom navigation");
+        setupBottomNavigationReader();
+//        bottomNavigation.setOnTabSelectedListener(this);
     }
 
     private void init() {
@@ -160,10 +165,46 @@ public class Article_Base extends AppCompatActivity implements PlaceItemAdapter.
     }
 
     public void setupBottomNavigationReader(){
-		bottomNavigation = (AHBottomNavigation) findViewById(R.id.bottomNavigationReader);
-		BottomNavigationReader.setupBottomNavigationView(bottomNavigation);
-		BottomNavigationReader.enableBottomNavigation(Article_Base.this,bottomNavigation);
-	}
+        Log.i("Start","Find layout");
+        ImageView btn_mark = (ImageView) findViewById(R.id.btn_mark);
+        final ImageView btn_add = (ImageView) findViewById(R.id.btn_addToOnGoing);
+        TextView btn_close = (TextView) findViewById(R.id.btn_close);
+        btn_add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new AlertDialog.Builder(v.getContext())
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setTitle("Are you sure?")
+                    .setMessage("Do you want to add this plan as your current plan?")
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            if(objectId!=null){
+                                Intent onGoing = new Intent(Article_Base.this, OnGoingActivity.class); //ACTIVITY_NUMBER 1
+                                onGoing.putExtra("currentPlan",objectId);
+                                startActivity(onGoing);
+                            }else{
+                                SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0); // 0 - for private mode
+                                SharedPreferences.Editor editor = pref.edit();
+                                editor.putBoolean("IS_ONGOING", true);
+                                editor.commit();
+                                Intent intent = new Intent(Article_Base.this, OnGoingEmptyActivity.class);
+                                startActivity(intent);
+                            }
+
+                        }
+                    })
+                    .setNegativeButton("No", null)
+                    .show();
+            }
+        });
+
+
+    }
+
+
+//
+
 
     @Override
     public void onBottomReached(int position) {
@@ -300,6 +341,7 @@ public class Article_Base extends AppCompatActivity implements PlaceItemAdapter.
                             }
                         } else {
                             Log.i("Object", "cannot load more");
+                            displayRelatedArticle();
                         }
                     }
                 });
@@ -307,7 +349,16 @@ public class Article_Base extends AppCompatActivity implements PlaceItemAdapter.
             return null;
         }
     }
-	@Override
+
+    private void displayRelatedArticle() {
+        RelatedArticleFragment relatedArticleFragment = new RelatedArticleFragment();
+        android.support.v4.app.FragmentManager manager = getSupportFragmentManager();
+        manager.beginTransaction()
+            .add(R.id.relatedArticle_container,relatedArticleFragment)
+            .commit();
+    }
+
+    @Override
 	public void onClick(String itemName) {
 		Log.i("Item Name",itemName);
 	}

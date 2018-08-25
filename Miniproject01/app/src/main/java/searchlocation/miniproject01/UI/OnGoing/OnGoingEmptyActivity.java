@@ -4,22 +4,31 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.ImageView;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 
 import searchlocation.miniproject01.R;
+import searchlocation.miniproject01.UI.Assistant.Assistant;
 import searchlocation.miniproject01.UI.Utilis.BottomNavigationViewHelper;
 
 public class OnGoingEmptyActivity extends AppCompatActivity {
 
     AHBottomNavigation bottomNavigation;
-
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_ongoing_empty);
 		setupBottomNavigationView();
-
+		ImageView assistant = (ImageView) findViewById(R.id.assistant);
+		assistant.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent assistant = new Intent(OnGoingEmptyActivity.this, Assistant.class);
+				startActivity(assistant);
+			}
+		});
 	}
 
 	/*This method I use to setup the bottom navigation with helper from Utils folder*/

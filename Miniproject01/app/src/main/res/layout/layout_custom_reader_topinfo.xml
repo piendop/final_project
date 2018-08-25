@@ -1,33 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:orientation="vertical"
     android:visibility="invisible"
     android:id="@+id/plan_info"
+    android:gravity="center"
     >
-    <FrameLayout
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="30dp"
+        android:fontFamily="@font/montserrat_bold"
+        android:textColor="@color/black"
+        android:layout_gravity="left"
+        android:textSize="24sp"
+        android:id="@+id/tv_title"
+        />
+    <ImageView
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:id="@+id/fl_title">
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/headingImage"
-            android:scaleType="centerCrop"
-            />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="60dp"
-            android:fontFamily="@font/montserrat_bold"
-            android:textColor="@color/white"
-            android:textSize="28sp"
-            android:id="@+id/tv_title"
-            />
-    </FrameLayout>
+        android:layout_height="160dp"
+        android:id="@+id/headingImage"
+        android:scaleType="centerCrop"
+        />
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

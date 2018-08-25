@@ -1,4 +1,4 @@
-package searchlocation.miniproject01.UI.Utilis;
+package searchlocation.miniproject01.UI.Reader;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -14,13 +14,13 @@ import java.util.ArrayList;
 import searchlocation.miniproject01.Models.Plan;
 import searchlocation.miniproject01.R;
 
-public class PlanPublishedAdapter extends RecyclerView.Adapter<PlanPublishedAdapter.PlanViewHolder> {
+public class RelatedArticleAdapter extends RecyclerView.Adapter<RelatedArticleAdapter.PlanViewHolder> {
 
 	private ArrayList<Plan> listOfPlans;
 	private int mNumberItems=0;
-	private PlanPublishedAdapterOnClickHandler mClickHander;
+	private RelatedArticleAdapterOnClickHandler monClickHandler;
 
-	public PlanPublishedAdapter(int numberOfItems, ArrayList<Plan> list,PlanPublishedAdapterOnClickHandler clickHandler){
+	public RelatedArticleAdapter(int numberOfItems, ArrayList<Plan> list, RelatedArticleAdapterOnClickHandler onClickHandler){
 
 		if(!list.isEmpty()){
 			listOfPlans = list;
@@ -28,7 +28,7 @@ public class PlanPublishedAdapter extends RecyclerView.Adapter<PlanPublishedAdap
 			listOfPlans = new ArrayList<>();
 		}
 		mNumberItems=numberOfItems;
-		this.mClickHander=clickHandler;
+		this.monClickHandler=onClickHandler;
 	}
 
 	public void addPlan(Plan plan){
@@ -47,7 +47,7 @@ public class PlanPublishedAdapter extends RecyclerView.Adapter<PlanPublishedAdap
 		void onBottomReached(int position);
 	}
 
-	public interface PlanPublishedAdapterOnClickHandler{
+	public interface RelatedArticleAdapterOnClickHandler{
 		void onClick(Plan itemPlan);
 	}
 
@@ -55,7 +55,7 @@ public class PlanPublishedAdapter extends RecyclerView.Adapter<PlanPublishedAdap
 	@Override
 	public PlanViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 		Context context = parent.getContext();
-		int layoutForItem = R.layout.layout_custom_card_published;
+		int layoutForItem = R.layout.layout_custom_card_1;
 		LayoutInflater inflater = LayoutInflater.from(context);
 		boolean shouldAttachToParentImmediately = false;
 
@@ -80,19 +80,29 @@ public class PlanPublishedAdapter extends RecyclerView.Adapter<PlanPublishedAdap
 
 	class PlanViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
+		ImageView image;
 		TextView title;
+		TextView hashtag;
 		TextView desc;
 
 		public PlanViewHolder(View itemView) {
 			super(itemView);
-			title = itemView.findViewById(R.id.cardpublished_title);
-			desc = itemView.findViewById(R.id.cardpublished_description);
+			image = itemView.findViewById(R.id.headingImage);
+			title = itemView.findViewById(R.id.card_title);
+			hashtag = itemView.findViewById(R.id.card_tags);
+			desc = itemView.findViewById(R.id.card_desc);
 			itemView.setOnClickListener(this);
 		}
 
 		void bind(int listIndex){
 			Plan plan = listOfPlans.get(listIndex);
+			image.setImageBitmap(plan.getImage());
 			title.setText(plan.getTitle());
+			if(plan.getTags()==null || plan.getTags().isEmpty()){
+				hashtag.setText("No hashtag");
+			}else {
+				hashtag.setText(plan.getTags());
+			}
 			desc.setText(plan.getDesc());
 		}
 
@@ -100,7 +110,7 @@ public class PlanPublishedAdapter extends RecyclerView.Adapter<PlanPublishedAdap
 		public void onClick(View v) {
 			int index = getAdapterPosition();
 			Plan plan = listOfPlans.get(index);
-			mClickHander.onClick(plan);
+			monClickHandler.onClick(plan);
 		}
 	}
 }

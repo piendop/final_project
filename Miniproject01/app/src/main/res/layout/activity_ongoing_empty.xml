@@ -2,11 +2,19 @@
 <RelativeLayout android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android" >
-    <include layout="@layout/layout_bottom_navigation_view" />
+    <ImageView
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_alignParentRight="true"
+        android:layout_margin="30dp"
+        android:src="@drawable/assistant"
+        android:id="@+id/assistant"
+        />
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/assistant"
         android:layout_marginBottom="60dp"
         android:orientation="vertical"
         android:gravity="center"
@@ -42,6 +50,6 @@
                 android:textColor="@color/black"
                 android:textSize="24sp" />
         </LinearLayout>
-        <!--Bottom navigation bar-->
     </LinearLayout>
+    <include layout="@layout/layout_bottom_navigation_view" />
 </RelativeLayout>
