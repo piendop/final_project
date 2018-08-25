@@ -168,9 +168,9 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
             final String _desc = plan.getDesc();
             byte[] data = plan.getData();
             if(data!=null) {
-                savePlanWithImage(_title, _desc, data);
+                savePlanWithImage(title, desc, data);
             }else{
-                savePlanWithNoImage(_title, _desc);
+                savePlanWithNoImage(title, desc);
             }
         }else{
             saveNewPlanWithTitleAndDescOnly(title, desc);
@@ -195,13 +195,13 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
         });
     }
 
-    private void savePlanWithNoImage(final String _title, final String _desc) {
+    private void savePlanWithNoImage(final String title, final String desc) {
         ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Plan");
         query.getInBackground(planId, new GetCallback<ParseObject>() {
             @Override
             public void done(final ParseObject object, ParseException e) {
-                object.put("title", _title);
-                object.put("description", _desc);
+                object.put("title", title);
+                object.put("description", desc);
                 object.saveInBackground(new SaveCallback() {
                     @Override
                     public void done(ParseException e) {

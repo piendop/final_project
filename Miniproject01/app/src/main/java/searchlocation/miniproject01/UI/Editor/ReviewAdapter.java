@@ -104,11 +104,13 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
     public class ReviewViewHolder extends RecyclerView.ViewHolder {
         EditText reviewEditText;
         TextView addressTextView;
+        TextView placeName;
 
         public ReviewViewHolder(View itemView){
             super(itemView);
             reviewEditText = itemView.findViewById(R.id.edit_review);
             addressTextView = itemView.findViewById(R.id.tv_address);
+            placeName = itemView.findViewById(R.id.tv_name);
             reviewEditText.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -141,6 +143,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
             }
             if(place.getAddress()!=null && !place.getAddress().isEmpty())
                 addressTextView.setText(place.getAddress());
+                placeName.setText(place.getName());
         }
     }
 }
