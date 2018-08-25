@@ -24,4 +24,7 @@ public interface PlanDao {
 
     @Delete
     void deletePlan(Plan plan);
+
+    @Query("DELETE FROM `plan`")
+    public void nukeTable();
 }

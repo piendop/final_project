@@ -53,6 +53,13 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.PlanViewHolder
         void onClick(Plan itemPlan);
     }
 
+    public void clear() {
+        int size = listOfPlans.size();
+        listOfPlans.clear();
+        mNumberItems = 0;
+        notifyItemRangeRemoved(0,size);
+    }
+
     @NonNull
     @Override
     public PlanViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
