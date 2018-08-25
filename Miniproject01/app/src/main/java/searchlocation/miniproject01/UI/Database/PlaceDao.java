@@ -30,4 +30,7 @@ public interface PlaceDao {
 
     @Query("SELECT * FROM place WHERE id = :id")
     LiveData<Place> loadPlaceById(int id);
+
+    @Query("DELETE FROM place")
+    public void nukeTable();
 }

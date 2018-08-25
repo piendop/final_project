@@ -123,6 +123,8 @@ public class DiscoverActivity extends AppCompatActivity implements PlanAdapter.O
                         inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),0);
                     final SharedPreferences preferences = DiscoverActivity.this.getSharedPreferences("SharedPref", 0);
                     preferences.edit().putLong("createdAt",0).apply();
+                    mAdapter.clear();
+                    NUM_LIST_ITEMS=0;
                     loadSearchPlan();
                 }
                 return false;
@@ -137,6 +139,8 @@ public class DiscoverActivity extends AppCompatActivity implements PlanAdapter.O
                         inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),0);
                     final SharedPreferences preferences = DiscoverActivity.this.getSharedPreferences("SharedPref", 0);
                     preferences.edit().putLong("createdAt",0).apply();
+                    mAdapter.clear();
+                    NUM_LIST_ITEMS=0;
                     loadSearchPlan();
                 }
                 return false;
@@ -192,7 +196,7 @@ public class DiscoverActivity extends AppCompatActivity implements PlanAdapter.O
 
     private void loadSearchPlan() {
         mLoadingIndicator.setVisibility(View.VISIBLE);
-
+        listOfPlans.setVisibility(View.INVISIBLE);
         textSearch = searchTextView.getText().toString();
         planList.clear();
         final SharedPreferences preferences = DiscoverActivity.this.getSharedPreferences("SharedPref", 0);
@@ -242,6 +246,8 @@ public class DiscoverActivity extends AppCompatActivity implements PlanAdapter.O
                         }
                     } else {
                         Log.i("Object", "cannot load more");
+                        mLoadingIndicator.setVisibility(View.INVISIBLE);
+                        listOfPlans.setVisibility(View.VISIBLE);
                     }
                 }
             });
@@ -306,6 +312,7 @@ public class DiscoverActivity extends AppCompatActivity implements PlanAdapter.O
                     } else {
                         Log.i("Object", "cannot load more");
                         mLoadingIndicator.setVisibility(View.INVISIBLE);
+                        listOfPlans.setVisibility(View.VISIBLE);
                     }
                 }
             });

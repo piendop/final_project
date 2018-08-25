@@ -92,6 +92,7 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             deleteNewPlan();
+
                         }
                     })
                     .setNegativeButton("No", null)
@@ -105,17 +106,29 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             savePlanAndPlaces(title, desc);
+
                         }
                     })
                     .setNegativeButton("No", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             deleteNewPlan();
+
                         }
                     })
                     .show();
         }
 
+    }
+
+    private void deleteDatabase() {
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                AppDatabase.getInstance(EditorActivity.this).planDao().nukeTable();
+                AppDatabase.getInstance(EditorActivity.this).placeDao().nukeTable();
+            }
+        });
     }
 
     private void savePlaces() {
@@ -176,6 +189,7 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
                     Log.i("Title desc only ", "successful");
                     sharedPreferences.edit().putString("newPlan",null).apply();
                     savePlaces();
+                    deleteDatabase();
                 }
             }
         });
@@ -195,6 +209,7 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
                             Log.i("Title desc ", "successful");
                             sharedPreferences.edit().putString("newPlan",null).apply();
                             savePlaces();
+                            deleteDatabase();
                         }
                     }
                 });
@@ -222,6 +237,7 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
                                     public void done(ParseException e) {
                                         Log.i("Save title desc ","successful");
                                         savePlaces();
+                                        deleteDatabase();
                                     }
                                 });
                             }
@@ -245,6 +261,7 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
                         Log.i("Delete ","successful");
                         object.deleteInBackground();
                         savePlaces();
+                        deleteDatabase();
                     }
                 }
             });
@@ -413,18 +430,24 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
                 insertNewPlan(plan);
             }
             else {
-                //update the last item of place
-                Log.i("Plan id", planId);
-                final Place place = reviewAdapter.getPlace(reviewAdapter.getNumberItems()-1);
-                AppExecutors.getInstance().diskIO().execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        mDb.placeDao().updatePlace(place);
-                        Intent intent = new Intent(EditorActivity.this,MapsActivity.class);
-                        startActivity(intent);
-                    }
-                });
 
+                //update the last item of place
+
+                //update all items
+
+                Log.i("Plan id", planId);
+                ReviewViewModel viewModel = ViewModelProviders.of(this).get(ReviewViewModel.class);
+                List<Place> places = viewModel.getPlaces().getValue();
+                for(final Place place :places) {
+                    AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            mDb.placeDao().updatePlace(place);
+                        }
+                    });
+                }
+                Intent intent = new Intent(EditorActivity.this,MapsActivity.class);
+                startActivity(intent);
             }
         }
     }
