@@ -12,6 +12,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -186,17 +187,15 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
         if(planId!=null){
             Plan plan = planViewModel.getPlan().getValue();
             if(plan!=null) {
-                final String _title = plan.getTitle();
-                final String _desc = plan.getDesc();
                 byte[] data = plan.getData();
                 if(data!=null) {
-                    savePlanWithImage(_title, _desc, data);
+                    savePlanWithImage(title, desc, data);
                 }else{
                     Bitmap bitmap = BitmapFactory.decodeResource(getResources(),R.drawable.image2);
                     ByteArrayOutputStream stream = new ByteArrayOutputStream();
                     bitmap.compress(Bitmap.CompressFormat.PNG,100,stream);
                     byte[] dataSample = stream.toByteArray();
-                    savePlanWithImage(_title, _desc,dataSample);
+                    savePlanWithImage(title, desc,dataSample);
                 }
             }
 
@@ -283,9 +282,9 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void deleteNewPlan() {
-        sharedPreferences.edit().putString("newPlan",null).apply();
         sharedPreferences.edit().putBoolean("isNewPlan",true).apply();
         planId = sharedPreferences.getString("newPlan", null);
+        sharedPreferences.edit().putString("newPlan",null).apply();
         if(planId!=null){
             ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Plan");
             query.getInBackground(planId, new GetCallback<ParseObject>() {
@@ -454,7 +453,8 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
             }
         }else if(id == R.id.btn_addplace){
             isNewPlace = sharedPreferences.getBoolean("isNewPlace",false);
-            if(planId==null){
+            planId = sharedPreferences.getString("newPlan",null);
+            if(planId==null){//add place first
 
                 addEmptyPlan();
                 //save new plan to local database
@@ -470,14 +470,24 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
                 Log.i("Plan id", planId);
                 ReviewViewModel viewModel = ViewModelProviders.of(this).get(ReviewViewModel.class);
                 List<Place> places = viewModel.getPlaces().getValue();
-                for(final Place place :places) {
-                    AppExecutors.getInstance().diskIO().execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            mDb.placeDao().updatePlace(place);
-                        }
-                    });
+                if(places!=null && places.size()>0) {
+                    for (final Place place : places) {
+                        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                mDb.placeDao().updatePlace(place);
+                            }
+                        });
+                    }
                 }
+                headingImage.invalidate();
+                BitmapDrawable drawable = (BitmapDrawable) headingImage.getDrawable();
+                Bitmap bitmap = drawable.getBitmap();
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.PNG,100,stream);
+                byte[] byteArray = stream.toByteArray();
+                updatePlanTitleAndDesc();
+                updatePlan(byteArray);
                 Intent intent = new Intent(EditorActivity.this,MapsActivity.class);
                 startActivity(intent);
             }
@@ -544,9 +554,40 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
     /******************************************************************************/
 
     private void getPhoto() {
+
+        planId =sharedPreferences.getString("newPlan",null);
+        if(planId==null) {
+            addEmptyPlan();
+            final Plan plan = new Plan(titleEditText.getText().toString(),"",descEditText.getText().toString(),ParseUser.getCurrentUser().getObjectId(),null);
+            AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                @Override
+                public void run() {
+                    mDb.planDao().insertPlan(plan);
+                    sharedPreferences.edit().putBoolean("isNewPlan", true).apply();
+                }
+            });
+        }else{
+            updatePlanTitleAndDesc();
+        }
+
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 
         startActivityForResult(intent,1);
+    }
+
+    private void updatePlanTitleAndDesc() {
+        PlanViewModel planViewModel = ViewModelProviders.of(this).get(PlanViewModel.class);
+        final Plan plan = planViewModel.getPlan().getValue();
+        if(plan!=null){
+            AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                @Override
+                public void run() {
+                    plan.setTitle(titleEditText.getText().toString());
+                    plan.setDesc(descEditText.getText().toString());
+                    AppDatabase.getInstance(getApplicationContext()).planDao().updatePlan(plan);
+                }
+            });
+        }
     }
 
     @Override
@@ -568,42 +609,54 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
                 Matrix matrix = new Matrix();
                 matrix.postRotate(90);
                 Bitmap rotatedBitmap = Bitmap.createBitmap(bitmap, 0, 0,bitmap.getWidth(),bitmap.getHeight(),matrix,true);
-                headingImage.setImageBitmap(rotatedBitmap);
+                headingImage.setImageBitmap(bitmap);
 
 
-                rotatedBitmap.compress(Bitmap.CompressFormat.PNG,100,stream);
+                //rotatedBitmap.compress(Bitmap.CompressFormat.PNG,100,stream);
+                bitmap.compress(Bitmap.CompressFormat.PNG,100,stream);
 
                 byte[] byteArray = stream.toByteArray();
+                planId= sharedPreferences.getString("newPlan",null);
 
-                if(planId==null) {
+                if(planId==null) {//import image first
                     addEmptyPlan();
 
                     //save plan to room
-                    final Plan plan = new Plan("Your title","","",ParseUser.getCurrentUser().getObjectId(),byteArray);
+                    final Plan plan = new Plan(titleEditText.getText().toString(),"",descEditText.getText().toString(),ParseUser.getCurrentUser().getObjectId(),byteArray);
 
-                    insertNewPlan(plan);
+                    AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            mDb.planDao().insertPlan(plan);
+                            sharedPreferences.edit().putBoolean("isNewPlan",true).apply();
+                        }
+                    });
 
 
                 }else {//plan has been created
 
                     //update plan
-                    PlanViewModel planViewModel = ViewModelProviders.of(this).get(PlanViewModel.class);
-                    final Plan plan = planViewModel.getPlan().getValue();
-                    if(plan!=null) {
-                        plan.setData(byteArray);
-                        AppExecutors.getInstance().diskIO().execute(new Runnable() {
-                            @Override
-                            public void run() {
-                                mDb.planDao().updatePlan(plan);
-                            }
-                        });
-                    }
+                    updatePlan(byteArray);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
 
+    }
+
+    private void updatePlan(byte[] byteArray) {
+        PlanViewModel planViewModel = ViewModelProviders.of(this).get(PlanViewModel.class);
+        final Plan plan = planViewModel.getPlan().getValue();
+        if(plan!=null) {
+            plan.setData(byteArray);
+            AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                @Override
+                public void run() {
+                    mDb.planDao().updatePlan(plan);
+                }
+            });
+        }
     }
 
     /**************************************************************************/
