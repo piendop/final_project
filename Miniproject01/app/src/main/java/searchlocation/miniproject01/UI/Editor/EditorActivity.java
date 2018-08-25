@@ -202,6 +202,7 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
             public void done(final ParseObject object, ParseException e) {
                 object.put("title", _title);
                 object.put("description", _desc);
+                object.put("userId", ParseUser.getCurrentUser().getObjectId());
                 object.saveInBackground(new SaveCallback() {
                     @Override
                     public void done(ParseException e) {
@@ -232,6 +233,7 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
                                 Log.i("Save image"," successful");
                                 object.put("title", _title);
                                 object.put("description", _desc);
+                                object.put("userId", ParseUser.getCurrentUser().getObjectId());
                                 object.saveInBackground(new SaveCallback() {
                                     @Override
                                     public void done(ParseException e) {
@@ -324,22 +326,21 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
 	}
 
     private void newPlan() {
-        if(isNewPlan){
-            final ReviewViewModel viewModel = ViewModelProviders.of(this).get(ReviewViewModel.class);
-            final PlanViewModel planViewModel = ViewModelProviders.of(this).get(PlanViewModel.class);
-            viewModel.getPlaces().observe(this, new Observer<List<Place>>() {
-                @Override
-                public void onChanged(@Nullable List<Place> places) {
-                    viewModel.getPlaces().removeObserver(this);
-                }
-            });
-            planViewModel.getPlan().observe(this, new Observer<Plan>() {
-                @Override
-                public void onChanged(@Nullable Plan plan) {
-                    planViewModel.getPlan().removeObserver(this);
-                }
-            });
-        }
+
+        final ReviewViewModel viewModel = ViewModelProviders.of(this).get(ReviewViewModel.class);
+        final PlanViewModel planViewModel = ViewModelProviders.of(this).get(PlanViewModel.class);
+        viewModel.getPlaces().observe(this, new Observer<List<Place>>() {
+            @Override
+            public void onChanged(@Nullable List<Place> places) {
+                viewModel.getPlaces().removeObserver(this);
+            }
+        });
+        planViewModel.getPlan().observe(this, new Observer<Plan>() {
+            @Override
+            public void onChanged(@Nullable Plan plan) {
+                planViewModel.getPlan().removeObserver(this);
+            }
+        });
     }
 
     @Override
@@ -472,9 +473,19 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
                 object.saveInBackground(new SaveCallback() {
                     @Override
                     public void done(ParseException e) {
-                        Log.i("Save empty plan", "successful");
-                        sharedPreferences.edit().putString("newPlan",object.getObjectId()).apply();
-                        sharedPreferences.edit().putBoolean("isNewPlan",true).apply();
+                        if(e==null) {
+                            sharedPreferences.edit().putString("newPlan", object.getObjectId()).apply();
+                            sharedPreferences.edit().putBoolean("isNewPlan", true).apply();
+                            object.put("userId",ParseUser.getCurrentUser().getObjectId());
+                            object.saveInBackground(new SaveCallback() {
+                                @Override
+                                public void done(ParseException e) {
+                                    if(e==null){
+                                        Log.i("Save empty plan", "successful");
+                                    }
+                                }
+                            });
+                        }
                     }
                 });
             }

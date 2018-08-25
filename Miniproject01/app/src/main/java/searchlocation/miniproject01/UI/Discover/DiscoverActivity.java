@@ -82,6 +82,7 @@ public class DiscoverActivity extends AppCompatActivity implements PlanAdapter.O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_discover);
+        Log.i("On create","here");
         username= ParseUser.getCurrentUser().getObjectId();
         searchTextView = findViewById(R.id.input_search);
         linearLayout = findViewById(R.id.relLayout1);
@@ -109,8 +110,11 @@ public class DiscoverActivity extends AppCompatActivity implements PlanAdapter.O
         super.onStart();
         final SharedPreferences preferences = DiscoverActivity.this.getSharedPreferences("SharedPref", 0);
         preferences.edit().putLong("createdAt",0).apply();
-        listOfPlans.setVisibility(View.INVISIBLE);
-        mLoadingIndicator.setVisibility(View.VISIBLE);
+        listOfPlans.setVisibility(View.VISIBLE);
+        //mLoadingIndicator.setVisibility(View.VISIBLE);
+        NUM_LIST_ITEMS = 0;
+        mAdapter.setmNumberItems(NUM_LIST_ITEMS);
+        mAdapter.clear();
     }
 
     private void getTextSearch() {

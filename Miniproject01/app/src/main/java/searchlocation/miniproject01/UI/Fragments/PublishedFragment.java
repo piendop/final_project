@@ -118,20 +118,20 @@ public class PublishedFragment extends Fragment implements PlanPublishedAdapter.
 		username= ParseUser.getCurrentUser().getObjectId();
 		LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
 		list.setLayoutManager(layoutManager);
-		if(mAdapter == null) {
+		//if(mAdapter == null) {
 			//listOfPlans.setHasFixedSize(true);
 			mAdapter = new PlanPublishedAdapter(3,planList,this);
 			list.setAdapter(mAdapter);
 			//load shared plan initially
-			loadNewPlan();
-		}else{
+			//loadNewPlan();
+		//}else{
 			/*mAdapter = new PlanPublishedAdapter(3,planList,this);
-			list.setAdapter(mAdapter);
-			//load shared plan initially
+			//list.setAdapter(mAdapter);
+			//load shared plan initially*/
 			new LoadingSharePlanInitially().execute();
-			Log.i("mAdapter ","is null");*/
-			list.setVisibility(View.VISIBLE);
-		}
+			//Log.i("mAdapter ","is null");
+			//list.setVisibility(View.VISIBLE);
+		//}
 	}
 
     @Override
@@ -207,7 +207,7 @@ public class PublishedFragment extends Fragment implements PlanPublishedAdapter.
         //load more plan
         NUM_LIST_ITEMS++;
         mAdapter.setmNumberItems(NUM_LIST_ITEMS);
-        mAdapter.addPlan(plan);
+        planList.add(plan);
         mAdapter.notifyItemInserted(NUM_LIST_ITEMS);
         list.setVisibility(View.VISIBLE);
     }

@@ -62,6 +62,7 @@ public class BottomNavigationViewHelper {
 							break;
 						case 1:
 							Intent discover = new Intent(context, DiscoverActivity.class);
+							discover.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
 							context.startActivity(discover);
 							break;
 						case 2:

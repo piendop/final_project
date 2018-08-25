@@ -1,5 +1,6 @@
 package searchlocation.miniproject01.UI.profile;
 
+import android.content.SharedPreferences;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -27,6 +28,8 @@ public class ProfileHome extends AppCompatActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		SharedPreferences preferences = ProfileHome.this.getSharedPreferences("SharedPref", 0);
+		preferences.edit().putLong("createdProfile",0).apply();
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_profile_home);
 
