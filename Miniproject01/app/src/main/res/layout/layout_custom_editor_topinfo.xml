@@ -4,32 +4,31 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:id="@+id/plan_info"
+    android:background="@color/white"
     >
-
+     <EditText
+        android:id="@+id/edit_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="30dp"
+        android:fontFamily="@font/montserrat_bold"
+        android:layout_gravity="left"
+        android:hint="Your Title"
+        android:textColor="@color/black"
+        android:textColorHint="#AEAEAE"
+        android:textSize="@dimen/textsize_title" />
     <RelativeLayout
-        android:id="@+id/fl_title"
         android:layout_width="match_parent"
-        android:layout_height="200dp">
-
+        android:layout_height="160dp">
         <ImageView
             android:id="@+id/edit_headingImage"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="160dp"
             android:src="@drawable/image2"
             android:scaleType="centerCrop"/>
-
-        <EditText
-            android:id="@+id/edit_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="60dp"
-            android:fontFamily="@font/montserrat_bold"
-            android:hint="Your Title"
-            android:textColor="@color/white"
-            android:textColorHint="#AEAEAE"
-            android:textSize="@dimen/textsize_title" />
         <Button
             android:id="@+id/btn_import"
             style="?android:textAppearanceSmall"
@@ -42,7 +41,7 @@
             android:textSize="12sp"
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
-            android:background="@drawable/btn_filled"
+            android:background="@drawable/black_transparent"
             android:fontFamily="@font/montserrat_semibold"
             android:gravity="center"
             android:elevation="0dp"
@@ -69,24 +68,4 @@
         android:hint="Short description"
         android:textColorHint="#AEAEAE"
         />
-    <Button
-        android:id="@+id/bt_add_place"
-        style="?android:textAppearanceSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="35dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginBottom="17dp"
-        android:layout_marginEnd="17dp"
-        android:background="@drawable/btn_filled"
-        android:elevation="0dp"
-        android:fontFamily="@font/montserrat_semibold"
-        android:gravity="center"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
-        android:text="Add place"
-        android:textAllCaps="false"
-        android:textColor="@color/white"
-        android:textSize="12sp"
-        android:textStyle="bold" />
 </LinearLayout>

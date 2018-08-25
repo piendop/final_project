@@ -139,7 +139,8 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
             }else{
                 reviewEditText.setText("Write your review...");
             }
-            addressTextView.setText(place.getAddress());
+            if(place.getAddress()!=null && !place.getAddress().isEmpty())
+                addressTextView.setText(place.getAddress());
         }
     }
 }
