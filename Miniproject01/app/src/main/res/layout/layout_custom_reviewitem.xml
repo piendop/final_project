@@ -25,6 +25,7 @@
         android:fontFamily="@font/notoserif_regular"
         android:textColor="@color/black"
         android:text="Write your review"
+        android:inputType="textMultiLine"
         android:textColorHint="#AEAEAE"
         android:background="@drawable/grey_box1"
         />

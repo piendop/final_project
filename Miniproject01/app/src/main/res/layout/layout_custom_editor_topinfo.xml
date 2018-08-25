@@ -27,6 +27,7 @@
             android:layout_marginTop="60dp"
             android:fontFamily="@font/montserrat_bold"
             android:hint="Your Title"
+            android:inputType="textMultiLine"
             android:textColor="@color/white"
             android:textColorHint="#AEAEAE"
             android:textSize="@dimen/textsize_title" />
@@ -67,6 +68,7 @@
         android:id="@+id/edit_description"
         android:background="@drawable/grey_box1"
         android:hint="Short description"
+        android:inputType="textMultiLine"
         android:textColorHint="#AEAEAE"
         />
     <Button

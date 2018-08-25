@@ -350,7 +350,7 @@ public class DiscoverActivity extends AppCompatActivity implements PlanAdapter.O
 
     @Override
     protected void onDestroy() {
-        listOfPlans.removeAllViews();
+        //listOfPlans.removeAllViews();
         super.onDestroy();
     }
 
