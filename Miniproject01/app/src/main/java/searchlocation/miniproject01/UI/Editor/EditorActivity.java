@@ -52,6 +52,7 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
 	private EditText descEditText;
 	private Button importImageButton;
 	private Button addPlaceButton;
+	private ImageView addPlace;
     private SharedPreferences sharedPreferences;
     private String planId;
     private ArrayList<Place> places;
@@ -177,6 +178,7 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
 		titleEditText = findViewById(R.id.edit_title);
 		descEditText = findViewById(R.id.edit_description);
 		importImageButton = findViewById(R.id.btn_import);
+		addPlace = findViewById(R.id.btn_addplace);
 		addPlaceButton = findViewById(R.id.bt_add_place);
         sharedPreferences = EditorActivity.this.getSharedPreferences("SharedPref",MODE_PRIVATE);
         //init new plan is null
@@ -188,7 +190,7 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
 		importImageButton.setOnClickListener(this);
 		reviewRecyclerView = findViewById(R.id.rv_reviews);
 
-		addPlaceButton.setOnClickListener(this);
+		addPlace.setOnClickListener(this);
 		editModelArrayList = new ArrayList<>();
 
 

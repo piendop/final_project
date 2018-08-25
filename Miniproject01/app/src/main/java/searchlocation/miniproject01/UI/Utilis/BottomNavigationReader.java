@@ -1,21 +1,14 @@
 package searchlocation.miniproject01.UI.Utilis;
-
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Color;
-import android.support.v7.app.AlertDialog;
-import android.view.View;
-
+import android.util.Log;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
-
 import searchlocation.miniproject01.R;
-import searchlocation.miniproject01.UI.Login.LoginActivity;
-import searchlocation.miniproject01.UI.OnGoing.OnGoingActivity;
+
 
 public class BottomNavigationReader {
 		public static void setupBottomNavigationView(AHBottomNavigation AHBottomNavigation) {
+			Log.i("Bottom","Create item");
 			//Create Item
 			AHBottomNavigationItem close = new AHBottomNavigationItem("close", R.drawable.ic_close);
 			AHBottomNavigationItem ghost1 = new AHBottomNavigationItem("ghost1", R.drawable.ic_ghost);
@@ -25,9 +18,17 @@ public class BottomNavigationReader {
 
 			// Hide title of item
 			AHBottomNavigation.setTitleState(com.aurelhubert.ahbottomnavigation.AHBottomNavigation.TitleState.ALWAYS_HIDE);
-//			AHBottomNavigation.setAccentColor(Color.parseColor("#628CF5"));
+			//			AHBottomNavigation.setAccentColor(Color.parseColor("#628CF5"));
 //			AHBottomNavigation.setInactiveColor(Color.parseColor("#E6E6E6"));
-
+			close.setColor(Color.parseColor("#628CF5"));
+			//Create 2 ghosts button for navigation
+			ghost1.setColor(Color.parseColor("#FFFFFF"));
+			ghost2.setColor(Color.parseColor("#FFFFFF"));
+			unmark.setColor(Color.parseColor("#E6E6E6"));
+			addtoOngoing.setColor(Color.parseColor("#628CF5"));
+			AHBottomNavigation.disableItemAtPosition(1);
+			AHBottomNavigation.disableItemAtPosition(2);
+			Log.i("Bottom","add item");
 			// Add items
 			AHBottomNavigation.addItem(close);
 			AHBottomNavigation.addItem(ghost1);
@@ -37,9 +38,9 @@ public class BottomNavigationReader {
 		}
 
 
-		public static void enableBottomNavigation(final Context context, final AHBottomNavigation AHBottomNavigation) {
-
-		}
+//		public static void enableBottomNavigation(final Context context, final AHBottomNavigation AHBottomNavigation) {
+//
+//		}
 }
 
 

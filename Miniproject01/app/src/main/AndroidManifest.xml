@@ -47,7 +47,9 @@
 
         <activity
             android:name=".UI.OnGoing.OnGoingActivity"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme"
+            android:launchMode="standard"
+            />
         <activity
             android:name=".UI.Search.MapActivity"
             android:theme="@style/AppTheme"
@@ -68,8 +70,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".UI.OnGoing.OnGoingEmptyActivity" />
-        <activity android:name=".UI.Discover.DiscoverActivity" />
+        <activity android:name=".UI.OnGoing.OnGoingEmptyActivity"
+            android:launchMode="singleInstance"
+            />
+        <activity android:name=".UI.Discover.DiscoverActivity"
+            android:launchMode="singleInstance"
+            />
         <activity android:name=".UI.Login.SignUp" />
         <activity android:name=".UI.Login.IntroActivity" />
         <activity android:name=".UI.Reader.Article_Base" />

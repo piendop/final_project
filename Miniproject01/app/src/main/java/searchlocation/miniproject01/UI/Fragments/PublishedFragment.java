@@ -1,5 +1,6 @@
 package searchlocation.miniproject01.UI.Fragments;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -26,10 +27,11 @@ import java.util.List;
 import searchlocation.miniproject01.Models.Plan;
 import searchlocation.miniproject01.R;
 import searchlocation.miniproject01.UI.Discover.DiscoverActivity;
+import searchlocation.miniproject01.UI.Reader.Article_Base;
 import searchlocation.miniproject01.UI.Utilis.PlanAdapter;
 import searchlocation.miniproject01.UI.Utilis.PlanPublishedAdapter;
 
-public class PublishedFragment extends Fragment {
+public class PublishedFragment extends Fragment implements PlanPublishedAdapter.PlanPublishedAdapterOnClickHandler {
 
 	private static int NUM_LIST_ITEMS = 10;
 	private String username;
@@ -56,6 +58,8 @@ public class PublishedFragment extends Fragment {
 //		ProgressBar mLoadingIndicator = (ProgressBar) view.findViewById(R.id.pb_loading_indicator);
 		return view;
 	}
+
+
 
 	private class LoadingSharePlanInitially extends AsyncTask<Void, Void, Void> {
 		@Override
@@ -110,18 +114,25 @@ public class PublishedFragment extends Fragment {
 		list.setLayoutManager(layoutManager);
 		if(mAdapter == null) {
 			//listOfPlans.setHasFixedSize(true);
-			mAdapter = new PlanPublishedAdapter(3,planList);
+			mAdapter = new PlanPublishedAdapter(3,planList,this);
 			list.setAdapter(mAdapter);
 			//load shared plan initially
 			new LoadingSharePlanInitially().execute();
 		}else{
-			mAdapter = new PlanPublishedAdapter(3,planList);
+			mAdapter = new PlanPublishedAdapter(3,planList,this);
 			list.setAdapter(mAdapter);
 			//load shared plan initially
 			new LoadingSharePlanInitially().execute();
 			Log.i("mAdapter ","is null");
 			list.setVisibility(View.VISIBLE);
 		}
+	}
+	@Override
+	public void onClick(Plan itemPlan) {
+		Log.i("Item click", itemPlan.toString());
+		Intent intent = new Intent(getContext(), Article_Base.class);
+		intent.putExtra("objectId", itemPlan.getObjectId());
+		startActivity(intent);
 	}
 
 }

@@ -104,7 +104,8 @@ public class Article_Base extends AppCompatActivity implements PlaceItemAdapter.
         objectId = getIntent().getStringExtra("objectId");
         placeRecyclerView = findViewById(R.id.list_places);
         init();
-        setupBottomNavigationView();
+        Log.i("Call","Setup Bottom navigation");
+        setupBottomNavigationReader();
 //        bottomNavigation.setOnTabSelectedListener(this);
     }
 
@@ -164,15 +165,45 @@ public class Article_Base extends AppCompatActivity implements PlaceItemAdapter.
     }
 
     public void setupBottomNavigationReader(){
-		bottomNavigation = (AHBottomNavigation) findViewById(R.id.bottomNavigationReader);
-		BottomNavigationReader.setupBottomNavigationView(bottomNavigation);
-//		BottomNavigationReader.enableBottomNavigation(Article_Base.this,bottomNavigation);
-	  }
-    public void setupBottomNavigationView() {
-        bottomNavigation = (AHBottomNavigation) findViewById(R.id.bottomNavigation);
-        BottomNavigationViewHelper.setupBottomNavigationView(bottomNavigation);
-        BottomNavigationViewHelper.enableBottomNavigation(Article_Base.this,bottomNavigation);
+        Log.i("Start","Find layout");
+        ImageView btn_mark = (ImageView) findViewById(R.id.btn_mark);
+        final ImageView btn_add = (ImageView) findViewById(R.id.btn_addToOnGoing);
+        TextView btn_close = (TextView) findViewById(R.id.btn_close);
+        btn_add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new AlertDialog.Builder(v.getContext())
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setTitle("Are you sure?")
+                    .setMessage("Do you want to add this plan as your current plan?")
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            if(objectId!=null){
+                                Intent onGoing = new Intent(Article_Base.this, OnGoingActivity.class); //ACTIVITY_NUMBER 1
+                                onGoing.putExtra("currentPlan",objectId);
+                                startActivity(onGoing);
+                            }else{
+                                SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0); // 0 - for private mode
+                                SharedPreferences.Editor editor = pref.edit();
+                                editor.putBoolean("IS_ONGOING", true);
+                                editor.commit();
+                                Intent intent = new Intent(Article_Base.this, OnGoingEmptyActivity.class);
+                                startActivity(intent);
+                            }
+
+                        }
+                    })
+                    .setNegativeButton("No", null)
+                    .show();
+            }
+        });
+
+
     }
+
+
+//
 
 
     @Override

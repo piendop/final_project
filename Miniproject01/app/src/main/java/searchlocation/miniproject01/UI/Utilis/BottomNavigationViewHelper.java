@@ -2,6 +2,7 @@ package searchlocation.miniproject01.UI.Utilis;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.widget.Toast;
 
@@ -13,6 +14,7 @@ import searchlocation.miniproject01.UI.Discover.DiscoverActivity;
 import searchlocation.miniproject01.UI.Editor.EditorActivity;
 import searchlocation.miniproject01.UI.Favorite.FavoriteActivity;
 import searchlocation.miniproject01.UI.OnGoing.OnGoingActivity;
+import searchlocation.miniproject01.UI.OnGoing.OnGoingEmptyActivity;
 import searchlocation.miniproject01.UI.Reader.Article_Base;
 import searchlocation.miniproject01.UI.profile.ProfileHome;
 
@@ -47,46 +49,38 @@ public class BottomNavigationViewHelper {
 				public boolean onTabSelected(int position, boolean wasSelected) {
 					switch (position) {
 						case 0:
-//							Toast.makeText(context, "ongoing Activity", Toast.LENGTH_SHORT).show();
-							Intent onGoing = new Intent(context, OnGoingActivity.class); //ACTIVITY_NUMBER 1
-							context.startActivity(onGoing);
+							SharedPreferences pref = context.getSharedPreferences("MyPref", 0); // 0 - for private mode
+							if (pref.getBoolean("IS_ONGOING", false)){
+								Intent onGoing = new Intent(context, OnGoingActivity.class); //ACTIVITY_NUMBER 1
+								onGoing.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+								context.startActivity(onGoing);
+							} else {
+								Intent onGoingEmpty = new Intent(context, OnGoingActivity.class); //ACTIVITY_NUMBER 1
+								onGoingEmpty.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+								context.startActivity(onGoingEmpty);
+							}
 							break;
 						case 1:
-//							Toast.makeText(context, "discover Activity", Toast.LENGTH_SHORT).show();
 							Intent discover = new Intent(context, DiscoverActivity.class);
 							context.startActivity(discover);
-						//	AHBottomNavigation.setCurrentItem(1);
-				//			Intent map = new Intent(context, MapsActivity.class); //ACTIVITY_NUMBER 1
-							//context.startActivity(map);
 							break;
 						case 2:
-							//Toast.makeText(context, "editor Activity", Toast.LENGTH_SHORT).show();
 							Intent editor = new Intent(context, EditorActivity.class);
 							context.startActivity(editor);
 							break;
 						case 3:
 							Intent bookmark = new Intent(context, FavoriteActivity.class);
 							context.startActivity(bookmark);
-							//Toast.makeText(context, "library Activity", Toast.LENGTH_SHORT).show();
-							//AHBottomNavigation.setCurrentItem(3);
 							break;
 						case 4:
-							//Toast.makeText(context, "profile Activity", Toast.LENGTH_SHORT).show();
 							Intent profile = new Intent(context, ProfileHome.class);
+							profile.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
 							context.startActivity(profile);
-							//AHBottomNavigation.setCurrentItem(4);
 							break;
 					}
 					return false;
 				}
 			});
-		}
-
-		public static void disableCurrentItem (AHBottomNavigation ahBottomNavigation,int position)
-		{
-			ahBottomNavigation.setActivated(false);
-			ahBottomNavigation.setSelected(false);
-			ahBottomNavigation.disableItemAtPosition(4);
 		}
 }
 

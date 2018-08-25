@@ -2,11 +2,11 @@
 <RelativeLayout android:layout_height="match_parent"
     android:layout_width="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android" >
-    <include layout="@layout/layout_bottom_navigation_view" />
+    <include layout="@layout/layout_bottom_navigation_reader"/>
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="50dp"
+        android:layout_marginBottom="60dp"
         android:background="@color/white"
         >
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -16,8 +16,8 @@
             android:layout_marginBottom="60dp"
             android:orientation="vertical"
             tools:context=".UI.Reader.Article_Base">
-            <!--Top info-->
             <include layout="@layout/layout_custom_reader_topinfo"/>
+            <!--Top info-->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="42dp"

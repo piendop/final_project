@@ -18,8 +18,9 @@ public class PlanPublishedAdapter extends RecyclerView.Adapter<PlanPublishedAdap
 
 	private ArrayList<Plan> listOfPlans;
 	private int mNumberItems=0;
+	private PlanPublishedAdapterOnClickHandler mClickHander;
 
-	public PlanPublishedAdapter(int numberOfItems, ArrayList<Plan> list){
+	public PlanPublishedAdapter(int numberOfItems, ArrayList<Plan> list,PlanPublishedAdapterOnClickHandler clickHandler){
 
 		if(!list.isEmpty()){
 			listOfPlans = list;
@@ -27,6 +28,7 @@ public class PlanPublishedAdapter extends RecyclerView.Adapter<PlanPublishedAdap
 			listOfPlans = new ArrayList<>();
 		}
 		mNumberItems=numberOfItems;
+		this.mClickHander=clickHandler;
 	}
 
 	public void addPlan(Plan plan){
@@ -98,6 +100,7 @@ public class PlanPublishedAdapter extends RecyclerView.Adapter<PlanPublishedAdap
 		public void onClick(View v) {
 			int index = getAdapterPosition();
 			Plan plan = listOfPlans.get(index);
+			mClickHander.onClick(plan);
 		}
 	}
 }

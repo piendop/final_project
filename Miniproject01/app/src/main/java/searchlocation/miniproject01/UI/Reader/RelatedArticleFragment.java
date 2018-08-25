@@ -36,7 +36,7 @@ import searchlocation.miniproject01.UI.Reader.RelatedArticleAdapter;
 import searchlocation.miniproject01.UI.Utilis.PlanAdapter;
 import searchlocation.miniproject01.UI.Utilis.PlanPublishedAdapter;
 
-public class RelatedArticleFragment extends Fragment {
+public class RelatedArticleFragment extends Fragment implements RelatedArticleAdapter.RelatedArticleAdapterOnClickHandler {
 
 	private static int NUM_LIST_ITEMS = 1;
 	private String username;
@@ -72,20 +72,28 @@ public class RelatedArticleFragment extends Fragment {
 		list.setLayoutManager(layoutManager);
 		if(mAdapter == null) {
 			//listOfPlans.setHasFixedSize(true);
-			mAdapter = new RelatedArticleAdapter(1,planList);
+			mAdapter = new RelatedArticleAdapter(3,planList,this);
 			list.setAdapter(mAdapter);
 			//load shared plan initially
 			new LoadingSharePlanInitially().execute();
 		}else{
-			mAdapter = new RelatedArticleAdapter(1,planList);
+			mAdapter = new RelatedArticleAdapter(3,planList,this);
 			list.setAdapter(mAdapter);
 			//load shared plan initially
 			new LoadingSharePlanInitially().execute();
 			Log.i("mAdapter ","is null");
 			list.setVisibility(View.VISIBLE);
 		}
-		HandleOnclick();
 	}
+
+	@Override
+	public void onClick(Plan itemPlan) {
+		Log.i("Item click", itemPlan.toString());
+		Intent intent = new Intent(getContext(), Article_Base.class);
+		intent.putExtra("objectId", itemPlan.getObjectId());
+		startActivity(intent);
+	}
+
 	private class LoadingSharePlanInitially extends AsyncTask<Void, Void, Void> {
 		@Override
 		protected void onPreExecute() {
@@ -153,6 +161,7 @@ public class RelatedArticleFragment extends Fragment {
 			return null;
 		}
 
+
 		@Override
 		protected void onCancelled(Void aVoid) {
 			super.onCancelled(aVoid);
@@ -161,20 +170,4 @@ public class RelatedArticleFragment extends Fragment {
 
 	}
 
-	private void HandleOnclick() {
-		for (int i = 0 ; i<= planList.size();i++){
-			final int index = i;
-			View viewItem = list.getLayoutManager().findViewByPosition(index);
-			Log.i("ViewItemID","");
-//			viewItem.setOnClickListener(new View.OnClickListener() {
-//				@Override
-//				public void onClick(View v) {
-//					Log.i("Item click", "");
-////					Intent intent = new Intent(getActivity(), RelatedArticleFragment.class);
-////					intent.putExtra("objectId", planList.get(index).getObjectId());
-////					startActivity(intent);
-//				}
-//			});
-		}
-	}
 }
